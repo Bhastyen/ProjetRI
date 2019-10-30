@@ -46,7 +46,7 @@ public class ParserBrut {
 						if (ligne.matches("</doc>.*")) {
 							//System.out.println("Id " + id);
 							//System.out.println("Contenu " + contenu);
-							docs.add(new Document(id, contenu));
+							docs.add(new Document(id, contenu.replaceAll(" +", " ")));
 							j ++;
 							contenu = "";
 							continue;
