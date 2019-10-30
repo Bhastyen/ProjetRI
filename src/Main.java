@@ -5,10 +5,11 @@ public class Main {
 	// function : parserDoc(String pathResources, Document.Type type) output(List<Document>)  , type = "xml" ou "brut"
 	
 	public static void main(String[] args) {
-		List<Document> docs;
+		List<Document> docsBrut, docsXML;
 		
 		// parsing des documents
-		docs = parserDoc("resources/textes_brut/", Document.Type.BRUT);
+		//docsBrut = parserDoc("resources/textes_brut/", Document.Type.BRUT);
+		docsXML = parserDoc("resources/coll/", Document.Type.XML);
 	}
 
 	
@@ -18,11 +19,9 @@ public class Main {
 			ParserBrut parser = new ParserBrut(path);
 			return parser.parse();
 		}else {
-			//ParserXML parser = new ParserXML(path);
-			//return parser.parse();
+			ParserXML parser = new ParserXML(path);
+			return parser.parse();
 		}
-		
-		return null;
 	}
 }
 
