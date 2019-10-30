@@ -1,7 +1,10 @@
 
 public class Document {
+	public enum Type {XML, BRUT} ;
+	
 	private int idDoc;
 	private String stringDocument;
+	
 	
 	public Document(int idDoc, String stringDocument) {
 		super();
@@ -9,18 +12,21 @@ public class Document {
 		this.stringDocument = stringDocument;
 	}
 	
+	
+	
 	public int getIdDoc() {
 		return idDoc;
 	}
+	
 	public void setIdDoc(int idDoc) {
 		this.idDoc = idDoc;
 	}
+	
 	public String getStringDocument() {
 		return stringDocument;
 	}
+	
 	public void setStringDocument(String stringDocument) {
 		this.stringDocument = stringDocument;
 	}
-	
-	
 }
