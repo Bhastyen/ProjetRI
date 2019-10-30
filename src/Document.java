@@ -1,7 +1,7 @@
 
 public class Document {
-	int idDoc;
-	String stringDocument;
+	private int idDoc;
+	private String stringDocument;
 	
 	public Document(int idDoc, String stringDocument) {
 		super();
