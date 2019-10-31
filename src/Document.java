@@ -29,4 +29,12 @@ public class Document {
 	public void setStringDocument(String stringDocument) {
 		this.stringDocument = stringDocument;
 	}
+	
+	public int getLength() {
+		
+		String[] arrString = stringDocument.split(" ");
+		
+		return arrString.length;
+		
+	}
 }

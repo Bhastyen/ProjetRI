@@ -36,7 +36,7 @@ public class Models {
 			key = doc.getIdDoc();
 			score = docIdScore.get(key);
 			
-			score = score / doc.getStringDocument().length();  // Scores[d] by Lengths[d]
+			score = score / doc.getLength();  // Scores[d] by Lengths[d]
 			docIdScore.put(key, score);
 		}
 		
