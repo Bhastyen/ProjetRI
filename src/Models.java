@@ -18,14 +18,14 @@ public class Models {
 
 		//Pour chaque mot de la requete
 		for(String wordQuery : arrQuery) {
-			weight = normalization(typeRun); //TODO F(tf(t,q) x G(df(t)) selon les fonctions SMART
+			weight = normalization(param);    //TODO F(tf(t,q) x G(df(t)) selon les fonctions SMART
 
 			//Pour chaque pair : nombre occurence / IdDocument du terme wordQuery
 			for (Pair<Integer, Integer> pair : postingList.get(wordQuery)) {
 				if (docIdScore.get(pair.getValue()) == null)   // ajout de l entree dans le dico s il n existe pas
 					docIdScore.put(pair.getValue(), 0f);
 				score = docIdScore.get(pair.getValue());   // pair.getvalue() = idDoc
-				score += normalization(typeRun);;    //TODO F(tf(t,d) x G(df(t)) selon les fonctions SMART
+				score += normalization(param);    //TODO F(tf(t,d) x G(df(t)) selon les fonctions SMART
 				docIdScore.put(pair.getValue(), score);
 			}
 		}
