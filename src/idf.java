@@ -5,8 +5,39 @@ import java.util.Map;
 
 public class idf {
 	
+	public static float tf(
+			String smart, 
+			String term, 
+			Map<String, List<Pair<Integer,Integer>>> postingListTerm, 
+			Map<Integer, List<Pair<Integer,Integer>>> postingListDoc) {
+		
+		switch(smart) {
+		case "n":
+			return n(term, postingListTerm, postingListDoc);
+		case "i":
+			return (float) i(term, postingListTerm, postingListDoc);
+		case "l":
+			return (float) l(term, postingListTerm, postingListDoc);
+		case "f":
+			return (float) f(term, postingListTerm, postingListDoc);
+		case "p":
+			return (float) p(term, postingListTerm, postingListDoc);
+		case "P":
+			return (float) P(term, postingListTerm, postingListDoc);
+		case "s":
+			return (float) s(term, postingListTerm, postingListDoc);
+		default:
+			System.out.println("Pas de fonction definie");
+			return 0;
+		}
+			
+	}
 	
-	public static int n(String term, Map<String, List<Pair<Integer,Integer>>> postingListTerm, Map<Integer, List<Pair<Integer,Integer>>> postingListDoc) {
+	public static int n(
+			String term, 
+			Map<String, List<Pair<Integer,Integer>>> postingListTerm, 
+			Map<Integer, List<Pair<Integer,Integer>>> postingListDoc) {
+		
 		int idf;
 		
 		idf= 1;
@@ -14,7 +45,11 @@ public class idf {
 		return idf;
 	}
 	
-	public static double i(String term, Map<String, List<Pair<Integer,Integer>>> postingListTerm, Map<Integer, List<Pair<Integer,Integer>>> postingListDoc) {
+	public static double i(
+			String term, 
+			Map<String, List<Pair<Integer,Integer>>> postingListTerm, 
+			Map<Integer, List<Pair<Integer,Integer>>> postingListDoc) {
+		
 		double idf; // Weight to return
 		int N = postingListDoc.size();   // number of documents
 		List<Pair<Integer, Integer>> occDoc = postingListTerm.get(term);   // list of pair of NumOcc,DocId for the term
@@ -32,7 +67,11 @@ public class idf {
 	}
 	
 	
-	public static double l(String term, Map<String, List<Pair<Integer,Integer>>> postingListTerm, Map<Integer, List<Pair<Integer,Integer>>> postingListDoc) {
+	public static double l(
+			String term, 
+			Map<String, List<Pair<Integer,Integer>>> postingListTerm, 
+			Map<Integer, List<Pair<Integer,Integer>>> postingListDoc) {
+		
 		double idf;
 		int N = postingListDoc.size();
 		List<Pair<Integer, Integer>> occDoc = postingListTerm.get(term);
@@ -49,7 +88,11 @@ public class idf {
 		
 	}
 	
-	public static double f(String term, Map<String, List<Pair<Integer,Integer>>> postingListTerm, Map<Integer, List<Pair<Integer,Integer>>> postingListDoc) {
+	public static double f(
+			String term, 
+			Map<String, List<Pair<Integer,Integer>>> postingListTerm, 
+			Map<Integer, List<Pair<Integer,Integer>>> postingListDoc) {
+		
 		double idf;
 		List<Pair<Integer, Integer>> occDoc = postingListTerm.get(term);
 		int n = occDoc.size();
@@ -66,7 +109,11 @@ public class idf {
 	}
 	
 	
-	public static double p(String term, Map<String, List<Pair<Integer,Integer>>> postingListTerm, Map<Integer, List<Pair<Integer,Integer>>> postingListDoc) {
+	public static double p(
+			String term, 
+			Map<String, List<Pair<Integer,Integer>>> postingListTerm, 
+			Map<Integer, List<Pair<Integer,Integer>>> postingListDoc) {
+		
 		double idf;
 		int N = postingListDoc.size();
 		List<Pair<Integer, Integer>> occDoc = postingListTerm.get(term);
@@ -84,7 +131,11 @@ public class idf {
 	}
 	
 	
-	public static double P(String term, Map<String, List<Pair<Integer,Integer>>> postingListTerm, Map<Integer, List<Pair<Integer,Integer>>> postingListDoc) {
+	public static double P(
+			String term, 
+			Map<String, List<Pair<Integer,Integer>>> postingListTerm, 
+			Map<Integer, List<Pair<Integer,Integer>>> postingListDoc) {
+		
 		double idf;
 		List<Integer> N = new ArrayList<Integer>();
 		List<Pair<Integer, Integer>> occDoc = postingListTerm.get(term);
@@ -108,7 +159,11 @@ public class idf {
 		
 	}
 	
-	public static double s(String term, Map<String, List<Pair<Integer,Integer>>> postingListTerm, Map<Integer, List<Pair<Integer,Integer>>> postingListDoc) {
+	public static double s(
+			String term,
+			Map<String, List<Pair<Integer,Integer>>> postingListTerm, 
+			Map<Integer, List<Pair<Integer,Integer>>> postingListDoc) {
+		
 		double idf;
 		int N = postingListDoc.size();
 		List<Pair<Integer, Integer>> occDoc = postingListTerm.get(term);

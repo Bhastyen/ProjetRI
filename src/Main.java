@@ -27,13 +27,15 @@ public class Main {
 		HashMap<String, List<Pair>> postingList = null;
 		List<Entry<Integer, Float>> cosScore;
 		File query = new File("resources/topics_M2WI7Q_2019_20.txt");
+		String typeRun ="nnn";
 		
 		// parsing des documents
 		docsBrut = parserDoc("resources/textes_brut/", Document.Type.BRUT);
 		//docsXML = parserDoc("resources/coll/", Document.Type.XML);
 		
 		// indexation
-		
+		Indexator indexator = new Indexator();
+		indexator.createIndex(docsBrut);
 		
 		// TEXTE BRUT : calcul du score des documents pour chaque requete et ecriture du run
 		queries = readQuery(query);
