@@ -21,6 +21,7 @@ public class Main {
 		HashMap<String, List<Pair>> postingList = null;
 		List<Entry<Integer, Float>> cosScore;
 		File query = new File("resources/topics_M2WI7Q_2019_20.txt");
+		String typeRun ="nnn";
 		
 		// parsing des documents
 		docsBrut = parserDoc("resources/textes_brut/", Document.Type.BRUT);
@@ -32,7 +33,7 @@ public class Main {
 		// calcul du score des documents pour chaque requete
 		queries = readQuery(query);
 		for (String q : queries) {
-			cosScore = Models.CosineScore(q.substring(8), postingList, docsBrut);  // TODO ajouter param run
+			cosScore = Models.CosineScore(q.substring(8), postingList, docsBrut ,typeRun);  // TODO ajouter param run
 			// writeRun(String path, String numQuery, List<Entry<Integer, Float>> cosScore);
 		}
 	}
@@ -70,6 +71,6 @@ public class Main {
 		return queries;
 	}
 	
-	
+//writeRun(String query (pour le num de la requete , List<Entry<Integer, Float>> cosScore (pour num article et score) , String granulatite;)
 }
 

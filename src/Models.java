@@ -10,7 +10,7 @@ import java.util.Map.Entry;
 public class Models {
 	
 	
-	public static List<Entry<Integer, Float>> CosineScore (String query, HashMap<String, List<Pair>> postingList, List<Document> documents) {
+	public static List<Entry<Integer, Float>> CosineScore (String query, HashMap<String, List<Pair>> postingList, List<Document> documents,String typeRun) {
 		float weight = 0; float score;
 		int key;
 		String[] arrQuery = query.split(" ");
@@ -20,14 +20,14 @@ public class Models {
 		
 		//Pour chaque mot de la requete
 		for(String wordQuery : arrQuery) {
-			weight = 0; //TODO F(tf(t,q) x G(df(t)) selon les fonctions SMART
+			weight = normalization(typeRun); //TODO F(tf(t,q) x G(df(t)) selon les fonctions SMART
 			
 			//Pour chaque pair : nombre occurence / IdDocument du terme wordQuery
 			for (Pair<Integer, Integer> pair : postingList.get(wordQuery)) {
 				if (docIdScore.get(pair.getValue()) == null)   // ajout de l entree dans le dico s il n existe pas
 					docIdScore.put(pair.getValue(), 0f);
 				score = docIdScore.get(pair.getValue());   // pair.getvalue() = idDoc
-				score += 0f;    //TODO F(tf(t,d) x G(df(t)) selon les fonctions SMART
+				score += normalization(typeRun);;    //TODO F(tf(t,d) x G(df(t)) selon les fonctions SMART
 				docIdScore.put(pair.getValue(), score);
 			}
 		}
