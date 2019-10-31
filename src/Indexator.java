@@ -86,7 +86,9 @@ public class Indexator {
 					//postingListPairs.put(docid, nbOcc); postingListPairs = 
 					// On ajoute la list updated ou nouvelle
 					//Map<Integer, Long> clone2 = new HashMap<>(postingListPairs);
-					//postingList.put(word, clone2);
+
+					//postingList.put(word, postingListPairs);
+
 					//System.out.println(postingList);
 				}
 				
