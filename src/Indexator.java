@@ -49,8 +49,7 @@ public class Indexator {
 					listWords.stream().collect(Collectors.groupingBy(Function.identity(), 
 															Collectors.counting()));
 			// Put the document and its list of term/occurency in the HashMap
-			Map<String, Long> clone = new HashMap<>(frequencyMap);
-			postingListPerDoc.put(docid, clone);
+			postingListPerDoc.put(docid, frequencyMap);
 
 			// Loop pour faire la posting list
 			for (String word : splitString) {
@@ -75,9 +74,9 @@ public class Indexator {
 					}
 					postingListPairs.put(docid,nbOcc);
 					// On ajoute la list updated ou nouvelle
-					Map<Integer, Long> clone2 = new HashMap<>(postingListPairs);
-					postingList.put(word, clone2);
-					System.out.println(postingList);
+					//Map<Integer, Long> clone2 = new HashMap<>(postingListPairs);
+					postingList.put(word, postingListPairs);
+					//System.out.println(postingList);
 				}
 				// On vide la liste des pairs
 				postingListPairs.clear();
@@ -85,7 +84,7 @@ public class Indexator {
 			// On vide tout hop hop hop
 			wordInPostingListPerDoc.clear();
 		}
-		System.out.println(postingListPerDoc);
-		System.out.println(postingList);
+		//System.out.println(postingListPerDoc);
+		//System.out.println(postingList);
 	}
 }
