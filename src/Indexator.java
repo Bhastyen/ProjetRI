@@ -11,6 +11,7 @@ public class Indexator {
 	private static List<Document> listDoc;
 
 	public Indexator() {
+		
 	}
 
 	public void createIndex(List<Document> listDoc) {

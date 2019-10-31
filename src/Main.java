@@ -27,7 +27,6 @@ public class Main {
 		HashMap<String, List<Pair>> postingList = null;
 		List<Entry<Integer, Float>> cosScore;
 		File query = new File("resources/topics_M2WI7Q_2019_20.txt");
-		String typeRun ="nnn";
 		
 		// parsing des documents
 		docsBrut = parserDoc("resources/textes_brut/", Document.Type.BRUT);
