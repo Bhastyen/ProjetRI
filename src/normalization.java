@@ -1,10 +1,10 @@
 
 public class normalization {
 	
-	public static double n(int tf, double df, int docLength) {
+	public static double n(int tf, double df) {
 		double weigth = 0;
 		
-		weigth = tf*df/docLength;
+		weigth = tf*df;
 		
 		return weigth;
 		
