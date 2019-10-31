@@ -1,3 +1,6 @@
+import java.util.Arrays;
+import java.util.Comparator;
+
 public class Pair<L,R> {
 	  private L numOcc;
 	  private R value;
@@ -49,4 +52,8 @@ public class Pair<L,R> {
 	public String toString() {
 		return "Pair [numOcc=" + numOcc + ", value=" + value + "]";
 	}  
+	
+	
 }
+
+
