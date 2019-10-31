@@ -27,7 +27,8 @@ public class Main {
 		//docsXML = parserDoc("resources/coll/", Document.Type.XML);
 		
 		// indexation
-		
+		Indexator indexator = new Indexator();
+		indexator.createIndex(docsBrut);
 		
 		// calcul du score des documents pour chaque requete
 		queries = readQuery(query);
