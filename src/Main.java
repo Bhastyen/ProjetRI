@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+
+
 public class Main {
 	//public static final String ETAPE = "01";
 	public static final int NUMBER_OF_DOCUMENT_BY_QUERY = 1500;
@@ -24,36 +26,28 @@ public class Main {
 		List<Document> docsBrut, docsXML;
 		List<String> queries;
 		HashMap<String, Map<Integer, Long>> postingList = null;
-		List<Entry<Integer, Float>> cosScore;
+		HashMap<Integer, Map<String, Long>> postingListPerDoc = null;
 		File query = new File("resources/topics_M2WI7Q_2019_20.txt");
 		
 		// parsing des documents
 		docsBrut = parserDoc("resources/textes_brut/", Document.Type.BRUT);
-		//docsXML = parserDoc("resources/coll/", Document.Type.XML);
+		docsXML = parserDoc("resources/coll/", Document.Type.XML);
 		
 		// indexation
 		Indexator indexator = new Indexator();
-		indexator.createIndex(docsBrut);
-		postingList = new HashMap<String, Map<Integer, Long>>(indexator.getPostingList());
-		System.out.println("Indexator End !!!");
+		indexator.createIndex(docsBrut); 
+		postingList = indexator.getPostingList();
+		postingListPerDoc = indexator.getPostingListPerDoc();
+		System.out.println("Indexator End");
 		
 		// TEXTE BRUT : calcul du score des documents pour chaque requete et ecriture du run
 		queries = readQuery(query);
-		for (int numRun = 0; numRun < PARAMETERS.length; numRun ++) {
-			for (String q : queries) {
-				cosScore = Models.CosineScore(q.substring(8), postingList, docsBrut, PARAMETERS[numRun]);
-				writeRun(OUTPUT_DIR,  OUTPUT_NAME, q.substring(0, 8), "01", "0" + (numRun + 1), cosScore, "articles", PARAMETERS[numRun]);
-			}
-		}
+		writeAllRuns(queries, OUTPUT_DIR + "brut/", OUTPUT_NAME, "01", "articles", docsBrut, postingList, postingListPerDoc);
 		
 		// TEXTE XML : calcul du score des documents pour chaque requete et ecriture du run
-		/*for (int numRun = 0; numRun < PARAMETERS.length; numRun ++) {
-			for (String q : queries) {
-				cosScore = Models.CosineScore(q.substring(8), postingList, docsBrut, PARAMETERS[numRun]);
-				writeRun(OUTPUT_DIR,  OUTPUT_NAME, q.substring(0, 8), "02", "0" + (numRun + 1), cosScore, GRANULARITE, PARAMETERS[numRun]);
-			}
-		}*/
+		writeAllRuns(queries, OUTPUT_DIR + "xml/", OUTPUT_NAME, "02", "articles", docsXML, postingList, postingListPerDoc);
 		
+		System.out.println("Runs write");
 	}
 
 	// function : parserDoc(String pathResources, Document.Type type) output(List<Document>)  , type = "xml" ou "brut"
@@ -89,24 +83,43 @@ public class Main {
 		return queries;
 	}
 	
-	public static void writeRun(String path, String nomEquipe, String numQuery, String etape, String numRun, List<Entry<Integer, Float>> cosScore, String granularite, String ponderation) {
-		File out = new File(path + nomEquipe + "_" + etape + "_" + numRun + "_" + ponderation + "_" + granularite + ".txt");
-		BufferedWriter buff;
+	public static void writeAllRuns(List<String> queries, String path, 
+										String nomEquipe, String etape,
+											String granularite, List<Document> docs,
+												HashMap<String, Map<Integer, Long>> postingList,
+													HashMap<Integer, Map<String, Long>> postingListPerDoc) {
+
+		List<Entry<Integer, Float>> cosScore;
+		
+		for (int numRun = 0; numRun < PARAMETERS.length; numRun ++) {
+			BufferedWriter buff;
+			File out = new File(path + nomEquipe + "_" + "01" + "_" + "0"+(numRun+1) + "_" + PARAMETERS[numRun] + "_" + "articles" + ".txt");
+			
+			try {
+				buff = new BufferedWriter(new FileWriter(out));
+			
+				for (String q : queries) {
+					cosScore = Models.CosineScore(q.substring(8), postingList, postingListPerDoc, docs, PARAMETERS[numRun]);
+					writeRun(buff, nomEquipe, q.substring(0, 7), cosScore);
+				}
+				
+				buff.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		
+	}
+	
+	public static void writeRun(BufferedWriter buff, String nomEquipe, String numQuery, List<Entry<Integer, Float>> cosScore) throws IOException {
 		int number_doc = cosScore.size();
 		
 		if (number_doc > NUMBER_OF_DOCUMENT_BY_QUERY)
 			number_doc = NUMBER_OF_DOCUMENT_BY_QUERY;
-		
-		try {
-			buff = new BufferedWriter(new FileWriter(out));
 			
-			for (int i = 0; i < number_doc; i++) {
-				buff.append(numQuery + " Q0 " + cosScore.get(i).getKey() + " " + (i+1) + " " + cosScore.get(i).getValue() + " " + nomEquipe + " /article/");
-				buff.newLine();
-			}
-			
-		} catch (IOException e) {
-			e.printStackTrace();
+		for (int i = 0; i < number_doc; i++) {
+			buff.append(numQuery + " Q0 " + cosScore.get(i).getKey() + " " + (i+1) + " " + cosScore.get(i).getValue() + " " + nomEquipe + " /article/");
+			buff.newLine();
 		}
 		
 	}
