@@ -8,9 +8,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
-
-
 
 public class Main {
 	//public static final String ETAPE = "01";
@@ -24,7 +23,7 @@ public class Main {
 	public static void main(String[] args) {
 		List<Document> docsBrut, docsXML;
 		List<String> queries;
-		HashMap<String, List<Pair>> postingList = null;
+		HashMap<String, Map<Integer, Long>> postingList = null;
 		List<Entry<Integer, Float>> cosScore;
 		File query = new File("resources/topics_M2WI7Q_2019_20.txt");
 		
@@ -35,6 +34,8 @@ public class Main {
 		// indexation
 		Indexator indexator = new Indexator();
 		indexator.createIndex(docsBrut);
+		postingList = new HashMap<String, Map<Integer, Long>>(indexator.getPostingList());
+		System.out.println("Indexator End !!!");
 		
 		// TEXTE BRUT : calcul du score des documents pour chaque requete et ecriture du run
 		queries = readQuery(query);
