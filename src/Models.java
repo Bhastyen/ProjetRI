@@ -3,13 +3,14 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 
 
 public class Models {
 
-	public static List<Entry<Integer, Float>> CosineScore (String query, HashMap<String, List<Pair>> postingList, List<Document> documents, String param) {
+	public static List<Entry<Integer, Float>> CosineScore (String query, HashMap<String, Map<Integer, Long>> postingList, List<Document> documents, String param) {
 		float weight = 0; float score; int key;
 		String[] arrQuery = query.split(" ");
 
