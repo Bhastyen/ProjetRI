@@ -28,7 +28,7 @@ public class TF {
 		case "l":
 			return l(term, docId, postingList);
 		default:
-			System.out.println("Pas de fonction definie");
+			System.out.println("Pas de fonction tf definie");
 			return 0;
 		}
 			

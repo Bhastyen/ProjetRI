@@ -19,7 +19,7 @@ public class Main {
 	public static final String GRANULARITE = "articles";
 	public static final String OUTPUT_DIR = "resources/resultats/";
 	public static final String OUTPUT_NAME = "BastienCelineLaetitiaPierre";
-	public static final String[] PARAMETERS = new String[] {"nnn", "nnn", "nnn", "nnn", "nnn"};
+	public static final String[] PARAMETERS = new String[] {"bnc", "nin", "mts", "aln", "sfn"};
 	
 	
 	public static void main(String[] args) {
@@ -101,8 +101,9 @@ public class Main {
 				for (String q : queries) {
 					cosScore = Models.CosineScore(q.substring(8), postingList, postingListPerDoc, docs, PARAMETERS[numRun]);
 					writeRun(buff, nomEquipe, q.substring(0, 7), cosScore);
+					
 				}
-				
+				System.out.println("run n°"+numRun);
 				buff.close();
 			} catch (IOException e) {
 				e.printStackTrace();
