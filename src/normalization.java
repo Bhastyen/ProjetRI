@@ -37,7 +37,7 @@ public class normalization {
 		
 		String tfMethod = Character.toString(smart.charAt(1));  //function to use for tf
 		String dfMethod = Character.toString(smart.charAt(2));  //function to use for idf
-		long tf;
+		float tf;
 		float idf;
 		float w;
 		
@@ -60,11 +60,11 @@ public class normalization {
 		
 		String tfMethod = Character.toString(smart.charAt(1));
 		String dfMethod = Character.toString(smart.charAt(2));
-		long tf;
+		float tf;
 		float idf;
 		float w;
-		long sum = 0;
-		long sumElement;
+		float sum = 0;
+		float sumElement;
 		Map<String,Long> docMap = postingListDoc.get(docId); //Map of term,occ for doc=docId
 		
 		for(Entry<String, Long> mapentry : docMap.entrySet()) {
@@ -91,11 +91,11 @@ public class normalization {
 		
 		String tfMethod = Character.toString(smart.charAt(1));
 		String dfMethod = Character.toString(smart.charAt(2));
-		long tf;
+		float tf;
 		float idf;
 		float w;
-		long sum = 0;
-		long sumElement;
+		float sum = 0;
+		float sumElement;
 		Map<String,Long> docMap = postingListDoc.get(docId); //Map of term,occ for doc=docId
 		
 		for(Entry<String, Long> mapentry : docMap.entrySet()) {

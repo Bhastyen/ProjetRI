@@ -4,7 +4,7 @@ import java.util.Map.Entry;
 public class TF {
 	
 	
-	public static long tf(String smart, String term, int docId, Map<Integer, Map<String, Long>> postingList) {
+	public static float tf(String smart, String term, int docId, Map<Integer, Map<String, Long>> postingList) {
 		// need postingList with docId as key
 		
 //		try{
@@ -35,7 +35,7 @@ public class TF {
 	}
 	
 	
-	public static long b(String term, int docId, Map<Integer, Map<String, Long>> postingList) {
+	public static float b(String term, int docId, Map<Integer, Map<String, Long>> postingList) {
 		Map<String, Long> docMap = postingList.get(docId);
 		long tf = docMap.get(term);
 		
@@ -43,7 +43,7 @@ public class TF {
 	}
 	
 	
-	public static long n(String term, int docId, Map<Integer, Map<String, Long>> postingList) {
+	public static float n(String term, int docId, Map<Integer, Map<String, Long>> postingList) {
 		Map<String, Long> docMap = postingList.get(docId);
 		long tf = docMap.get(term);
 
@@ -51,53 +51,71 @@ public class TF {
 	}
 	
 	
-	public static long m(String term, int docId, Map<Integer, Map<String, Long>> postingList) {
+	public static float m(String term, int docId, Map<Integer, Map<String, Long>> postingList) {
 		Map<String, Long> docMap = postingList.get(docId);
 		List<Long> occ = new ArrayList<Long>();
-		long tf;
+		float tf;
 		
 		for(Entry<String, Long> entry : docMap.entrySet()) {
 			occ.add(entry.getValue());
 		}
 		
 		tf= docMap.get(term);
-		tf = (long) (tf / (Collections.max(occ)+0.00001));
+		tf = (float) (tf / (Collections.max(occ)+0.00001));
 		
 		return tf;
 	}
 	
-	public static long a(String term, int docId, Map<Integer, Map<String, Long>> postingList) {
+	public static float a(String term, int docId, Map<Integer, Map<String, Long>> postingList) {
 		Map<String, Long> docMap = postingList.get(docId);
 		List<Long> occ = new ArrayList<Long>();
-		long tf;
+		float tf;
 		
 		for(Entry<String, Long> entry : docMap.entrySet()) {
 			occ.add(entry.getValue());
 		}
 		
 		tf= docMap.get(term);
-		tf = (long) (0.5 + 0.5*tf/(Collections.max(occ)+0.00001));
+		tf = (float) (0.5 + 0.5*tf/(Collections.max(occ)+0.00001));
 
 		return tf;
 	}
 	
 	
-	public static long s(String term, int docId, Map<Integer, Map<String, Long>> postingList) {
+	public static float s(String term, int docId, Map<Integer, Map<String, Long>> postingList) {
 		Map<String, Long> docMap = postingList.get(docId);
-		long tf = docMap.get(term);
+		float tf = docMap.get(term);
 		
-		tf = (long) Math.pow(tf, 2);
+		tf = (float) Math.pow(tf, 2);
 
 		return tf;
 	}
 	
 	
-	public static long l(String term, int docId, Map<Integer, Map<String, Long>> postingList) {
+	public static float l(String term, int docId, Map<Integer, Map<String, Long>> postingList) {
 		Map<String, Long> docMap = postingList.get(docId);
 		long tf = docMap.get(term);
 
 		tf = (long) (1 + Math.log(tf));
 			
+		return tf;
+	}
+	
+	
+	public static float L(String term, int docId, Map<Integer, Map<String, Long>> postingList) {
+		Map<String, Long> docMap = postingList.get(docId);
+		long occ = 0;
+		long positiveocc = 0;
+		float tf;
+		
+		for(Entry<String, Long> entry : docMap.entrySet()) {
+			occ += entry.getValue();
+			positiveocc += 1;
+		}
+		
+		tf= docMap.get(term);
+		tf = (float) ((1+ Math.log(tf)) / (1 + Math.log(occ/positiveocc)));
+
 		return tf;
 	}
 }
