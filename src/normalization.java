@@ -13,7 +13,7 @@ public class normalization {
 			Map<String, Map<Integer, Long>> postingListTerm,
 			boolean queryMod) {
 		
-		if (queryMod = false) {
+		if (queryMod == false) {
 			switch(Character.toString(smart.charAt(2))) {
 			case "n":
 				return n(smart, term, docId, postingListDoc, postingListTerm);

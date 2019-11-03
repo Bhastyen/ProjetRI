@@ -19,7 +19,7 @@ public class Main {
 	public static final String GRANULARITE = "articles";
 	public static final String OUTPUT_DIR = "resources/resultats/";
 	public static final String OUTPUT_NAME = "BastienCelineLaetitiaPierre";
-	public static final String[] PARAMETERS = new String[] {"ltn", "ltc", "bnn", "blc", "mic"};
+	public static final String[] PARAMETERS = new String[] {"nnn", "nnc", "ltn", "ltc", "lts"};
 
 	
 	
