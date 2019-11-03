@@ -1,0 +1,7 @@
+2009011 Q0 1854492 1 0.16481282 BastienCelineLaetitiaPierre /article[1]
+2009036 Q0 10602661 1 0.023971489 BastienCelineLaetitiaPierre /article[1]
+2009067 Q0 3809272 1 0.027275575 BastienCelineLaetitiaPierre /article[1]
+2009073 Q0 856845 1 0.029559875 BastienCelineLaetitiaPierre /article[1]
+2009074 Q0 856845 1 0.029559875 BastienCelineLaetitiaPierre /article[1]
+2009078 Q0 9616434 1 0.005126842 BastienCelineLaetitiaPierre /article[1]
+2009085 Q0 160256 1 0.019231295 BastienCelineLaetitiaPierre /article[1]

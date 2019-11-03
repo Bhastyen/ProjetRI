@@ -36,8 +36,8 @@ public class TF {
 	
 	
 	public static float b(String term, int docId, Map<Integer, Map<String, Long>> postingList) {
-		Map<String, Long> docMap = postingList.get(docId);
-		long tf = docMap.get(term);
+
+		long tf = 1;
 		
 		return tf;
 	}
