@@ -19,7 +19,7 @@ public class Main {
 	public static final String GRANULARITE = "articles";
 	public static final String OUTPUT_DIR = "resources/resultats/";
 	public static final String OUTPUT_NAME = "BastienCelineLaetitiaPierre";
-	public static final String[] PARAMETERS = new String[] {"bnc", "nin", "mts", "aln", "sfn"};
+	public static final String[] PARAMETERS = new String[] {"lpc", "sPn", "mss", "afn", "sfn"};
 	
 	
 	public static void main(String[] args) {
@@ -103,7 +103,7 @@ public class Main {
 					writeRun(buff, nomEquipe, q.substring(0, 7), cosScore);
 					
 				}
-				System.out.println("run n°"+numRun);
+				System.out.println("run n°"+(numRun+1));
 				buff.close();
 			} catch (IOException e) {
 				e.printStackTrace();
