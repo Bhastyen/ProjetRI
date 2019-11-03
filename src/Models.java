@@ -10,7 +10,13 @@ import java.util.Map.Entry;
 
 public class Models {
 
-	public static List<Entry<Integer, Float>> CosineScore (String query, HashMap<String, Map<Integer, Long>> postingList, HashMap<Integer, Map<String, Long>> postingListPerDoc, List<Document> documents, String param) {
+	public static List<Entry<Integer, Float>> CosineScore (
+			String query,
+			HashMap<String, Map<Integer, Long>> postingList,
+			HashMap<Integer, Map<String, Long>> postingListPerDoc,
+			List<Document> documents,
+			String param) 
+	{
 		float weight = 0, idf = 0; float score; int key;
 		String[] arrQuery = query.split(" ");
 
@@ -23,8 +29,14 @@ public class Models {
 			
 			//Pour chaque pair : nombre occurence / IdDocument du terme wordQuery
 			if (postingList.get(wordQuery) != null) {
-				idf = (float) Math.log10(documents.size() / (float) postingList.get(wordQuery).size());
-				weight = idf;    //TODO F(tf(t,q) x G(df(t)) selon les fonctions SMART  normalization(param)
+				
+				weight = normalization.W(param, wordQuery, docId, postingListPerDoc, postingList);
+				
+//				idf = (float) Math.log10(documents.size() / (float) postingList.get(wordQuery).size());
+//				weight = idf;    //TODO F(tf(t,q) x G(df(t)) selon les fonctions SMART  normalization(param)
+				
+				
+				
 				docs = new ArrayList<>(postingList.get(wordQuery).entrySet());
 			
 				for (Entry<Integer, Long> pair : docs) {
@@ -32,7 +44,8 @@ public class Models {
 					if (docIdScore.get(pair.getKey()) == null)   // ajout de l entree dans le dico s il n existe pas
 						docIdScore.put(pair.getKey(), 0f);
 					score = docIdScore.get(pair.getKey());
-					score += postingListPerDoc.get(pair.getKey()).size() * idf;    //TODO F(tf(t,d) x G(df(t)) selon les fonctions SMART  normalization(param)
+					score += normalization.W(param, wordQuery, pair.getKey(), postingListPerDoc, postingList);
+					//score += postingListPerDoc.get(pair.getKey()).size() * idf;    //TODO F(tf(t,d) x G(df(t)) selon les fonctions SMART  normalization(param)
 					docIdScore.put(pair.getKey(), score);
 				}
 			}

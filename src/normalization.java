@@ -4,9 +4,9 @@ import java.util.Map.Entry;
 public class normalization {
 	
 	public static float W(
-			int docId,
-			String term,
 			String smart,   // format "***" 
+			String term,
+			int docId,
 			Map<Integer, Map<String, Long>> postingListDoc,
 			Map<String, Map<Integer, Long>> postingListTerm) {
 		
