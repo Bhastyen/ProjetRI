@@ -1,9 +1,19 @@
 import java.util.*;
+import java.util.Map.Entry;
 
 public class TF {
 	
 	
-	public static float tf(String smart, String term, int docId, Map<Integer, List<Pair>> postingList) {
+	public static long tf(String smart, String term, int docId, Map<Integer, Map<String, Long>> postingList) {
+		// need postingList with docId as key
+		
+//		try{
+//			Map<String, Long> docMap = postingList.get(docId);
+//			long tf = docMap.get(term);
+//		} catch (Exception ie) {
+//			System.out.println("term not in this document");
+//		}
+		
 		switch(smart) {
 		case "b":
 			return b(term, docId, postingList);
@@ -25,114 +35,69 @@ public class TF {
 	}
 	
 	
-	public static int b(String term, int docId, Map<Integer, List<Pair>> postingList) {
-		List<Pair> listOfOccTerms = postingList.get(docId);
-		List<String> terms = new ArrayList<String>();
-		int tf;
+	public static long b(String term, int docId, Map<Integer, Map<String, Long>> postingList) {
+		Map<String, Long> docMap = postingList.get(docId);
+		long tf = docMap.get(term);
 		
-		for (int i=0; i<listOfOccTerms.size(); i++) {
-			terms.add((String) listOfOccTerms.get(i).getValue());
-		}
-		
-		if (terms.indexOf(term) >=0)	 tf= 1;
-		else tf=0;
 		return tf;
 	}
 	
 	
-	public static int n(String term, int docId, Map<Integer, List<Pair>> postingList) {
-		List<Pair> listOfOccTerms = postingList.get(docId);
-		List<String> terms = new ArrayList<String>();
-		int tf;
-		int index = terms.indexOf(term);
-		
-		for (int i=0; i<listOfOccTerms.size(); i++) {
-			terms.add((String) listOfOccTerms.get(i).getValue());
-		}
-		
-		if (index >=0)	 tf= (int) (listOfOccTerms.get(index)).getNumOcc();
-		else tf=0;
-		return tf;
-	}
-	
-	
-	public static float m(String term, int docId, Map<Integer, List<Pair>> postingList) {
-		List<Pair> listOfOccTerms = postingList.get(docId);
+	public static long n(String term, int docId, Map<Integer, Map<String, Long>> postingList) {
+		Map<String, Long> docMap = postingList.get(docId);
+		long tf = docMap.get(term);
 
-		List<Integer> occ = new ArrayList<Integer>();
-		List<String> terms = new ArrayList<String>();
-		float tf;
-		int index = terms.indexOf(term);
-		
-		for (int i=0; i<listOfOccTerms.size(); i++) {
-			occ.add((Integer) listOfOccTerms.get(i).getNumOcc());
-			terms.add((String) listOfOccTerms.get(i).getValue());
-		}
-		
-		if (index >=0) {
-			tf= (float) (listOfOccTerms.get(index)).getNumOcc();
-			tf = (float) (tf / (Collections.max(occ)+0.00001));
-		}
-		else tf=0;
-		return tf;
-	}
-	
-	public static float a(String term, int docId, Map<Integer, List<Pair>> postingList) {
-		List<Pair> listOfOccTerms = postingList.get(docId);
-		List<Integer> occ = new ArrayList<Integer>();
-		List<String> terms = new ArrayList<String>();
-		float tf;
-		int index = terms.indexOf(term);
-		
-		for (int i=0; i<listOfOccTerms.size(); i++) {
-			occ.add((Integer) listOfOccTerms.get(i).getNumOcc());
-			terms.add((String) listOfOccTerms.get(i).getValue());
-		}
-		
-		if (index >=0) {
-			tf= (float) (listOfOccTerms.get(index)).getNumOcc();
-			tf = (float) (0.5 + 0.5*tf/(Collections.max(occ)+0.00001));
-		}
-		else tf=0;
 		return tf;
 	}
 	
 	
-	public static int s(String term, int docId, Map<Integer, List<Pair>> postingList) {
-		List<Pair> listOfOccTerms = postingList.get(docId);
-		List<String> terms = new ArrayList<String>();
-		int tf;
-		int index = terms.indexOf(term);
+	public static long m(String term, int docId, Map<Integer, Map<String, Long>> postingList) {
+		Map<String, Long> docMap = postingList.get(docId);
+		List<Long> occ = new ArrayList<Long>();
+		long tf;
 		
-		for (int i=0; i<listOfOccTerms.size(); i++) {
-			terms.add((String) listOfOccTerms.get(i).getValue());
+		for(Entry<String, Long> entry : docMap.entrySet()) {
+			occ.add(entry.getValue());
 		}
 		
-		if (index >=0)	 {
-			tf = (int) listOfOccTerms.get(index).getNumOcc();
-			tf = (int) Math.pow(tf, 2);
+		tf= docMap.get(term);
+		tf = (long) (tf / (Collections.max(occ)+0.00001));
+		
+		return tf;
+	}
+	
+	public static long a(String term, int docId, Map<Integer, Map<String, Long>> postingList) {
+		Map<String, Long> docMap = postingList.get(docId);
+		List<Long> occ = new ArrayList<Long>();
+		long tf;
+		
+		for(Entry<String, Long> entry : docMap.entrySet()) {
+			occ.add(entry.getValue());
 		}
-		else tf=0;
+		
+		tf= docMap.get(term);
+		tf = (long) (0.5 + 0.5*tf/(Collections.max(occ)+0.00001));
+
 		return tf;
 	}
 	
 	
-	public static float l(String term, int docId, Map<Integer, List<Pair>> postingList) {
-		List<Pair> listOfOccTerms = postingList.get(docId);
-		List<String> terms = new ArrayList<String>();
-		float tf;
-		int index = terms.indexOf(term);
+	public static long s(String term, int docId, Map<Integer, Map<String, Long>> postingList) {
+		Map<String, Long> docMap = postingList.get(docId);
+		long tf = docMap.get(term);
 		
-		for (int i=0; i<listOfOccTerms.size(); i++) {
-			terms.add((String) listOfOccTerms.get(i).getValue());
-		}
-		
-		if (index >=0)	 {
-			tf= (int) (listOfOccTerms.get(index)).getNumOcc();
-			tf = (float) (1 + Math.log(tf));
+		tf = (long) Math.pow(tf, 2);
+
+		return tf;
+	}
+	
+	
+	public static long l(String term, int docId, Map<Integer, Map<String, Long>> postingList) {
+		Map<String, Long> docMap = postingList.get(docId);
+		long tf = docMap.get(term);
+
+		tf = (long) (1 + Math.log(tf));
 			
-		}
-		else tf=0;
 		return tf;
 	}
 }
