@@ -22,7 +22,7 @@ public class normalization {
 			case "s":
 				return s(smart, term, docId, postingListDoc, postingListTerm);
 			default:
-				System.out.println("Pas de fonction definie");
+				System.out.println("Pas de fonction W definie");
 				return 0;
 			}
 			

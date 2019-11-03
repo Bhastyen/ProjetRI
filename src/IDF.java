@@ -13,8 +13,10 @@ public class IDF {
 		
 		switch(smart) {
 		case "n":
-			return n(term, postingListTerm, postingListDoc);
+			return (float) n(term, postingListTerm, postingListDoc);
 		case "i":
+			return (float) i(term, postingListTerm, postingListDoc);
+		case "t":
 			return (float) i(term, postingListTerm, postingListDoc);
 		case "l":
 			return (float) l(term, postingListTerm, postingListDoc);
@@ -25,7 +27,7 @@ public class IDF {
 		case "s":
 			return (float) s(term, postingListTerm, postingListDoc);
 		default:
-			System.out.println("Pas de fonction definie");
+			System.out.println("Pas de fonction idf definie");
 			return 0;
 		}
 			

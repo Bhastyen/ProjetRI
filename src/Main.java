@@ -101,8 +101,9 @@ public class Main {
 				for (String q : queries) {
 					cosScore = Models.CosineScore(q.substring(8), postingList, postingListPerDoc, docs, PARAMETERS[numRun]);
 					writeRun(buff, nomEquipe, q.substring(0, 7), cosScore);
+					
 				}
-				
+				System.out.println("run n°"+numRun);
 				buff.close();
 			} catch (IOException e) {
 				e.printStackTrace();
