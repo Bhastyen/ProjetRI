@@ -19,7 +19,7 @@ public class Main {
 	public static final String GRANULARITE = "articles";
 	public static final String OUTPUT_DIR = "resources/resultats/";
 	public static final String OUTPUT_NAME = "BastienCelineLaetitiaPierre";
-	public static final String[] PARAMETERS = new String[] {"nnn", "nnn", "nnn", "nnn", "nnn"};
+	public static final String[] PARAMETERS = new String[] {"nnn", "lin", "bnc", "bns", "mic"};
 	
 	
 	public static void main(String[] args) {
@@ -107,6 +107,7 @@ public class Main {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+			System.out.println("Fin run" + numRun);
 		}
 		
 	}
