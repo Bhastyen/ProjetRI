@@ -30,12 +30,8 @@ public class Models {
 			//Pour chaque pair : nombre occurence / IdDocument du terme wordQuery
 			if (postingList.get(wordQuery) != null) {
 				
-				weight = normalization.W(param, wordQuery, docId, postingListPerDoc, postingList);
-				
-//				idf = (float) Math.log10(documents.size() / (float) postingList.get(wordQuery).size());
-//				weight = idf;    //TODO F(tf(t,q) x G(df(t)) selon les fonctions SMART  normalization(param)
-				
-				
+				weight = normalization.W(param, wordQuery, 0, postingListPerDoc, postingList, true);
+							
 				
 				docs = new ArrayList<>(postingList.get(wordQuery).entrySet());
 			
@@ -44,7 +40,7 @@ public class Models {
 					if (docIdScore.get(pair.getKey()) == null)   // ajout de l entree dans le dico s il n existe pas
 						docIdScore.put(pair.getKey(), 0f);
 					score = docIdScore.get(pair.getKey());
-					score += normalization.W(param, wordQuery, pair.getKey(), postingListPerDoc, postingList);
+					score += normalization.W(param, wordQuery, pair.getKey(), postingListPerDoc, postingList, false);
 					//score += postingListPerDoc.get(pair.getKey()).size() * idf;    //TODO F(tf(t,d) x G(df(t)) selon les fonctions SMART  normalization(param)
 					docIdScore.put(pair.getKey(), score);
 				}
