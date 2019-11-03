@@ -1,6 +1,8 @@
 import java.util.Map;
 import java.util.Map.Entry;
 
+
+
 public class normalization {
 	
 	public static float W(
@@ -93,7 +95,7 @@ public class normalization {
 		Map<String,Long> docMap = postingListDoc.get(docId); //Map of term,occ for doc=docId
 		
 		for(Entry<String, Long> mapentry : docMap.entrySet()) {
-			sumElement = TF.tf(Character.toString(smart.charAt(1)), mapentry.getKey(), docId, postingListDoc);
+			sumElement = TF.tf(Character.toString(smart.charAt(0)), mapentry.getKey(), docId, postingListDoc);
 			sum += Math.pow(sumElement,2); //sum of the square of tf(t',d) for all t' in d
 		}
 		
@@ -124,7 +126,7 @@ public class normalization {
 		Map<String,Long> docMap = postingListDoc.get(docId); //Map of term,occ for doc=docId
 		
 		for(Entry<String, Long> mapentry : docMap.entrySet()) {
-			sumElement = TF.tf(Character.toString(smart.charAt(1)), mapentry.getKey(), docId, postingListDoc);
+			sumElement = TF.tf(Character.toString(smart.charAt(0)), mapentry.getKey(), docId, postingListDoc);
 			sum += sumElement; //sum of tf(t',d) for all t' in d
 		}
 		
