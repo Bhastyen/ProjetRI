@@ -10,25 +10,50 @@ public class normalization {
 			String term,
 			int docId,
 			Map<Integer, Map<String, Long>> postingListDoc,
-			Map<String, Map<Integer, Long>> postingListTerm) {
+			Map<String, Map<Integer, Long>> postingListTerm,
+			boolean queryMod) {
 		
-		switch(Character.toString(smart.charAt(3))) {
-		case "n":
-			return n(smart, term, docId, postingListDoc, postingListTerm);
-		case "c":
-			return c(smart, term, docId, postingListDoc, postingListTerm);
-		case "s":
-			return s(smart, term, docId, postingListDoc, postingListTerm);
-		default:
-			System.out.println("Pas de fonction definie");
-			return 0;
+		if (queryMod = false) {
+			switch(Character.toString(smart.charAt(3))) {
+			case "n":
+				return n(smart, term, docId, postingListDoc, postingListTerm);
+			case "c":
+				return c(smart, term, docId, postingListDoc, postingListTerm);
+			case "s":
+				return s(smart, term, docId, postingListDoc, postingListTerm);
+			default:
+				System.out.println("Pas de fonction definie");
+				return 0;
+			}
+			
+		} else {
+			return query(smart, term, docId, postingListDoc, postingListTerm);
 		}
-
+	
+		
+		
 	}
 
 
 	
 	
+	private static float query(
+			String smart, 
+			String term, 
+			int docId, Map<Integer, Map<String, Long>> postingListDoc,
+			Map<String, Map<Integer, Long>> postingListTerm) 
+	{
+		String dfMethod = Character.toString(smart.charAt(2));  //function to use for idf
+		float idf;
+		
+		idf = IDF.idf(dfMethod, term, postingListTerm, postingListDoc);
+		
+		return idf;
+	}
+
+
+
+
 	public static float n(
 			String smart,   // format "***"
 			String term,
