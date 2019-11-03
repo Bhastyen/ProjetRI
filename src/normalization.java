@@ -12,7 +12,7 @@ public class normalization {
 			boolean queryMod) {
 		
 		if (queryMod = false) {
-			switch(Character.toString(smart.charAt(3))) {
+			switch(Character.toString(smart.charAt(2))) {
 			case "n":
 				return n(smart, term, docId, postingListDoc, postingListTerm);
 			case "c":
@@ -20,7 +20,7 @@ public class normalization {
 			case "s":
 				return s(smart, term, docId, postingListDoc, postingListTerm);
 			default:
-				System.out.println("Pas de fonction definie");
+				System.out.println("Pas de fonction W definie");
 				return 0;
 			}
 			
@@ -41,7 +41,7 @@ public class normalization {
 			int docId, Map<Integer, Map<String, Long>> postingListDoc,
 			Map<String, Map<Integer, Long>> postingListTerm) 
 	{
-		String dfMethod = Character.toString(smart.charAt(2));  //function to use for idf
+		String dfMethod = Character.toString(smart.charAt(1));  //function to use for idf
 		float idf;
 		
 		idf = IDF.idf(dfMethod, term, postingListTerm, postingListDoc);
@@ -60,8 +60,8 @@ public class normalization {
 			Map<String, Map<Integer, Long>> postingListTerm)
 	{
 		
-		String tfMethod = Character.toString(smart.charAt(1));  //function to use for tf
-		String dfMethod = Character.toString(smart.charAt(2));  //function to use for idf
+		String tfMethod = Character.toString(smart.charAt(0));  //function to use for tf
+		String dfMethod = Character.toString(smart.charAt(1));  //function to use for idf
 		float tf;
 		float idf;
 		float w;
@@ -83,8 +83,8 @@ public class normalization {
 			Map<String, Map<Integer, Long>> postingListTerm)
 	{
 		
-		String tfMethod = Character.toString(smart.charAt(1));
-		String dfMethod = Character.toString(smart.charAt(2));
+		String tfMethod = Character.toString(smart.charAt(0));
+		String dfMethod = Character.toString(smart.charAt(1));
 		float tf;
 		float idf;
 		float w;
@@ -114,8 +114,8 @@ public class normalization {
 			Map<String, Map<Integer, Long>> postingListTerm)
 	{
 		
-		String tfMethod = Character.toString(smart.charAt(1));
-		String dfMethod = Character.toString(smart.charAt(2));
+		String tfMethod = Character.toString(smart.charAt(0));
+		String dfMethod = Character.toString(smart.charAt(1));
 		float tf;
 		float idf;
 		float w;
