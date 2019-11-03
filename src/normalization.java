@@ -13,7 +13,7 @@ public class normalization {
 			Map<String, Map<Integer, Long>> postingListTerm,
 			boolean queryMod) {
 		
-		if (queryMod = false) {
+		if (queryMod == false) {
 			switch(Character.toString(smart.charAt(2))) {
 			case "n":
 				return n(smart, term, docId, postingListDoc, postingListTerm);
@@ -94,12 +94,12 @@ public class normalization {
 		
 		for(Entry<String, Long> mapentry : docMap.entrySet()) {
 			sumElement = TF.tf(tfMethod, mapentry.getKey(), docId, postingListDoc);
-			sum += Math.pow(sumElement,2); //sum of the square of tf(t',d) for all t' in d
+			sum += Math.pow(sumElement, 2); //sum of the square of tf(t',d) for all t' in d
 		}
 		
 		tf = TF.tf(tfMethod, term, docId, postingListDoc);
 		idf = IDF.idf(dfMethod, term, postingListTerm, postingListDoc);
-		w = tf*idf/sum;
+		w = tf * idf/sum;
 		
 		return w;
 		
