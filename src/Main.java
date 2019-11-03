@@ -118,7 +118,7 @@ public class Main {
 			number_doc = NUMBER_OF_DOCUMENT_BY_QUERY;
 			
 		for (int i = 0; i < number_doc; i++) {
-			buff.append(numQuery + " Q0 " + cosScore.get(i).getKey() + " " + (i+1) + " " + cosScore.get(i).getValue() + " " + nomEquipe + " /article/");
+			buff.append(numQuery + " Q0 " + cosScore.get(i).getKey() + " " + (i+1) + " " + cosScore.get(i).getValue() + " " + nomEquipe + " /article[1]");
 			buff.newLine();
 		}
 		
