@@ -19,7 +19,7 @@ public class Main {
 	public static final String GRANULARITE = "articles";
 	public static final String OUTPUT_DIR = "resources/resultats/";
 	public static final String OUTPUT_NAME = "BastienCelineLaetitiaPierre";
-	public static final String[] PARAMETERS = new String[] {"nnn", "nnn", "nnn", "nnn", "nnn"};
+	public static final String[] PARAMETERS = new String[] {"ltn", "ltc", "bnn", "blc", "mic"};
 	
 	
 	public static void main(String[] args) {
@@ -93,7 +93,7 @@ public class Main {
 		
 		for (int numRun = 0; numRun < PARAMETERS.length; numRun ++) {
 			BufferedWriter buff;
-			File out = new File(path + nomEquipe + "_" + "01" + "_" + "0"+(numRun+1) + "_" + PARAMETERS[numRun] + "_" + "articles" + ".txt");
+			File out = new File(path + nomEquipe + "_" + etape + "_" + "0"+(numRun+1) + "_" + PARAMETERS[numRun].toUpperCase() + "_" + "articles" + ".txt");
 			
 			try {
 				buff = new BufferedWriter(new FileWriter(out));

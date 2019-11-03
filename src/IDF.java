@@ -22,8 +22,6 @@ public class IDF {
 			return (float) f(term, postingListTerm, postingListDoc);
 		case "p":
 			return (float) p(term, postingListTerm, postingListDoc);
-		case "P":
-			return (float) P(term, postingListTerm, postingListDoc);
 		case "s":
 			return (float) s(term, postingListTerm, postingListDoc);
 		default:
