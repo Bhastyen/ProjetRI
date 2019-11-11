@@ -49,10 +49,15 @@ public class ParserBrut {
 							docs.add(new Document(id, contenu.replaceAll(" +", " ")));
 							j ++;
 							contenu = "";
+							
+							
 							continue;
 						}
-
-						contenu += ligne.replace('\n', ' ');
+					
+						//contenu += ligne.replace('\n', ' ');
+						contenu += " "+ligne.replaceAll("\n", " ");
+					    
+						
 					}
 							
 					// ferme le buffer

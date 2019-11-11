@@ -30,9 +30,10 @@ public class Main {
 		File query = new File("resources/topics_M2WI7Q_2019_20.txt");
 
 		// parsing des documents
-		docsBrut = parserDoc("resources/textes_brut/", Document.Type.BRUT);
-		docsXML = parserDoc("resources/coll/", Document.Type.XML);
-
+		docsBrut = parserDoc("resources/textes_brut/test-reduit/test-reduitBRUT", Document.Type.BRUT);
+		docsXML = parserDoc("resources/textes_brut/test-reduit/test-reduitXML", Document.Type.XML);
+		System.out.println("LB "+docsBrut.get(0).getLength());
+		System.out.println("LX "+ docsXML.get(0).getLength());
 		// indexation
 		Indexator indexator = new Indexator();
 		indexator.createIndex(docsBrut);
@@ -42,10 +43,10 @@ public class Main {
 		System.out.println("Posting list in : " + postingList.get("in").size());
 		// TEXTE BRUT : calcul du score des documents pour chaque requete et ecriture du run
 		queries = readQuery(query);
-		writeAllRuns(queries, OUTPUT_DIR + "brut/", OUTPUT_NAME, "01", "articles", docsBrut, postingList, postingListPerDoc);
+		//writeAllRuns(queries, OUTPUT_DIR + "brut/", OUTPUT_NAME, "01", "articles", docsBrut, postingList, postingListPerDoc);
 
 		// TEXTE XML : calcul du score des documents pour chaque requete et ecriture du run
-		writeAllRuns(queries, OUTPUT_DIR + "xml/", OUTPUT_NAME, "02", "articles", docsXML, postingList, postingListPerDoc);
+		//writeAllRuns(queries, OUTPUT_DIR + "xml/", OUTPUT_NAME, "02", "articles", docsXML, postingList, postingListPerDoc);
 
 		System.out.println("Runs write");
 	}
