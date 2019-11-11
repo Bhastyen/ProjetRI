@@ -39,7 +39,7 @@ public class Main {
 		postingList = indexator.getPostingList();
 		postingListPerDoc = indexator.getPostingListPerDoc();
 		System.out.println("Indexator End");
-
+		System.out.println("Posting list in : " + postingList.get("in").size());
 		// TEXTE BRUT : calcul du score des documents pour chaque requete et ecriture du run
 		queries = readQuery(query);
 		writeAllRuns(queries, OUTPUT_DIR + "brut/", OUTPUT_NAME, "01", "articles", docsBrut, postingList, postingListPerDoc);

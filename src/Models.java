@@ -18,6 +18,7 @@ public class Models {
 			String param) 
 	{
 		float weight = 0, idf = 0; float score; int key;
+		query= query.toLowerCase();
 		String[] arrQuery = query.split(" ");
 
 		List<Entry<Integer, Long>> docs;
