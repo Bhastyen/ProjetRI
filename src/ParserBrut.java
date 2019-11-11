@@ -49,6 +49,8 @@ public class ParserBrut {
 							docs.add(new Document(id, contenu.replaceAll(" +", " ")));
 							j ++;
 							contenu = "";
+							
+							
 							continue;
 						}
 

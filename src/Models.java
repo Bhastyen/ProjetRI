@@ -21,9 +21,9 @@ public class Models {
 		query= query.toLowerCase();
 		String[] arrQuery = query.split(" ");
 
-		List<Entry<Integer, Long>> docs;
-		HashMap<Integer, Float> docIdScore = new HashMap<>();
-		ArrayList<Entry<Integer, Float>> list;
+		List<Entry<Integer, Long>> docs;// <id du document , tf>
+		HashMap<Integer, Float> docIdScore = new HashMap<>();//DocId , score par document
+		ArrayList<Entry<Integer, Float>> list;//DocId , score par document (pour recup plus tard)
 
 		//Pour chaque mot de la requete
 		for(String wordQuery : arrQuery) {
@@ -36,7 +36,7 @@ public class Models {
 				
 				docs = new ArrayList<>(postingList.get(wordQuery).entrySet());
 			
-				for (Entry<Integer, Long> pair : docs) {
+				for (Entry<Integer, Long> pair : docs) {//<id du document , tf>
 					//System.out.println("idf : " + idf + " tf : " + postingListPerDoc.get(pair.getKey()).size());
 					if (docIdScore.get(pair.getKey()) == null)   // ajout de l entree dans le dico s il n existe pas
 						docIdScore.put(pair.getKey(), 0f);

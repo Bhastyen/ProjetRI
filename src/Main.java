@@ -30,9 +30,10 @@ public class Main {
 		File query = new File("resources/topics_M2WI7Q_2019_20.txt");
 
 		// parsing des documents
-		docsBrut = parserDoc("resources/textes_brut/", Document.Type.BRUT);
-		docsXML = parserDoc("resources/coll/", Document.Type.XML);
-
+		docsBrut = parserDoc("resources/textes_brut/test-reduit/test-reduitBRUT", Document.Type.BRUT);
+		docsXML = parserDoc("resources/textes_brut/test-reduit/test-reduitXML", Document.Type.XML);
+		System.out.println("LB "+docsBrut.get(0).getLength());
+		System.out.println("LX "+ docsXML.get(0).getLength());
 		// indexation
 		Indexator indexator = new Indexator();
 		indexator.createIndex(docsBrut);
