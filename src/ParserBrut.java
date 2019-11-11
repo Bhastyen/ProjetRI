@@ -21,7 +21,7 @@ public class ParserBrut {
 		List<Document> docs = new ArrayList<Document>();
 		File[] fichiers;
 		String ligne;
-		String contenu = "";
+		StringBuilder contenu = new StringBuilder() ;
 		File d = new File(path);
 		int id = 0, j = 0;
 		
@@ -44,17 +44,24 @@ public class ParserBrut {
 						}
 
 						if (ligne.matches("</doc>.*")) {
-							//System.out.println("Id " + id);
+							
 							//System.out.println("Contenu " + contenu);
-							docs.add(new Document(id, contenu.replaceAll(" +", " ")));
+							//Evincement des stopWord
+							
+							//Ajout d'un nouveau document
+							//docs.add(new Document(id, contenu.toString().trim()));
+							//Si stopWord
+							docs.add(new Document(id, Document.removeStopWord(contenu.toString().trim())));
 							j ++;
-							contenu = "";
+							contenu = new StringBuilder();
 							
 							
 							continue;
 						}
-
-						contenu += ligne.replaceAll("[!,;:^']", " ").replace('\n', ' ') + " ";
+						contenu.append(' ');
+						ligne = ligne.replaceAll("[!,;:^']", " ").replace('\n', ' ') + " ";
+						contenu.append(ligne);
+						
 					}
 							
 					// ferme le buffer
