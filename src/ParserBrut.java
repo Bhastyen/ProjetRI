@@ -52,7 +52,7 @@ public class ParserBrut {
 							continue;
 						}
 
-						contenu += ligne.replace('\n', ' ');
+						contenu += ligne.replaceAll("[!,;:^']", " ").replace('\n', ' ') + " ";
 					}
 							
 					// ferme le buffer

@@ -39,13 +39,17 @@ public class Main {
 		postingList = indexator.getPostingList();
 		postingListPerDoc = indexator.getPostingListPerDoc();
 		System.out.println("Indexator End");
+		
 		System.out.println("Posting list in : " + postingList.get("in").size());
+		//System.out.println("Doc "+ docsBrut.get(1597).getIdDoc() + "   Brut " + docsBrut.get(1597).getLength() +
+		//		" Doc " + docsXML.get(1597).getIdDoc() + "  XML " + docsXML.get(1597).getLength());
+		
 		// TEXTE BRUT : calcul du score des documents pour chaque requete et ecriture du run
 		queries = readQuery(query);
-		writeAllRuns(queries, OUTPUT_DIR + "brut/", OUTPUT_NAME, "01", "articles", docsBrut, postingList, postingListPerDoc);
+		writeAllRuns(queries, OUTPUT_DIR + "brut/", OUTPUT_NAME, "03", "articles", docsBrut, postingList, postingListPerDoc);
 
 		// TEXTE XML : calcul du score des documents pour chaque requete et ecriture du run
-		writeAllRuns(queries, OUTPUT_DIR + "xml/", OUTPUT_NAME, "02", "articles", docsXML, postingList, postingListPerDoc);
+		writeAllRuns(queries, OUTPUT_DIR + "xml/", OUTPUT_NAME, "03", "articles", docsXML, postingList, postingListPerDoc);
 
 		System.out.println("Runs write");
 	}

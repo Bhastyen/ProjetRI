@@ -31,8 +31,16 @@ public class Document {
 	}
 	
 	public int getLength() {
-		
+		int c = 0;
 		String[] arrString = stringDocument.split(" ");
+		
+		/*for (int i = 0; i < arrString.length; i++) {
+			if (arrString[i] == "" || arrString[i] == " ") {
+				c += 1;
+			}
+		}
+		
+		System.out.println("Ligne vide doc " + idDoc + " : " + c);*/
 		
 		return arrString.length;
 		

@@ -57,7 +57,7 @@ public class MyDocHandler extends DefaultHandler {
 			id = Integer.parseInt(mot);
 			idDoc = false;
 		}else {
-			contenu += mot.replace('\n', ' ') + " ";
+			contenu += mot.replaceAll("[!,;:^']", " ").replaceAll(" +", " ").replace('\n', ' ') + " ";
 		}
 		
 	}
