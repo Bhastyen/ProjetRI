@@ -9,7 +9,7 @@ public class Document {
 	public Document(int idDoc, String stringDocument) {
 		super();
 		this.idDoc = idDoc;
-		this.stringDocument = stringDocument;
+		this.stringDocument = stringDocument.toLowerCase();
 	}
 	
 	
