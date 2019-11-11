@@ -75,7 +75,7 @@ public class TF {
 			occ.add(entry.getValue());
 		}
 		
-		tf= docMap.get(term);
+		tf = docMap.get(term);
 		tf = (float) (0.5 + 0.5*tf/(Collections.max(occ)+0.00001));
 
 		return tf;

@@ -55,7 +55,11 @@ public class IDF {
 		Map<Integer, Long> occDoc = postingListTerm.get(term);   // list of pair of NumOcc,DocId for the term
 		int n = occDoc.size(); // number of documents which contain term
 		
-		idf= Math.log(N/n);
+		idf = Math.log(N/n);
+		
+		if (term.equals("in"))
+			System.out.println("\nidf " + idf + " N " + N + " n " + n);
+		
 		return idf;
 		
 	}

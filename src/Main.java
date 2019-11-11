@@ -40,13 +40,15 @@ public class Main {
 		postingListPerDoc = indexator.getPostingListPerDoc();
 		System.out.println("Indexator End");
 
+		System.out.println("Posting list in : " + postingList.get("in").size());
+		
 		// TEXTE BRUT : calcul du score des documents pour chaque requete et ecriture du run
 		queries = readQuery(query);
 		writeAllRuns(queries, OUTPUT_DIR + "brut/", OUTPUT_NAME, "01", "articles", docsBrut, postingList, postingListPerDoc);
 
 		// TEXTE XML : calcul du score des documents pour chaque requete et ecriture du run
 		writeAllRuns(queries, OUTPUT_DIR + "xml/", OUTPUT_NAME, "02", "articles", docsXML, postingList, postingListPerDoc);
-
+		
 		System.out.println("Runs write");
 	}
 
@@ -99,6 +101,7 @@ public class Main {
 				buff = new BufferedWriter(new FileWriter(out));
 
 				for (String q : queries) {
+					//System.out.println("OK " + q.substring(8));
 					cosScore = Models.CosineScore(q.substring(8), postingList, postingListPerDoc, docs, PARAMETERS[numRun]);
 					writeRun(buff, nomEquipe, q.substring(0, 7), cosScore);
 				}
@@ -123,5 +126,6 @@ public class Main {
 			buff.newLine();
 		}
 
+		//System.out.println("Document relevant : " + numQuery + " " + cosScore.get(0).getKey());
 	}
 }
