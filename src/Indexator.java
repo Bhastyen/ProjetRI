@@ -38,6 +38,7 @@ public class Indexator {
 
 		// Pour tous les documents
 		for (Document doc : listDoc) {
+			System.out.println("Dans indexator " + doc.getIdDoc());
 			wordInPostingListPerDoc = new ArrayList<>();
 			
 			// On récupère le doc Id
@@ -67,7 +68,7 @@ public class Indexator {
 				// La liste wordInPostingListPerDoc permet de ne pas faire de doublons pour un
 				// document
 				if (wordInPostingListPerDoc.contains(word)) {
-					break;
+					//break;
 				} else {
 					wordInPostingListPerDoc.add(word);
 

@@ -60,6 +60,7 @@ public class ParserBrut {
 						}
 						contenu.append(' ');
 						ligne = ligne.replaceAll("[!,;:^']", " ").replace('\n', ' ') + " ";
+						ligne = ligne.trim();
 						contenu.append(ligne);
 						
 					}
