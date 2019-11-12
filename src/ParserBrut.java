@@ -10,13 +10,13 @@ import java.util.List;
 
 public class ParserBrut {
 	private String path;
-	
-	
+
+
 	public ParserBrut(String path) {
 		this.path = path;
 	}
-	
-	
+
+
 	public List<Document> parse(){
 		List<Document> docs = new ArrayList<Document>();
 		File[] fichiers;
@@ -24,18 +24,18 @@ public class ParserBrut {
 		StringBuilder contenu = new StringBuilder() ;
 		File d = new File(path);
 		int id = 0, j = 0;
-		
+
 		if (d.isDirectory()) {
 
 			//System.out.println("C'est ok");
 			fichiers = d.listFiles();
-			
+
 			for (int i = 0; i < fichiers.length; i++) {
 				// ouvre le fichier
 				BufferedReader reader;
 				try {
 					reader = new BufferedReader(new FileReader(fichiers[i]));
-				
+
 					// decoupe le fichier en ligne et analyse son contenu
 					while ((ligne = reader.readLine()) != null/* && j < 10*/) {
 						if (ligne.matches("<doc>.*")) {
@@ -44,27 +44,27 @@ public class ParserBrut {
 						}
 
 						if (ligne.matches("</doc>.*")) {
-							
+
 							//System.out.println("Contenu " + contenu);
 							//Evincement des stopWord
-							
+
 							//Ajout d'un nouveau document
 							//docs.add(new Document(id, contenu.toString().trim()));
 							//Si stopWord
 							docs.add(new Document(id, Document.removeStopWord(contenu.toString().trim())));
 							j ++;
 							contenu = new StringBuilder();
-							
-							
+
+
 							continue;
 						}
 						contenu.append(' ');
 						ligne = ligne.replaceAll("[?.?]", " ").replace('\n', ' ');
 						ligne = ligne.replaceAll("[\\P{L}]", " ").replace('\n', ' ');
 						contenu.append(ligne);
-						
+
 					}
-							
+
 					// ferme le buffer
 					reader.close();
 				} catch (FileNotFoundException e) {
@@ -74,24 +74,24 @@ public class ParserBrut {
 				}
 			}
 		}
-		
+
 		return docs;
 	}
-	
-	
+
+
 	private int searchId(String ligne) {
 		int i = 0, l = 0, b = 0;
-		
+
 		while (!Character.isDigit(ligne.charAt(i))) {
 			i ++;
 		}
-		
+
 		b = i;
 		while (Character.isDigit(ligne.charAt(i))) {
 			i ++;
 			l += 1;
 		}
-		
+
 		return Integer.parseInt(ligne.substring(b, b + l));
 	}
 }

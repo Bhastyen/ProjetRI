@@ -26,7 +26,7 @@ public class Indexator {
 		return postingListPerDoc;
 	}
 
-	
+
 	public void createIndex(List<Document> listDoc) {
 		List<String> listWords;
 
@@ -35,28 +35,28 @@ public class Indexator {
 
 		// Pour tous les documents
 		for (Document doc : listDoc) {
-			
+
 			// On récupère le doc Id
 			docid = doc.getIdDoc();
-			
+
 			// On split le string selon les espaces
 			String[] splitString = doc.getStringDocument().split(" +");
-			
+
 			listWords = new ArrayList<>(Arrays.asList(splitString));
-			
+
 			//System.out.println(listWords.toString());
 			Map<String, Long> frequencyMap =
-					listWords.stream().collect(Collectors.groupingBy(Function.identity(), 
+					listWords.stream().collect(Collectors.groupingBy(Function.identity(),
 															Collectors.counting()));
 			// Put the document and its list of term/occurency in the HashMap
 			postingListPerDoc.put(docid, frequencyMap);
 
 			// Loop pour faire la posting list
 			for (Map.Entry<String,Long> word : frequencyMap.entrySet()) {
-				
+
 					// On récupère le nombre d'occurence du mot
 					nbOcc = word.getValue();
-					
+
 					// Si le mot est dejà dans la posting list alors on recup la liste et on ajoute
 					// la nouvelle pair
 					if (postingList.containsKey(word.getKey())) {
@@ -66,9 +66,9 @@ public class Indexator {
 						postingList.get(word.getKey()).put(docid, nbOcc);
 					}
 			}
-			
+
 		}
-		
+
 		System.out.println(postingListPerDoc.size() + "  " + listDoc.size());
 		System.out.println(postingList.size());
 	}
