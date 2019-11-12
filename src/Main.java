@@ -140,6 +140,7 @@ public class Main {
 		BufferedWriter buff;
 		File out = new File("resources/postingList.txt");
 		System.out.println("Ecrit posting fichier");
+		
 		try {
 			buff = new BufferedWriter(new FileWriter(out));
 			System.out.println("dans try");
