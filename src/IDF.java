@@ -23,7 +23,7 @@ public class IDF {
 		case "f":
 			return (float) f(term, postingListTerm, postingListDoc);
 		case "p":
-			return (float) p(term, postingListTerm, postingListDoc);
+			return (float) P(term, postingListTerm, postingListDoc);
 		case "s":
 			return (float) s(term, postingListTerm, postingListDoc);
 		default:
@@ -86,7 +86,8 @@ public class IDF {
 		int n = occDoc.size();
 		
 
-		idf=1/n;
+		idf = 1.0/n;
+		
 		return idf;
 	}
 	
