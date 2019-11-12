@@ -34,14 +34,18 @@ public class TF {
 			
 	}
 	
-	
-	public static float b(String term, int docId, Map<Integer, Map<String, Long>> postingList) {
 
-		long tf = 1;
-		
-		return tf;
+	public static float b(String term, int docId, Map<Integer, Map<String, Long>> postingList) {
+		try {
+			Map<String, Long> docMap = postingList.get(docId);
+			long tf = docMap.get(term);
+			tf = 1;
+			return tf;
+		} catch (Exception ie) {return 0;} 
 	}
-	
+
+
+
 	
 	public static float n(String term, int docId, Map<Integer, Map<String, Long>> postingList) {
 		Map<String, Long> docMap = postingList.get(docId);

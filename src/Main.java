@@ -21,7 +21,7 @@ public class Main {
 	public static final String GRANULARITE = "articles";
 	public static final String OUTPUT_DIR = "resources/resultats/";
 	public static final String OUTPUT_NAME = "BastienCelineLaetitiaPierre";
-	public static final String[] PARAMETERS = new String[] {"nnn", "nnc", "ltn", "ltc", "lts"};
+	public static final String[] PARAMETERS = new String[] {"nnn"};
 
 
 	public static void main(String[] args) {
@@ -34,6 +34,7 @@ public class Main {
 
 		// parsing des documents
 		docsBrut = parserDoc("resources/textes_brut/", Document.Type.BRUT);
+
 		docsXML = parserDoc("resources/coll", Document.Type.XML);
 
 		 OutPutFileParsingBrut(docsBrut);
