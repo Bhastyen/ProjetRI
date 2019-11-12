@@ -158,7 +158,7 @@ public class Main {
 	public static  void  OutPutFileParsingBrut(List<Document> docs) {
 		BufferedWriter buff;
 		File out = new File("resources/parsingBrut.txt");
-		System.out.println("Ecrit posting fichier");
+		System.out.println("Ecrit parser Brut fichier");
 		try {
 			buff = new BufferedWriter(new FileWriter(out));
 			System.out.println("dans try");
@@ -174,7 +174,7 @@ public class Main {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		System.out.println("Ecrit posting fichier FIN");
+		System.out.println("Ecrit parsing Brut fichier FIN");
 
 	}
 	

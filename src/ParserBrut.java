@@ -59,7 +59,8 @@ public class ParserBrut {
 							continue;
 						}
 						contenu.append(' ');
-						ligne = ligne.replaceAll("[!,;:^'().$#&\"-_\\/*+%?0123456789<>§µ°}{]", " ").replace('\n', ' ') + " ";
+						ligne = ligne.replaceAll("[?.?]", " ").replace('\n', ' ');
+						ligne = ligne.replaceAll("[\\P{L}]", " ").replace('\n', ' ');
 						contenu.append(ligne);
 						
 					}
