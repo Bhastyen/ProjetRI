@@ -1,3 +1,9 @@
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 public class Document {
 	public enum Type {XML, BRUT} ;
@@ -31,10 +37,47 @@ public class Document {
 	}
 	
 	public int getLength() {
-		
+		int c = 0;
 		String[] arrString = stringDocument.split(" ");
+		
+		/*for (int i = 0; i < arrString.length; i++) {
+			if (arrString[i] == "" || arrString[i] == " ") {
+				c += 1;
+			}
+		}
+		
+		System.out.println("Ligne vide doc " + idDoc + " : " + c);*/
 		
 		return arrString.length;
 		
+	}
+	
+	private static List<String> loadStopwords() throws IOException {
+		
+		List<String> stopwords = Files.readAllLines(Paths.get("resources/stop-words-eng.txt"));
+		return stopwords;
+	}
+
+	public static String removeStopWord(String original) {
+		List<String> stopword = new ArrayList<String>();;
+		try {
+			stopword = loadStopwords();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		String[] allWords = original.toLowerCase().split(" ");
+		//StringBuilder permet de ne pas surcharger le CPU , utile pour les concatenation
+		StringBuilder builder = new StringBuilder();
+		for(String word : allWords) {
+			if(!stopword.contains(word)) {
+				builder.append(word);
+				builder.append(' ');
+			}
+		}
+
+		 return builder.toString().trim();//trim enleve les surespacementss
+
 	}
 }
