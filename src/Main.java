@@ -19,7 +19,7 @@ public class Main {
 	public static final String GRANULARITE = "articles";
 	public static final String OUTPUT_DIR = "resources/resultats/";
 	public static final String OUTPUT_NAME = "BastienCelineLaetitiaPierre";
-	public static final String[] PARAMETERS = new String[] {"nnn", "nnc", "ltn", "ltc", "lts"};
+	public static final String[] PARAMETERS = new String[] {"nnn"};
 
 
 	public static void main(String[] args) {
@@ -32,22 +32,33 @@ public class Main {
 		// parsing des documents
 		docsBrut = parserDoc("resources/textes_brut/", Document.Type.BRUT);
 		docsXML = parserDoc("resources/coll/", Document.Type.XML);
-
-		// indexation
-		Indexator indexator = new Indexator();
-		indexator.createIndex(docsBrut);
-		postingList = indexator.getPostingList();
-		postingListPerDoc = indexator.getPostingListPerDoc();
-		System.out.println("Indexator End");
-		System.out.println("Posting list in : " + postingList.get("in").size());
-		// TEXTE BRUT : calcul du score des documents pour chaque requete et ecriture du run
-		queries = readQuery(query);
-		writeAllRuns(queries, OUTPUT_DIR + "brut/", OUTPUT_NAME, "01", "articles", docsBrut, postingList, postingListPerDoc);
-
-		// TEXTE XML : calcul du score des documents pour chaque requete et ecriture du run
-		writeAllRuns(queries, OUTPUT_DIR + "xml/", OUTPUT_NAME, "02", "articles", docsXML, postingList, postingListPerDoc);
-
-		System.out.println("Runs write");
+		System.out.println(docsBrut.get(1).getStringDocument());
+		System.out.println(docsXML.get(1).getStringDocument());
+//		// indexation
+//		Indexator indexator = new Indexator();
+//		indexator.createIndex(docsBrut);
+//		postingList = indexator.getPostingList();
+//		
+//		///test 
+//		int i = 0;
+//		for(Entry<String, Map<Integer, Long>> entry : postingList.entrySet()) {
+//			System.out.println(entry.getKey());
+//			i++;
+//			if (i>5000) break;
+//		}
+//		
+//		
+//		postingListPerDoc = indexator.getPostingListPerDoc();
+//		System.out.println("Indexator End");
+//		System.out.println("Posting list in : " + postingList.get("in").size());
+//		// TEXTE BRUT : calcul du score des documents pour chaque requete et ecriture du run
+//		queries = readQuery(query);
+//		writeAllRuns(queries, OUTPUT_DIR + "brut/", OUTPUT_NAME, "01", "articles", docsBrut, postingList, postingListPerDoc);
+//
+//		// TEXTE XML : calcul du score des documents pour chaque requete et ecriture du run
+//		writeAllRuns(queries, OUTPUT_DIR + "xml/", OUTPUT_NAME, "02", "articles", docsXML, postingList, postingListPerDoc);
+//
+//		System.out.println("Runs write");
 	}
 
 	// function : parserDoc(String pathResources, Document.Type type) output(List<Document>)  , type = "xml" ou "brut"
