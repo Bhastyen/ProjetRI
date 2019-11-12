@@ -63,8 +63,6 @@ public class ParserBrut {
 						ligne = ligne.replaceAll("[\\P{L}]", " ").replace('\n', ' ');
 						contenu.append(ligne);
 
-						contenu += " "+ligne.replaceAll("\n", " ");
-
 					}
 
 					// ferme le buffer
