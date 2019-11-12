@@ -61,15 +61,9 @@ public class Document {
 	}
 
 	public static String removeStopWord(String original) {
-		List<String> stopword = new ArrayList<String>();;
-		try {
-			stopword = loadStopwords();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		
 
-		String[] allWords = original.toLowerCase().split(" ");
+		/*String[] allWords = original.toLowerCase().split(" ");
 		//StringBuilder permet de ne pas surcharger le CPU , utile pour les concatenation
 		StringBuilder builder = new StringBuilder();
 		for(String word : allWords) {
@@ -79,7 +73,48 @@ public class Document {
 			}
 		}
 
-		 return builder.toString().trim();//trim enleve les surespacementss
+		 return builder.toString().trim();//trim enleve les surespacementss*/
+		return "";
 
+	}
+	
+	public static String createStemming(String original) {
+	
+	return Stemming.stemTerm(original);	
+	}
+	
+	public static String sentenceProcessing(String original) {
+		
+		String[] allWords = original.toLowerCase().split(" ");
+		//StringBuilder permet de ne pas surcharger le CPU , utile pour les concatenation
+		StringBuilder builder = new StringBuilder();
+		
+		List<String> stopword = new ArrayList<String>();
+		if(Main.STOPWORD) {//if STOPWORD
+			try {
+				stopword = loadStopwords();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		for(String word : allWords) {
+			if(Main.STEMMING) {//if STEMMING
+				word = createStemming(word);
+			}
+			if(Main.STOPWORD) {//if STOPWORD
+				if(!stopword.contains(word)) {
+					builder.append(word);
+					builder.append(' ');
+				}
+			}else {
+				builder.append(word);
+				builder.append(' ');
+			}	
+		}
+
+		 return builder.toString().trim();//trim enleve les surespacementss
+	
+	
 	}
 }
