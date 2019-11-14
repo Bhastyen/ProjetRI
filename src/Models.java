@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import opennlp.tools.stemmer.Stemmer;
+
 
 
 public class Models {
@@ -42,7 +44,7 @@ public class Models {
 					if (docIdScore.get(pair.getKey()) == null)   // ajout de l entree dans le dico s il n existe pas
 						docIdScore.put(pair.getKey(), 0f);
 					score = docIdScore.get(pair.getKey());
-					score += normalization.W(param, wordQuery, pair.getKey(), postingListPerDoc, postingList, false);
+					score += normalization.W(param, wordQuery, pair.getKey(), postingListPerDoc, postingList, false) * weight;
 					//score += postingListPerDoc.get(pair.getKey()).size() * idf;    //TODO F(tf(t,d) x G(df(t)) selon les fonctions SMART  normalization(param)
 					docIdScore.put(pair.getKey(), score);
 				}
@@ -56,7 +58,7 @@ public class Models {
 				score = docIdScore.get(key);
 				
 				if (param.equals("nnn")) {
-					System.out.println("Param : " + param + "  Score : " + score + "  Document length : " + doc.getLength());
+					//System.out.println("Param : " + param + "  Score : " + score + "  Document length : " + doc.getLength());
 				}
 				
 				score = score / doc.getLength();  // Scores[d] by Lengths[d]

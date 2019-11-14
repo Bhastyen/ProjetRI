@@ -99,7 +99,7 @@ public class normalization {
 		
 		tf = TF.tf(tfMethod, term, docId, postingListDoc);
 		idf = IDF.idf(dfMethod, term, postingListTerm, postingListDoc);
-		w = tf*idf/sum;   // TODO manque la racine carre, normalisation seulement sur tf
+		w = (float) (tf*idf/Math.sqrt((double)(sum)));   // TODO manque la racine carre, normalisation seulement sur tf
 		
 		return w;
 		
