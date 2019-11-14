@@ -99,18 +99,21 @@ public class Document {
 			}
 		}
 		for(String word : allWords) {
-			if(Main.STEMMING) {//if STEMMING
-				word = createStemming(word);
-			}
 			if(Main.STOPWORD) {//if STOPWORD
 				if(!stopword.contains(word)) {
+					if(Main.STEMMING) {//if STEMMING
+						word = createStemming(word);
+					}
 					builder.append(word);
 					builder.append(' ');
 				}
-			}else {
-				builder.append(word);
-				builder.append(' ');
-			}	
+			}
+			if(Main.STEMMING) {//if STEMMING
+				word = createStemming(word);
+			}
+			builder.append(word);
+			builder.append(' ');
+				
 		}
 
 		 return builder.toString().trim();//trim enleve les surespacementss
