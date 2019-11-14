@@ -108,11 +108,15 @@ public class Document {
 					builder.append(' ');
 				}
 			}
-			if(Main.STEMMING) {//if STEMMING
+			else if(Main.STEMMING) {//if STEMMING
 				word = createStemming(word);
+				builder.append(word);
+				builder.append(' ');
+			}else {
+				builder.append(word);
+				builder.append(' ');
 			}
-			builder.append(word);
-			builder.append(' ');
+			
 				
 		}
 
