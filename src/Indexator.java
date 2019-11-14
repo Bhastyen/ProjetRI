@@ -32,7 +32,7 @@ public class Indexator {
 
 		int docid = 0;
 		long nbOcc = 0;
-
+		String stem; 
 		// Pour tous les documents
 		for (Document doc : listDoc) {
 
@@ -50,20 +50,22 @@ public class Indexator {
 															Collectors.counting()));
 			// Put the document and its list of term/occurency in the HashMap
 			postingListPerDoc.put(docid, frequencyMap);
-
+			
 			// Loop pour faire la posting list
 			for (Map.Entry<String,Long> word : frequencyMap.entrySet()) {
 
 					// On récupère le nombre d'occurence du mot
 					nbOcc = word.getValue();
-
+					stem = word.getKey(); //Sans stemming
+					//
 					// Si le mot est dejà dans la posting list alors on recup la liste et on ajoute
 					// la nouvelle pair
-					if (postingList.containsKey(word.getKey())) {
-						postingList.get(word.getKey()).put(docid, nbOcc);
+					
+					if (postingList.containsKey(stem)) {
+						postingList.get(stem).put(docid, nbOcc);
 					}else {
-						postingList.put(word.getKey(), new HashMap<Integer, Long>());
-						postingList.get(word.getKey()).put(docid, nbOcc);
+						postingList.put(stem, new HashMap<Integer, Long>());
+						postingList.get(stem).put(docid, nbOcc);
 					}
 			}
 

@@ -28,6 +28,9 @@ public class Models {
 		//Pour chaque mot de la requete
 		for(String wordQuery : arrQuery) {
 			
+			if(Main.STEMMING) {
+				wordQuery = Stemming.stemTerm(wordQuery);//Pour le stemming TODO si on veut mettre optionnel variable Globale , if 1
+			}
 			//Pour chaque pair : nombre occurence / IdDocument du terme wordQuery
 			if (postingList.get(wordQuery) != null) {
 				
