@@ -69,7 +69,7 @@ public class normalization {
 		tf = TF.tf(tfMethod, term, docId, postingListDoc);
 		idf = IDF.idf(dfMethod, term, postingListTerm, postingListDoc);
 		w = tf*idf;
-		
+		System.out.println("term" + term +" | tf " + tf +"|idf " + idf+ " |w " + w);
 		return w;
 		
 	}

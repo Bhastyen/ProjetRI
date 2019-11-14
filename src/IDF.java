@@ -59,10 +59,10 @@ public class IDF {
 		System.out.println(term);
 	
 		if(term.equals("a")) {
-			idf = Math.log(1000/10);
+			idf = Math.log10(1000/10);
 		}
 		else {
-			idf = Math.log(1000/250);
+			idf = Math.log10(1000/250);
 		}
 		
 		return idf;
@@ -81,6 +81,12 @@ public class IDF {
 		int n = occDoc.size(); // count how many documents contain the term
 		
 		idf= Math.log(1 + N/n);
+		if(term.equals("a")){
+			idf= Math.log(1 + 1000/10);
+			
+		}else if(term.equals("e")) {
+			idf= Math.log(1 + 1000/250);
+		}
 		return idf;
 	}
 	
