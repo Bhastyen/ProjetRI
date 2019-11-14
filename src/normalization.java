@@ -93,13 +93,13 @@ public class normalization {
 		Map<String,Long> docMap = postingListDoc.get(docId); //Map of term,occ for doc=docId
 		
 		for(Entry<String, Long> mapentry : docMap.entrySet()) {
-			sumElement = TF.tf(tfMethod, mapentry.getKey(), docId, postingListDoc);
+			sumElement = TF.tf(tfMethod, mapentry.getKey(), docId, postingListDoc);  // TODO manque idf
 			sum += Math.pow(sumElement,2); //sum of the square of tf(t',d) for all t' in d
 		}
 		
 		tf = TF.tf(tfMethod, term, docId, postingListDoc);
 		idf = IDF.idf(dfMethod, term, postingListTerm, postingListDoc);
-		w = tf*idf/sum;
+		w = tf*idf/sum;   // TODO manque la racine carre, normalisation seulement sur tf
 		
 		return w;
 		

@@ -32,10 +32,8 @@ public class Models {
 			if (postingList.get(wordQuery) != null) {
 				
 				weight = normalization.W(param, wordQuery, 0, postingListPerDoc, postingList, true);
-							
 				
 				docs = new ArrayList<>(postingList.get(wordQuery).entrySet());
-			
 				for (Entry<Integer, Long> pair : docs) {//<id du document , tf>
 					//System.out.println("idf : " + idf + " tf : " + postingListPerDoc.get(pair.getKey()).size());
 					if (docIdScore.get(pair.getKey()) == null)   // ajout de l entree dans le dico s il n existe pas
@@ -53,7 +51,11 @@ public class Models {
 			
 			if (docIdScore.containsKey(key)) {
 				score = docIdScore.get(key);
-
+				
+				if (param.equals("nnn")) {
+					System.out.println("Param : " + param + "  Score : " + score + "  Document length : " + doc.getLength());
+				}
+				
 				score = score / doc.getLength();  // Scores[d] by Lengths[d]
 				docIdScore.put(key, score);
 			}

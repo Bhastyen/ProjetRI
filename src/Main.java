@@ -21,7 +21,7 @@ public class Main {
 	public static final String GRANULARITE = "articles";
 	public static final String OUTPUT_DIR = "resources/resultats/";
 	public static final String OUTPUT_NAME = "BastienCelineLaetitiaPierre";
-	public static final String[] PARAMETERS = new String[] {"nnn", "nnc", "ltn", "ltc", "lts", "lpn", "aln", "mfn", "lln", "afn"};
+	public static final String[] PARAMETERS = new String[] {"nnn"/*, "nnc", "ltn", "ltc", "lts", "lpn", "aln", "mfn", "lln", "afn"*/};
 
 
 	public static void main(String[] args) {
@@ -57,7 +57,7 @@ public class Main {
 		writeAllRuns(queries, OUTPUT_DIR + "brut/", OUTPUT_NAME, "03", "articles", docsBrut, postingList, postingListPerDoc);
 
 		// TEXTE XML : calcul du score des documents pour chaque requete et ecriture du run
-		writeAllRuns(queries, OUTPUT_DIR + "xml/", OUTPUT_NAME, "03", "articles", docsXML, postingList, postingListPerDoc);
+		//writeAllRuns(queries, OUTPUT_DIR + "xml/", OUTPUT_NAME, "03", "articles", docsXML, postingList, postingListPerDoc);
 
 		System.out.println("Runs write");
 	}
