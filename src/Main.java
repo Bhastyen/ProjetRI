@@ -23,7 +23,7 @@ public class Main {
 	public static final String OUTPUT_NAME = "BastienCelineLaetitiaPierre";
 	public static final String[] PARAMETERS = new String[] {"nnn"};
 	public static final Boolean STEMMING = true;
-	public static final Boolean STOPWORD = true;
+	public static final Boolean STOPWORD = false;
 
 
 	public static void main(String[] args) {
@@ -32,12 +32,13 @@ public class Main {
 
 		HashMap<String, Map<Integer, Long>> postingList = null;
 		HashMap<Integer, Map<String, Long>> postingListPerDoc = null;
-		File query = new File("resources/topics_M2WI7Q_2019_20.txt");
+		//File query = new File("resources/topics_M2WI7Q_2019_20.txt");
+		File query = new File("resources/test-reduit/queryTest/query.txt");
 
 		// parsing des documents
-		docsBrut = parserDoc("resources/textes_brut/", Document.Type.BRUT);
+		docsBrut = parserDoc("resources/test-reduit/TD", Document.Type.BRUT);
 
-		docsXML = parserDoc("resources/coll", Document.Type.XML);
+		//docsXML = parserDoc("resources/coll", Document.Type.XML);
 
 		 OutPutFileParsingBrut(docsBrut);
 
@@ -59,7 +60,7 @@ public class Main {
 		writeAllRuns(queries, OUTPUT_DIR + "brut/", OUTPUT_NAME, "03", "articles", docsBrut, postingList, postingListPerDoc);
 
 		// TEXTE XML : calcul du score des documents pour chaque requete et ecriture du run
-		writeAllRuns(queries, OUTPUT_DIR + "xml/", OUTPUT_NAME, "03", "articles", docsXML, postingList, postingListPerDoc);
+		//writeAllRuns(queries, OUTPUT_DIR + "xml/", OUTPUT_NAME, "03", "articles", docsXML, postingList, postingListPerDoc);
 
 		System.out.println("Runs write");
 	}

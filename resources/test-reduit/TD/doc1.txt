@@ -1,0 +1,9 @@
+<doc><docno>17630792</docno>
+c d d d e e e
+a d e
+</doc>
+
+<doc><docno>17630793</docno>
+a b b 
+b b c
+</doc>
