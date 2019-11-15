@@ -1,7 +1,0 @@
-2009011 Q0 12748992 1 0.0035387066 BastienCelineLaetitiaPierre /article[1]
-2009036 Q0 149506 1 0.001967127 BastienCelineLaetitiaPierre /article[1]
-2009067 Q0 18625820 1 0.011193856 BastienCelineLaetitiaPierre /article[1]
-2009073 Q0 18268435 1 0.0024636528 BastienCelineLaetitiaPierre /article[1]
-2009074 Q0 18268435 1 0.0024636528 BastienCelineLaetitiaPierre /article[1]
-2009078 Q0 12114107 1 0.031078339 BastienCelineLaetitiaPierre /article[1]
-2009085 Q0 4325441 1 0.0015922125 BastienCelineLaetitiaPierre /article[1]
