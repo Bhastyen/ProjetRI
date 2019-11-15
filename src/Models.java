@@ -6,8 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import opennlp.tools.stemmer.Stemmer;
-
 
 
 public class Models {
@@ -51,7 +49,7 @@ public class Models {
 			}
 		}
 
-		for (Document doc : documents) {  // normalisation du score de chaque document
+		/*for (Document doc : documents) {  // normalisation du score de chaque document
 			key = doc.getIdDoc();
 			
 			if (docIdScore.containsKey(key)) {
@@ -64,7 +62,7 @@ public class Models {
 				score = score / doc.getLength();  // Scores[d] by Lengths[d]
 				docIdScore.put(key, score);
 			}
-		}
+		}*/
 
 		// trie les documents par rapport a leur score calcule pour la requete
 		list = new ArrayList<>(docIdScore.entrySet());
