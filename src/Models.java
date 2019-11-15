@@ -45,6 +45,8 @@ public class Models {
 						docIdScore.put(pair.getKey(), 0f);
 					score = docIdScore.get(pair.getKey());
 					score += normalization.W(param, wordQuery, pair.getKey(), postingListPerDoc, postingList, false);
+					
+					System.out.println("W " + wordQuery + " " + pair.getKey() + "  " + normalization.W(param, wordQuery, pair.getKey(), postingListPerDoc, postingList, false));
 					//score += postingListPerDoc.get(pair.getKey()).size() * idf;    //TODO F(tf(t,d) x G(df(t)) selon les fonctions SMART  normalization(param)
 					docIdScore.put(pair.getKey(), score);
 				}
@@ -57,7 +59,8 @@ public class Models {
 			if (docIdScore.containsKey(key)) {
 				score = docIdScore.get(key);
 
-				score = score / doc.getLength();  // Scores[d] by Lengths[d]
+				System.out.println("Param " + param + " length " + doc.getLength() + " score : " + score + " resultat : " + ((float) score / doc.getLength()));
+				score = (float) score / doc.getLength();  // Scores[d] by Lengths[d]
 				docIdScore.put(key, score);
 			}
 		}

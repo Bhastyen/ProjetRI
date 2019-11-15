@@ -99,10 +99,8 @@ public class TF {
 	public static float l(String term, int docId, Map<Integer, Map<String, Long>> postingList) {
 		Map<String, Long> docMap = postingList.get(docId);
 		long tf = docMap.get(term);
-
-		tf = (long) (1 + Math.log(tf));
 			
-		return tf;
+		return (float) (1f + Math.log10(tf));
 	}
 	
 	

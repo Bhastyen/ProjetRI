@@ -2,4 +2,4 @@ key a DocId/nbOccu{17630793=1, 17630792=1}
 key b DocId/nbOccu{17630793=4}
 key c DocId/nbOccu{17630793=1, 17630792=1}
 key d DocId/nbOccu{17630792=4}
-key e DocId/nbOccu{17630792=4}
+key e DocId/nbOccu{17630792=5}

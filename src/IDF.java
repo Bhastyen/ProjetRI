@@ -59,10 +59,10 @@ public class IDF {
 		System.out.println(term);
 	
 		if(term.equals("a")) {
-			idf = Math.log(1000/10);
+			idf = Math.log10(1000f/10);
 		}
 		else {
-			idf = Math.log(1000/250);
+			idf = Math.log10(1000f/250);
 		}
 		
 		return idf;
@@ -80,7 +80,7 @@ public class IDF {
 		Map<Integer, Long> occDoc = postingListTerm.get(term);  //Map of docId,occurrence for the term
 		int n = occDoc.size(); // count how many documents contain the term
 		
-		idf= Math.log(1 + N/n);
+		idf= Math.log(1 + (float) N/n);
 		return idf;
 	}
 	
@@ -95,7 +95,7 @@ public class IDF {
 		int n = occDoc.size();
 		
 
-		idf=1/n;
+		idf=1f/n;
 		return idf;
 	}
 	
@@ -111,7 +111,7 @@ public class IDF {
 		int n = occDoc.size();
 
 
-		idf= Math.log((N-n)/n);
+		idf= Math.log((N-n)/(float) n);
 		return idf;
 	}
 
@@ -135,7 +135,7 @@ public class IDF {
 		
         maxN = Collections.max(N);
 
-		idf= Math.log(1+ maxN/n);
+		idf= Math.log(1+ (float) maxN/n);
 		return idf;
 	}
 	
@@ -151,7 +151,7 @@ public class IDF {
 		int n = occDoc.size();
 		
 
-		idf = Math.log((N+1)/n);
+		idf = Math.log((N+1f)/n);
 		idf = Math.pow(idf, 2);
 		return idf;
 	}
