@@ -8,7 +8,6 @@ public class MyDocHandler extends DefaultHandler {
 	private int id = 0;
 	private String contenu = "";
 	
-
 	public void startDocument() {
 		//System.out.println("Debut du doc");
 		contenu = "";

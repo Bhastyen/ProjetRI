@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import opennlp.tools.stemmer.Stemmer;
+
 
 
 public class Models {
@@ -57,7 +59,7 @@ public class Models {
 				score = docIdScore.get(key);
 				
 				if (param.equals("nnn")) {
-					System.out.println("Param : " + param + "  Score : " + score + "  Document length : " + doc.getLength());
+					//System.out.println("Param : " + param + "  Score : " + score + "  Document length : " + doc.getLength());
 				}
 				
 				score = score / doc.getLength();  // Scores[d] by Lengths[d]

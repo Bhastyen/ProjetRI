@@ -56,7 +56,7 @@ public class IDF {
 		Map<Integer, Long> occDoc = postingListTerm.get(term);   // list of pair of NumOcc,DocId for the term
 		int n = occDoc.size(); // number of documents which contain term
 		
-		idf= Math.log(N/n);
+		idf= Math.log10(N/n);
 		return idf;
 		
 	}
@@ -72,7 +72,7 @@ public class IDF {
 		Map<Integer, Long> occDoc = postingListTerm.get(term);  //Map of docId,occurrence for the term
 		int n = occDoc.size(); // count how many documents contain the term
 		
-		idf= Math.log(1 + N/n);
+		idf= Math.log10(1 + N/n);
 		return idf;
 	}
 	
@@ -104,7 +104,7 @@ public class IDF {
 		int n = occDoc.size();
 
 
-		idf= Math.log((N-n)/n);
+		idf= Math.log10((N-n)/n);
 		return idf;
 	}
 
@@ -128,7 +128,7 @@ public class IDF {
 		
         maxN = Collections.max(N);
 
-		idf= Math.log(1+ maxN/n);
+		idf= Math.log10(1+ maxN/n);
 		return idf;
 	}
 	
@@ -144,7 +144,7 @@ public class IDF {
 		int n = occDoc.size();
 		
 
-		idf = Math.log((N+1)/n);
+		idf = Math.log10((N+1)/n);
 		idf = Math.pow(idf, 2);
 		return idf;
 	}
