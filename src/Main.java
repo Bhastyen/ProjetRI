@@ -5,8 +5,6 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -22,7 +20,7 @@ public class Main {
 	public static final String OUTPUT_DIR = "resources/resultats/";
 	public static final String OUTPUT_NAME = "BastienCelineLaetitiaPierre";
 	
-	public static final String[] PARAMETERS = new String[] {"bm25,1,0.5", "ltc", "ltn"};
+	public static final String[] PARAMETERS = new String[] {"bm25,1,0.5", "ltc", "ltn"};   // test bm25 b = 0.75, k = 1.2 
 	public static final Boolean STEMMING = true;
 	public static final Boolean STOPWORD = true;
 

@@ -21,29 +21,30 @@ public class Models {
 		query= query.toLowerCase();
 		String[] arrQuery = query.split(" ");
 
-		List<Entry<Integer, Long>> docs;// <id du document , tf>
-		HashMap<Integer, Float> docIdScore = new HashMap<>();//DocId , score par document
-		ArrayList<Entry<Integer, Float>> list;//DocId , score par document (pour recup plus tard)
+		List<Entry<Integer, Long>> docs;  // <id du document , tf>
+		HashMap<Integer, Float> docIdScore = new HashMap<>();  // DocId , score par document
+		ArrayList<Entry<Integer, Float>> list; // DocId , score par document (pour recup plus tard)
 
 		//Pour chaque mot de la requete
 		for(String wordQuery : arrQuery) {
 			
 			if(Main.STEMMING) {
-				wordQuery = Stemming.stemTerm(wordQuery);//Pour le stemming TODO si on veut mettre optionnel variable Globale , if 1
+				wordQuery = Stemming.stemTerm(wordQuery);  // Pour le stemming TODO si on veut mettre optionnel variable Globale , if 1
 			}
-			//Pour chaque pair : nombre occurence / IdDocument du terme wordQuery
+			
+			// Pour chaque pair : nombre occurence / IdDocument du terme wordQuery
 			if (postingList.get(wordQuery) != null) {
 				
-				//weight = normalization.W(param, wordQuery, 0, postingListPerDoc, postingList, true);
+				weight = normalization.W(param, wordQuery, 0, postingListPerDoc, postingList, true);
 				
 				docs = new ArrayList<>(postingList.get(wordQuery).entrySet());
-				for (Entry<Integer, Long> pair : docs) {//<id du document , tf>
+				for (Entry<Integer, Long> pair : docs) {   // <id du document , tf>
 					
 					if (docIdScore.get(pair.getKey()) == null)   // ajout de l entree dans le dico s il n existe pas
 						docIdScore.put(pair.getKey(), 0f);
 					
 					score = docIdScore.get(pair.getKey());
-					score += normalization.W(param, wordQuery, pair.getKey(), postingListPerDoc, postingList, false);
+					score += normalization.W(param, wordQuery, pair.getKey(), postingListPerDoc, postingList, false) * weight;
 					docIdScore.put(pair.getKey(), score);
 					
 				}
