@@ -44,8 +44,6 @@ public class ParserXML{
 				for (int i = 0; i < fichiers.length; i++) {
 					handler = new MyDocHandler();
 					parser.parse(fichiers[i].getPath(), handler);
-
-					//System.out.println("ID : " + handler.getId());
 					
 					docs.add(new Document(handler.getId(), Document.sentenceProcessing(handler.getContenu())));
 				}

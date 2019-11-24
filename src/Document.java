@@ -42,14 +42,6 @@ public class Document {
 		int c = 0;
 		String[] arrString = stringDocument.split(" ");
 		
-		/*for (int i = 0; i < arrString.length; i++) {
-			if (arrString[i] == "" || arrString[i] == " ") {
-				c += 1;
-			}
-		}
-		
-		System.out.println("Ligne vide doc " + idDoc + " : " + c);*/
-		
 		return arrString.length;
 		
 	}
@@ -79,18 +71,21 @@ public class Document {
 	}
 	
 	public static String createStemming(String original) {
-	
-	return Stemming.stemTerm(original);	
+		return Stemming.stemTerm(original);	
 	}
 	
 	public static String sentenceProcessing(String original) {
+		// clean sentences
+		original = original.replace('\n', ' ').replaceAll("[?.?]", " ");
+		original = original.replace('\n', ' ').replaceAll("[\\P{L}^ ]", " ");
+		original = original.replaceAll(" +", " ");
 		
 		String[] allWords = original.toLowerCase().split(" ");
 		//StringBuilder permet de ne pas surcharger le CPU , utile pour les concatenation
 		StringBuilder builder = new StringBuilder();
 		
 		List<String> stopword = new ArrayList<String>();
-		if(Main.STOPWORD) {//if STOPWORD
+		if(Main.STOPWORD) { // if STOPWORD
 			try {
 				stopword = loadStopwords();
 			} catch (IOException e) {
@@ -98,30 +93,29 @@ public class Document {
 				e.printStackTrace();
 			}
 		}
+		
 		for(String word : allWords) {
-			if(Main.STOPWORD) {//if STOPWORD
+			if(Main.STOPWORD) { // if STOPWORD
 				if(!stopword.contains(word)) {
-					if(Main.STEMMING) {//if STEMMING
+					if(Main.STEMMING) { // if STEMMING
 						word = createStemming(word);
 					}
+					
 					builder.append(word);
 					builder.append(' ');
 				}
-			}
-			else if(Main.STEMMING) {//if STEMMING
+			} else if(Main.STEMMING) { // if STEMMING
 				word = createStemming(word);
 				builder.append(word);
 				builder.append(' ');
-			}else {
+			} else {
 				builder.append(word);
 				builder.append(' ');
 			}
 			
-				
 		}
 
-		 return builder.toString().trim();//trim enleve les surespacementss
-	
-	
+		
+		return builder.toString().replaceAll(" +", " ");
 	}
 }

@@ -20,7 +20,7 @@ public class Main {
 	public static final String OUTPUT_DIR = "resources/resultats/";
 	public static final String OUTPUT_NAME = "BastienCelineLaetitiaPierre";
 	
-	public static final String[] PARAMETERS = new String[] {"bm25,1,0.5", "ltc", "ltn"};   // test bm25 b = 0.75, k = 1.2 
+	public static final String[] PARAMETERS = new String[] {"nnn"};   // test bm25 b = 0.75, k = 1.2
 	public static final Boolean STEMMING = true;
 	public static final Boolean STOPWORD = true;
 
@@ -38,7 +38,8 @@ public class Main {
 
 		docsXML = parserDoc("resources/coll", Document.Type.XML);
 
-		 OutPutFileParsingBrut(docsBrut);
+		 OutPutFileParsing(docsBrut, "parsingBrut.txt");
+		 OutPutFileParsing(docsXML, "parsingXML.txt");
 
 		// indexation
 		Indexator indexator = new Indexator();
@@ -158,15 +159,16 @@ public class Main {
 		System.out.println("Ecrit posting fichier FIN");
 
 	}
-	public static  void  OutPutFileParsingBrut(List<Document> docs) {
+	
+	public static  void  OutPutFileParsing(List<Document> docs, String nameOut) {
 		BufferedWriter buff;
-		File out = new File("resources/parsingBrut.txt");
+		File out = new File("resources/" + nameOut);
 		System.out.println("Ecrit parser Brut fichier");
 		try {
 			buff = new BufferedWriter(new FileWriter(out));
 			System.out.println("dans try");
 			for (Document doc : docs) {//String : key (mot) Map Integer:doc id Long nombre occurence
-				buff.append("idDoc " + doc.getIdDoc() + "Contenu " + doc.getStringDocument());
+				buff.append("IdDoc " + doc.getIdDoc() + " Contenu " + doc.getStringDocument());
 				buff.newLine();
 				buff.newLine();
 				buff.newLine();
