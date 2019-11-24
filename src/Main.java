@@ -38,13 +38,15 @@ public class Main {
 		// parsing des documents
 		docsBrut = parserDoc("resources/test-reduit/TD", Document.Type.BRUT);
 
-		//docsXML = parserDoc("resources/coll", Document.Type.XML);
+		docsXML = parserDoc("resources/test-reduit/XML", Document.Type.XML);
 
-		 OutPutFileParsingBrut(docsBrut);
+		OutPutFileParsingBrut(docsBrut);
+		OutPutFileParsingXML(docsXML);
 
 		// indexation
 		Indexator indexator = new Indexator();
 		indexator.createIndex(docsBrut);
+		indexator.createIndex(docsXML);
 		postingList = indexator.getPostingList();
 		postingListPerDoc = indexator.getPostingListPerDoc();
 		System.out.println("Indexator End");
@@ -60,7 +62,7 @@ public class Main {
 		writeAllRuns(queries, OUTPUT_DIR + "brut/", OUTPUT_NAME, "03", "articles", docsBrut, postingList, postingListPerDoc);
 
 		// TEXTE XML : calcul du score des documents pour chaque requete et ecriture du run
-		//writeAllRuns(queries, OUTPUT_DIR + "xml/", OUTPUT_NAME, "03", "articles", docsXML, postingList, postingListPerDoc);
+		writeAllRuns(queries, OUTPUT_DIR + "xml/", OUTPUT_NAME, "03", "articles", docsXML, postingList, postingListPerDoc);
 
 		System.out.println("Runs write");
 	}
@@ -168,6 +170,7 @@ public class Main {
 			buff = new BufferedWriter(new FileWriter(out));
 			System.out.println("dans try");
 			for (Document doc : docs) {//String : key (mot) Map Integer:doc id Long nombre occurence
+				System.out.println(" Brut doc size : " + doc.getLength());
 				buff.append("idDoc " + doc.getIdDoc() + "Contenu " + doc.getStringDocument());
 				buff.newLine();
 				buff.newLine();
@@ -180,6 +183,30 @@ public class Main {
 			e.printStackTrace();
 		}
 		System.out.println("Ecrit parsing Brut fichier FIN");
+
+	}
+	//Faire une seule methode pour Brut et XML mais j'avais la flemme pour tester
+	public static  void  OutPutFileParsingXML(List<Document> docs) {
+		BufferedWriter buff;
+		File out = new File("resources/parsingXML.txt");
+		System.out.println("Ecrit parser XML fichier");
+		try {
+			buff = new BufferedWriter(new FileWriter(out));
+			System.out.println("dans try");
+			for (Document doc : docs) {//String : key (mot) Map Integer:doc id Long nombre occurence
+				System.out.println(" XML doc size : " + doc.getLength());
+				buff.append("idDoc " + doc.getIdDoc() + "Contenu " + doc.getStringDocument());
+				buff.newLine();
+				buff.newLine();
+				buff.newLine();
+				buff.newLine();
+			}
+
+			buff.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		System.out.println("Ecrit parsing XML fichier FIN");
 
 	}
 	
