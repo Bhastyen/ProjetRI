@@ -32,6 +32,8 @@ public class Main {
 
 		HashMap<String, Map<Integer, Long>> postingList = null;
 		HashMap<Integer, Map<String, Long>> postingListPerDoc = null;
+		HashMap<String, Map<Integer, Long>> postingListXML = null;
+		HashMap<Integer, Map<String, Long>> postingListPerDocXML = null;
 		//File query = new File("resources/topics_M2WI7Q_2019_20.txt");
 		File query = new File("resources/test-reduit/queryTest/query.txt");
 
@@ -45,10 +47,13 @@ public class Main {
 
 		// indexation
 		Indexator indexator = new Indexator();
+		Indexator indexatorXML = new Indexator();
 		indexator.createIndex(docsBrut);
-		indexator.createIndex(docsXML);
+		indexatorXML.createIndex(docsXML);
 		postingList = indexator.getPostingList();
 		postingListPerDoc = indexator.getPostingListPerDoc();
+		postingListXML = indexatorXML.getPostingList();
+		postingListPerDocXML = indexatorXML.getPostingListPerDoc();
 		System.out.println("Indexator End");
 
 		System.out.println("Posting list size : " + postingList.size());
@@ -62,7 +67,7 @@ public class Main {
 		writeAllRuns(queries, OUTPUT_DIR + "brut/", OUTPUT_NAME, "03", "articles", docsBrut, postingList, postingListPerDoc);
 
 		// TEXTE XML : calcul du score des documents pour chaque requete et ecriture du run
-		writeAllRuns(queries, OUTPUT_DIR + "xml/", OUTPUT_NAME, "03", "articles", docsXML, postingList, postingListPerDoc);
+		writeAllRuns(queries, OUTPUT_DIR + "xml/", OUTPUT_NAME, "03", "articles", docsXML, postingListXML, postingListPerDocXML);
 
 		System.out.println("Runs write");
 	}
