@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 
-
 public class Models {
 
 	public static List<Entry<Integer, Float>> CosineScore (
@@ -39,7 +38,7 @@ public class Models {
 		for(String wordQuery : arrQuery) {
 
 			if(Main.STEMMING) {
-				wordQuery = Stemming.stemTerm(wordQuery);  // Pour le stemming TODO si on veut mettre optionnel variable Globale , if 1
+				wordQuery = Stemming.stemTerm(wordQuery);
 			}
 
 			// Pour chaque pair : nombre occurence / IdDocument du terme wordQuery
@@ -63,21 +62,6 @@ public class Models {
 			}
 
 		}
-
-		/*for (Document doc : documents) {  // normalisation du score de chaque document
-			key = doc.getIdDoc();
-			
-			if (docIdScore.containsKey(key)) {
-				score = docIdScore.get(key);
-				
-				if (param.equals("nnn")) {
-					//System.out.println("Param : " + param + "  Score : " + score + "  Document length : " + doc.getLength());
-				}
-				
-				score = score / doc.getLength();  // Scores[d] by Lengths[d]
-				docIdScore.put(key, score);
-			}
-		}*/
 
 		// trie les documents par rapport a leur score calcule pour la requete
 		list = new ArrayList<>(docIdScore.entrySet());
