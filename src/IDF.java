@@ -10,7 +10,6 @@ public class IDF {
 			String term, 
 			Map<String, Map<Integer,Long>> postingListTerm, 
 			Map<Integer, Map<String,Long>> postingListDoc) {
-		
 		switch(smart) {
 		case "n":
 			return (float) n(term, postingListTerm, postingListDoc);
@@ -26,6 +25,8 @@ public class IDF {
 			return (float) P(term, postingListTerm, postingListDoc);
 		case "s":
 			return (float) s(term, postingListTerm, postingListDoc);
+		case "bm25":
+			return (float) bm25(term, postingListTerm, postingListDoc);
 		default:
 			System.out.println("Pas de fonction idf definie");
 			return 0;
@@ -149,5 +150,17 @@ public class IDF {
 	}
 	
 	
-	
+	private static float bm25(
+			String term, 
+			Map<String, Map<Integer, Long>> postingListTerm,
+			Map<Integer, Map<String, Long>> postingListDoc) {
+		double idf;
+		int N = postingListDoc.size();
+		Map<Integer, Long> occDoc = postingListTerm.get(term);
+		int n = occDoc.size();
+
+
+		idf= Math.log((N-n+0.5)/(n+0.5));
+		return (float) idf;
+	}
 }

@@ -22,7 +22,7 @@ public class Main {
 	public static final String OUTPUT_DIR = "resources/resultats/";
 	public static final String OUTPUT_NAME = "BastienCelineLaetitiaPierre";
 	
-	public static final String[] PARAMETERS = new String[] {"nnn", "ltc", "ltn"};
+	public static final String[] PARAMETERS = new String[] {"bm25,1,0.5", "ltc", "ltn"};
 	public static final Boolean STEMMING = true;
 	public static final Boolean STOPWORD = true;
 
