@@ -20,12 +20,13 @@ public class Main {
 	public static final String OUTPUT_DIR = "resources/resultats/";
 	public static final String OUTPUT_NAME = "BastienCelineLaetitiaPierre";
 	
-	public static final String[] PARAMETERS = new String[] {"nnn"};   // test bm25 b = 0.75, k = 1.2
+	public static final String[] PARAMETERS = new String[] {"nnn", "ltn", "ltc"};   // test bm25 b = 0.75, k = 1.2
 	public static final Boolean STEMMING = true;
 	public static final Boolean STOPWORD = true;
 
 
 	public static void main(String[] args) {
+		long begin, time, total = 0; 
 		List<Document> docsBrut, docsXML;
 		List<String> queries;
 
@@ -34,34 +35,50 @@ public class Main {
 		File query = new File("resources/topics_M2WI7Q_2019_20.txt");
 
 		// parsing des documents
+		begin = System.currentTimeMillis();
 		docsBrut = parserDoc("resources/textes_brut/", Document.Type.BRUT);
+		time = (System.currentTimeMillis() - begin); total += time;
+		System.out.println("Parsing brut done in " + (time/1000f));
 
+		begin = System.currentTimeMillis();
 		docsXML = parserDoc("resources/coll", Document.Type.XML);
+		time = (System.currentTimeMillis() - begin); total += time;
+		System.out.println("Parsing XML done in " + (time/1000f));
 
-		 OutPutFileParsing(docsBrut, "parsingBrut.txt");
-		 OutPutFileParsing(docsXML, "parsingXML.txt");
+		OutPutFileParsing(docsBrut, "parsingBrut.txt");
+		OutPutFileParsing(docsXML, "parsingXML.txt");
 
 		// indexation
+		begin = System.currentTimeMillis();
 		Indexator indexator = new Indexator();
 		indexator.createIndex(docsBrut);
 		postingList = indexator.getPostingList();
 		postingListPerDoc = indexator.getPostingListPerDoc();
-		System.out.println("Indexator End");
+		time = (System.currentTimeMillis() - begin); total += time;
+		System.out.println("Indexing done in " + (time/1000f));
 
 		System.out.println("Posting list size : " + postingList.size());
 		
 		 OutPutFilePostingList(postingList);
 		//System.out.println("Doc "+ docsBrut.get(1597).getIdDoc() + "   Brut " + docsBrut.get(1597).getLength() +
 		//		" Doc " + docsXML.get(1597).getIdDoc() + "  XML " + docsXML.get(1597).getLength());
-
-		// TEXTE BRUT : calcul du score des documents pour chaque requete et ecriture du run
+		 
+		// get queries
 		queries = readQuery(query);
+		
+		// TEXTE BRUT : calcul du score des documents pour chaque requete et ecriture du run
+		begin = System.currentTimeMillis();
 		writeAllRuns(queries, OUTPUT_DIR + "brut/", OUTPUT_NAME, "03", "articles", docsBrut, postingList, postingListPerDoc);
+		time = (System.currentTimeMillis() - begin); total += time;
+		System.out.println("Runs brut done in " + (time/1000f));
 
 		// TEXTE XML : calcul du score des documents pour chaque requete et ecriture du run
-		//writeAllRuns(queries, OUTPUT_DIR + "xml/", OUTPUT_NAME, "03", "articles", docsXML, postingList, postingListPerDoc);
+		begin = System.currentTimeMillis();
+		writeAllRuns(queries, OUTPUT_DIR + "xml/", OUTPUT_NAME, "03", "articles", docsXML, postingList, postingListPerDoc);
+		time = (System.currentTimeMillis() - begin); total += time;
+		System.out.println("Runs XML done in " + (time/1000f));
 
-		System.out.println("Runs write");
+		System.out.println("Search done in " + (total/1000f));
 	}
 
 	// function : parserDoc(String pathResources, Document.Type type) output(List<Document>)  , type = "xml" ou "brut"
@@ -142,11 +159,9 @@ public class Main {
 	public static  void  OutPutFilePostingList(HashMap<String, Map<Integer, Long>> postingList) {
 		BufferedWriter buff;
 		File out = new File("resources/postingList.txt");
-		System.out.println("Ecrit posting fichier");
 		
 		try {
 			buff = new BufferedWriter(new FileWriter(out));
-			System.out.println("dans try");
 			for (Entry<String, Map<Integer, Long>> p : postingList.entrySet()) {//String : key (mot) Map Integer:doc id Long nombre occurence
 				buff.append("key " + p.getKey() + " DocId/nbOccu" + p.getValue().toString());
 				buff.newLine();
@@ -156,17 +171,15 @@ public class Main {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		System.out.println("Ecrit posting fichier FIN");
 
 	}
 	
 	public static  void  OutPutFileParsing(List<Document> docs, String nameOut) {
 		BufferedWriter buff;
 		File out = new File("resources/" + nameOut);
-		System.out.println("Ecrit parser Brut fichier");
+		
 		try {
 			buff = new BufferedWriter(new FileWriter(out));
-			System.out.println("dans try");
 			for (Document doc : docs) {//String : key (mot) Map Integer:doc id Long nombre occurence
 				buff.append("IdDoc " + doc.getIdDoc() + " Contenu " + doc.getStringDocument());
 				buff.newLine();
@@ -179,7 +192,6 @@ public class Main {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		System.out.println("Ecrit parsing Brut fichier FIN");
 
 	}
 	

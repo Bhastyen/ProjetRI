@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 
-
 public class Models {
 
 	public static List<Entry<Integer, Float>> CosineScore (
@@ -29,7 +28,7 @@ public class Models {
 		for(String wordQuery : arrQuery) {
 			
 			if(Main.STEMMING) {
-				wordQuery = Stemming.stemTerm(wordQuery);  // Pour le stemming TODO si on veut mettre optionnel variable Globale , if 1
+				wordQuery = Stemming.stemTerm(wordQuery);
 			}
 			
 			// Pour chaque pair : nombre occurence / IdDocument du terme wordQuery
