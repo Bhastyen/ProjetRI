@@ -20,7 +20,7 @@ public class Main {
 	public static final String OUTPUT_DIR = "resources/resultats/";
 	public static final String OUTPUT_NAME = "BastienCelineLaetitiaPierre";
 	
-	public static final String[] PARAMETERS = new String[] {"bm25,1,0.5", "ltc", "ltn"};   // test bm25 b = 0.75, k = 1.2 
+	public static final String[] PARAMETERS = new String[] {"bm25,1,0.5"};   // test bm25 b = 0.75, k = 1.2, u with slope=0.75
 	public static final Boolean STEMMING = true;
 	public static final Boolean STOPWORD = true;
 
@@ -32,20 +32,20 @@ public class Main {
 		HashMap<String, Map<Integer, Long>> postingList = null;
 		HashMap<Integer, Map<String, Long>> postingListPerDoc = null;
 		File query = new File("resources/topics_M2WI7Q_2019_20.txt");
-
+		System.out.println("preparations ended");
+		
 		// parsing des documents
 		docsBrut = parserDoc("resources/textes_brut/", Document.Type.BRUT);
-
 		docsXML = parserDoc("resources/coll", Document.Type.XML);
-
-		 OutPutFileParsingBrut(docsBrut);
-
+		OutPutFileParsingBrut(docsBrut);
+		System.out.println("Parsing ended");
+		
 		// indexation
 		Indexator indexator = new Indexator();
 		indexator.createIndex(docsBrut);
 		postingList = indexator.getPostingList();
 		postingListPerDoc = indexator.getPostingListPerDoc();
-		System.out.println("Indexator End");
+		System.out.println("Indexator ended");
 
 		System.out.println("Posting list size : " + postingList.size());
 		
