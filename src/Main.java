@@ -59,9 +59,7 @@ public class Main {
 
 		System.out.println("Posting list size : " + postingList.size());
 		
-		 OutPutFilePostingList(postingList);
-		//System.out.println("Doc "+ docsBrut.get(1597).getIdDoc() + "   Brut " + docsBrut.get(1597).getLength() +
-		//		" Doc " + docsXML.get(1597).getIdDoc() + "  XML " + docsXML.get(1597).getLength());
+		OutPutFilePostingList(postingList);
 		 
 		// get queries
 		queries = readQuery(query);
