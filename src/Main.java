@@ -20,9 +20,9 @@ public class Main {
 	public static final String OUTPUT_DIR = "resources/resultats/";
 	public static final String OUTPUT_NAME = "BastienCelineLaetitiaPierre";
 
-	public static final String[] PARAMETERS = new String[] {"bm25,1,0.5"};   // test bm25 b = 0.75, k = 1.2, u with slope=0.75
+	public static final String[] PARAMETERS = new String[] {"ltn", "bm25,1,0.5", "bm25,0.75,1.2"};   // test bm25 b = 0.75, k = 1.2, u with slope=0.75
 	public static final Boolean STEMMING = true;
-	public static final Boolean STOPWORD = true;
+	public static final Boolean STOPWORD = false;
 
 
 	public static void main(String[] args) {
@@ -69,13 +69,13 @@ public class Main {
 		
 		// TEXTE BRUT : calcul du score des documents pour chaque requete et ecriture du run
 		begin = System.currentTimeMillis();
-		writeAllRuns(queries, OUTPUT_DIR + "brut/", OUTPUT_NAME, "03", "articles", docsBrut, postingList, postingListPerDoc);
+		writeAllRuns(queries, OUTPUT_DIR + "brut/", OUTPUT_NAME, "04", "articles", docsBrut, postingList, postingListPerDoc);
 		time = (System.currentTimeMillis() - begin); total += time;
 		System.out.println("Runs brut done in " + (time/1000f));
 
 		// TEXTE XML : calcul du score des documents pour chaque requete et ecriture du run
 		begin = System.currentTimeMillis();
-		writeAllRuns(queries, OUTPUT_DIR + "xml/", OUTPUT_NAME, "03", "articles", docsXML, postingList, postingListPerDoc);
+		writeAllRuns(queries, OUTPUT_DIR + "xml/", OUTPUT_NAME, "04", "articles", docsXML, postingList, postingListPerDoc);
 		time = (System.currentTimeMillis() - begin); total += time;
 		System.out.println("Runs XML done in " + (time/1000f));
 
@@ -125,7 +125,15 @@ public class Main {
 
 		for (int numRun = 0; numRun < PARAMETERS.length; numRun ++) {
 			BufferedWriter buff;
-			File out = new File(path + nomEquipe + "_" + etape + "_" + "0"+(numRun+1) + "_" + PARAMETERS[numRun].toUpperCase() + "_" + "articles_stopwords" + ".txt");
+			String nameFile = path + nomEquipe + "_" + etape + "_" + "0"+(numRun+1) + "_" + PARAMETERS[numRun].toUpperCase() + "_" + "articles";
+			
+			if (STOPWORD)
+				nameFile += "_stopwords";
+			
+			if (STEMMING)
+				nameFile += "_stem";
+			
+			File out = new File(nameFile + ".txt");
 
 			try {
 				buff = new BufferedWriter(new FileWriter(out));

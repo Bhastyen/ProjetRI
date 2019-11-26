@@ -39,23 +39,22 @@ public class normalization {
 	}
 
 
-	
-	
 	private static float query(
-			String smart, 
-			String term, 
+			String smart,
+			String term,
 			int docId, Map<Integer, Map<String, Long>> postingListDoc,
 			Map<String, Map<Integer, Long>> postingListTerm) 
 	{
 		String dfMethod = Character.toString(smart.charAt(1));  //function to use for idf
 		float idf;
 		
+		if (dfMethod.equals("m"))
+			dfMethod = "bm25";
+		
 		idf = IDF.idf(dfMethod, term, postingListTerm, postingListDoc);
 		
 		return idf;
 	}
-
-
 
 
 	public static float n(

@@ -10,6 +10,7 @@ public class IDF {
 			String term, 
 			Map<String, Map<Integer,Long>> postingListTerm, 
 			Map<Integer, Map<String,Long>> postingListDoc) {
+		
 		switch(smart) {
 		case "n":
 			return (float) n(term, postingListTerm, postingListDoc);

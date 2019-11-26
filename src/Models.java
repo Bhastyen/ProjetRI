@@ -24,16 +24,19 @@ public class Models {
 		HashMap<Integer, Float> docIdScore = new HashMap<>();  // DocId , score par document
 		ArrayList<Entry<Integer, Float>> list; // DocId , score par document (pour recup plus tard)
 		Map<String,Float> otherParameters = new HashMap<String,Float>();
+		
 		if (Character.toString(param.charAt(2)).equals("2")){
 			otherParameters.put("k",normalization.k(param));
 			otherParameters.put("b",normalization.b(param));
 			otherParameters.put("ave_len",normalization.ave_len(postingListPerDoc));
 		}
+		
 		if (Character.toString(param.charAt(2)).equals("u")){
 			otherParameters.put("slope",normalization.slope(param));
 			otherParameters.put("pivot",normalization.pivot(postingListPerDoc));
 			otherParameters.put("ave_len",normalization.ave_len(postingListPerDoc));		
 		}
+		
 		//Pour chaque mot de la requete
 		for(String wordQuery : arrQuery) {
 
@@ -44,7 +47,7 @@ public class Models {
 			// Pour chaque pair : nombre occurence / IdDocument du terme wordQuery
 			if (postingList.get(wordQuery) != null) {
 
-				//				weight = normalization.W(param, wordQuery, 0, postingListPerDoc, postingList, true);
+				weight = normalization.W(param, wordQuery, 0, postingListPerDoc, postingList, otherParameters, true);
 
 				docs = new ArrayList<>(postingList.get(wordQuery).entrySet());
 				for (Entry<Integer, Long> pair : docs) {   // <id du document , tf>
@@ -53,8 +56,7 @@ public class Models {
 						docIdScore.put(pair.getKey(), 0f);
 
 					score = docIdScore.get(pair.getKey());
-					score += normalization.W(param, wordQuery, pair.getKey(), postingListPerDoc, postingList, otherParameters,false) ;
-					//					score *= weight;
+					score += (normalization.W(param, wordQuery, pair.getKey(), postingListPerDoc, postingList, otherParameters, false) * weight);
 					docIdScore.put(pair.getKey(), score);
 					//				break;
 				}
