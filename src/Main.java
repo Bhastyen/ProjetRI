@@ -19,8 +19,8 @@ public class Main {
 	public static final String GRANULARITE = "articles";
 	public static final String OUTPUT_DIR = "resources/resultats/";
 	public static final String OUTPUT_NAME = "BastienCelineLaetitiaPierre";
-	
-	public static final String[] PARAMETERS = new String[] {"nnn", "ltn", "ltc"};   // test bm25 b = 0.75, k = 1.2
+
+	public static final String[] PARAMETERS = new String[] {"bm25,1,0.5"};   // test bm25 b = 0.75, k = 1.2, u with slope=0.75
 	public static final Boolean STEMMING = true;
 	public static final Boolean STOPWORD = true;
 
@@ -33,10 +33,12 @@ public class Main {
 		HashMap<String, Map<Integer, Long>> postingList = null;
 		HashMap<Integer, Map<String, Long>> postingListPerDoc = null;
 		File query = new File("resources/topics_M2WI7Q_2019_20.txt");
-
+		System.out.println("preparations ended");
+		
 		// parsing des documents
 		begin = System.currentTimeMillis();
 		docsBrut = parserDoc("resources/textes_brut/", Document.Type.BRUT);
+
 		time = (System.currentTimeMillis() - begin); total += time;
 		System.out.println("Parsing brut done in " + (time/1000f));
 
@@ -54,6 +56,7 @@ public class Main {
 		indexator.createIndex(docsBrut);
 		postingList = indexator.getPostingList();
 		postingListPerDoc = indexator.getPostingListPerDoc();
+
 		time = (System.currentTimeMillis() - begin); total += time;
 		System.out.println("Indexing done in " + (time/1000f));
 
