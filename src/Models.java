@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 
-
 public class Models {
 
 	public static List<Entry<Integer, Float>> CosineScore (
@@ -17,49 +16,51 @@ public class Models {
 			List<Document> documents,
 			String param) 
 	{
-		float weight = 0, idf = 0; float score; int key;
+		float weight = 0; float score; int key;
 		query= query.toLowerCase();
 		String[] arrQuery = query.split(" ");
 
-		List<Entry<Integer, Long>> docs;// <id du document , tf>
-		HashMap<Integer, Float> docIdScore = new HashMap<>();//DocId , score par document
-		ArrayList<Entry<Integer, Float>> list;//DocId , score par document (pour recup plus tard)
-
+		List<Entry<Integer, Long>> docs;  // <id du document , tf>
+		HashMap<Integer, Float> docIdScore = new HashMap<>();  // DocId , score par document
+		ArrayList<Entry<Integer, Float>> list; // DocId , score par document (pour recup plus tard)
+		Map<String,Float> otherParameters = new HashMap<String,Float>();
+		if (Character.toString(param.charAt(2)).equals("2")){
+			otherParameters.put("k",normalization.k(param));
+			otherParameters.put("b",normalization.b(param));
+			otherParameters.put("ave_len",normalization.ave_len(postingListPerDoc));
+		}
+		if (Character.toString(param.charAt(2)).equals("u")){
+			otherParameters.put("slope",normalization.slope(param));
+			otherParameters.put("pivot",normalization.pivot(postingListPerDoc));
+			otherParameters.put("ave_len",normalization.ave_len(postingListPerDoc));		
+		}
 		//Pour chaque mot de la requete
 		for(String wordQuery : arrQuery) {
-			
+
 			if(Main.STEMMING) {
-				wordQuery = Stemming.stemTerm(wordQuery);//Pour le stemming TODO si on veut mettre optionnel variable Globale , if 1
+				wordQuery = Stemming.stemTerm(wordQuery);
 			}
-			//Pour chaque pair : nombre occurence / IdDocument du terme wordQuery
+
+			// Pour chaque pair : nombre occurence / IdDocument du terme wordQuery
 			if (postingList.get(wordQuery) != null) {
-				
-				weight = normalization.W(param, wordQuery, 0, postingListPerDoc, postingList, true);
-							
-				
+
+				//				weight = normalization.W(param, wordQuery, 0, postingListPerDoc, postingList, true);
+
 				docs = new ArrayList<>(postingList.get(wordQuery).entrySet());
-			
-				for (Entry<Integer, Long> pair : docs) {//<id du document , tf>
-					//System.out.println("idf : " + idf + " tf : " + postingListPerDoc.get(pair.getKey()).size());
+				for (Entry<Integer, Long> pair : docs) {   // <id du document , tf>
+
 					if (docIdScore.get(pair.getKey()) == null)   // ajout de l entree dans le dico s il n existe pas
 						docIdScore.put(pair.getKey(), 0f);
+
 					score = docIdScore.get(pair.getKey());
-					score += normalization.W(param, wordQuery, pair.getKey(), postingListPerDoc, postingList, false);
-					//score += postingListPerDoc.get(pair.getKey()).size() * idf;    //TODO F(tf(t,d) x G(df(t)) selon les fonctions SMART  normalization(param)
+					score += normalization.W(param, wordQuery, pair.getKey(), postingListPerDoc, postingList, otherParameters,false) ;
+					//					score *= weight;
 					docIdScore.put(pair.getKey(), score);
+//									break;
 				}
+//							break;
 			}
-		}
 
-		for (Document doc : documents) {  // normalisation du score de chaque document
-			key = doc.getIdDoc();
-			
-			if (docIdScore.containsKey(key)) {
-				score = docIdScore.get(key);
-
-				score = score / doc.getLength();  // Scores[d] by Lengths[d]
-				docIdScore.put(key, score);
-			}
 		}
 
 		// trie les documents par rapport a leur score calcule pour la requete

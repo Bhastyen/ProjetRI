@@ -173,9 +173,9 @@ public class Main {
 		System.out.println("Ecrit parser Brut fichier");
 		try {
 			buff = new BufferedWriter(new FileWriter(out));
-			System.out.println("dans try");
+//			System.out.println("dans try");
 			for (Document doc : docs) {//String : key (mot) Map Integer:doc id Long nombre occurence
-				System.out.println(" Brut doc size : " + doc.getLength());
+//				System.out.println(" Brut doc size : " + doc.getLength());
 				buff.append("idDoc " + doc.getIdDoc() + "Contenu " + doc.getStringDocument());
 				buff.newLine();
 				buff.newLine();
@@ -197,9 +197,9 @@ public class Main {
 		System.out.println("Ecrit parser XML fichier");
 		try {
 			buff = new BufferedWriter(new FileWriter(out));
-			System.out.println("dans try");
+//			System.out.println("dans try");
 			for (Document doc : docs) {//String : key (mot) Map Integer:doc id Long nombre occurence
-				System.out.println(" XML doc size : " + doc.getLength());
+//				System.out.println(" XML doc size : " + doc.getLength());
 				buff.append("idDoc " + doc.getIdDoc() + "Contenu " + doc.getStringDocument());
 				buff.newLine();
 				buff.newLine();

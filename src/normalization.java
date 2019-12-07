@@ -209,7 +209,7 @@ public class normalization {
 		tf = TF.tf(tfMethod, term, docId, postingListDoc);
 		idf = IDF.idf(dfMethod, term, postingListTerm, postingListDoc);
 		w = (tf*(k+1)) / (tf + k *(1-b+b*(doc_len/ave_len))) * idf; // BM25 formula
-		
+
 		return w;
 	}
 	
@@ -248,16 +248,13 @@ public class normalization {
 	public static float k(String smart) {
 		String[] splitted = smart.split(",");
 		String k_string = splitted[1].split("=")[1];
-		System.out.println(k_string);
 		float k = Float.valueOf(k_string.trim()).floatValue();
-		System.out.println(k);
 		return k;
 	}
 	public static float b(String smart) {
 		String[] splitted = smart.split(",");
 		String b_string = splitted[2].split("=")[1];
 		float b = Float.valueOf(b_string.trim()).floatValue();
-		System.out.println(b);
 		return b;
 	}
 	public static float slope(String smart) {
