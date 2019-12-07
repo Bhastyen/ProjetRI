@@ -47,7 +47,9 @@ public class ParserXML{
 
 					//System.out.println("ID : " + handler.getId());
 					
-					docs.add(new Document(handler.getId(), Document.sentenceProcessing(handler.getContenu())));
+					//docs.add(new Document(handler.getId(), Document.sentenceProcessing(handler.getContenu())));
+					//docs + docsHandler
+					docs.addAll(handler.getDocs());
 				}
 			}
 		} catch (SAXException | IOException e) {

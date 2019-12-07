@@ -12,6 +12,7 @@ public class Document {
 	
 	private int idDoc;
 	private String stringDocument;
+	private String cheminDocument;
 	
 	
 	public Document(int idDoc, String stringDocument) {
@@ -20,6 +21,13 @@ public class Document {
 		this.stringDocument = stringDocument.toLowerCase();
 	}
 	
+
+	public Document(int idDoc, String stringDocument,String cheminDocument) {
+		super();
+		this.idDoc = idDoc;
+		this.stringDocument = stringDocument.toLowerCase();
+		this.setCheminDocument(cheminDocument);
+	}
 	
 	
 	public int getIdDoc() {
@@ -123,5 +131,15 @@ public class Document {
 		 return builder.toString().trim();//trim enleve les surespacementss
 	
 	
+	}
+
+
+	public String getCheminDocument() {
+		return cheminDocument;
+	}
+
+
+	public void setCheminDocument(String cheminDocument) {
+		this.cheminDocument = cheminDocument;
 	}
 }
