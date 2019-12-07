@@ -10,7 +10,6 @@ public class IDF {
 			String term, 
 			Map<String, Map<Integer,Long>> postingListTerm, 
 			Map<Integer, Map<String,Long>> postingListDoc) {
-		
 		switch(smart) {
 		case "n":
 			return (float) n(term, postingListTerm, postingListDoc);
@@ -23,9 +22,11 @@ public class IDF {
 		case "f":
 			return (float) f(term, postingListTerm, postingListDoc);
 		case "p":
-			return (float) p(term, postingListTerm, postingListDoc);
+			return (float) P(term, postingListTerm, postingListDoc);
 		case "s":
 			return (float) s(term, postingListTerm, postingListDoc);
+		case "bm25":
+			return (float) bm25(term, postingListTerm, postingListDoc);
 		default:
 			System.out.println("Pas de fonction idf definie");
 			return 0;
@@ -55,16 +56,7 @@ public class IDF {
 		Map<Integer, Long> occDoc = postingListTerm.get(term);   // list of pair of NumOcc,DocId for the term
 		int n = occDoc.size(); // number of documents which contain term
 		
-		//idf= Math.log(N/n);
-		System.out.println(term);
-	
-		if(term.equals("a")) {
-			idf = Math.log10(1000/10);
-		}
-		else {
-			idf = Math.log10(1000/250);
-		}
-		
+		idf= Math.log10(N/n);
 		return idf;
 		
 	}
@@ -80,13 +72,7 @@ public class IDF {
 		Map<Integer, Long> occDoc = postingListTerm.get(term);  //Map of docId,occurrence for the term
 		int n = occDoc.size(); // count how many documents contain the term
 		
-		idf= Math.log(1 + N/n);
-		if(term.equals("a")){
-			idf= Math.log(1 + 1000/10);
-			
-		}else if(term.equals("e")) {
-			idf= Math.log(1 + 1000/250);
-		}
+		idf= Math.log10(1 + N/n);
 		return idf;
 	}
 	
@@ -101,7 +87,8 @@ public class IDF {
 		int n = occDoc.size();
 		
 
-		idf=1/n;
+		idf = 1.0/n;
+		
 		return idf;
 	}
 	
@@ -117,7 +104,7 @@ public class IDF {
 		int n = occDoc.size();
 
 
-		idf= Math.log((N-n)/n);
+		idf= Math.log10((N-n)/n);
 		return idf;
 	}
 
@@ -141,7 +128,7 @@ public class IDF {
 		
         maxN = Collections.max(N);
 
-		idf= Math.log(1+ maxN/n);
+		idf= Math.log10(1+ maxN/n);
 		return idf;
 	}
 	
@@ -157,11 +144,23 @@ public class IDF {
 		int n = occDoc.size();
 		
 
-		idf = Math.log((N+1)/n);
+		idf = Math.log10((N+1)/n);
 		idf = Math.pow(idf, 2);
 		return idf;
 	}
 	
 	
-	
+	private static float bm25(
+			String term, 
+			Map<String, Map<Integer, Long>> postingListTerm,
+			Map<Integer, Map<String, Long>> postingListDoc) {
+		double idf;
+		int N = postingListDoc.size();
+		Map<Integer, Long> occDoc = postingListTerm.get(term);
+		int n = occDoc.size();
+
+
+		idf= Math.log((N-n+0.5)/(n+0.5));
+		return (float) idf;
+	}
 }
