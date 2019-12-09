@@ -98,7 +98,9 @@ public class TF {
 	
 	public static float l(String term, int docId, Map<Integer, Map<String, Long>> postingList) {
 		Map<String, Long> docMap = postingList.get(docId);
-		long tf = docMap.get(term);
+		float tf = docMap.get(term);
+
+		tf = (float) (1 + Math.log10(tf));
 			
 		return (float) (1f + Math.log10(tf));
 	}
@@ -116,7 +118,7 @@ public class TF {
 		}
 		
 		tf= docMap.get(term);
-		tf = (float) ((1+ Math.log(tf)) / (1 + Math.log(occ/positiveocc)));
+		tf = (float) ((1+ Math.log10(tf)) / (1 + Math.log10(occ/positiveocc)));
 
 		return tf;
 	}

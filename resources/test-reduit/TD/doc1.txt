@@ -4,6 +4,6 @@ a d e
 </doc>
 
 <doc><docno>17630793</docno>
-a b b 
+a b b
 b b c
 </doc>
