@@ -38,7 +38,7 @@ public class TF {
 	public static float b(String term, int docId, Map<Integer, Map<String, Long>> postingList) {
 		try {
 			Map<String, Long> docMap = postingList.get(docId);
-			float tf = docMap.get(term);
+			long tf = docMap.get(term);
 			tf = 1;
 			return tf;
 		} catch (Exception ie) {return 0;} 
@@ -102,7 +102,7 @@ public class TF {
 
 		tf = (float) (1 + Math.log10(tf));
 			
-		return tf;
+		return (float) (1f + Math.log10(tf));
 	}
 	
 	
@@ -118,7 +118,7 @@ public class TF {
 		}
 		
 		tf= docMap.get(term);
-		tf = (float) ((1+ Math.log(tf)) / (1 + Math.log(occ/positiveocc)));
+		tf = (float) ((1+ Math.log10(tf)) / (1 + Math.log10(occ/positiveocc)));
 
 		return tf;
 	}
