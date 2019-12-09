@@ -10,34 +10,44 @@ import java.util.Locale;
 public class Document {
 	public enum Type {XML, BRUT} ;
 	
-	private int idDoc;
+	private long id;
+	private long idDoc;
 	private String stringDocument;
 	private String cheminDocument;
 	
 	
-	public Document(int idDoc, String stringDocument) {
-		super();
+	public Document(long idDoc, String stringDocument) {
+		this.id = idDoc;
 		this.idDoc = idDoc;
 		this.stringDocument = stringDocument.toLowerCase();
+		cheminDocument = "/article[1]";
 	}
 	
 
-	public Document(int idDoc, String stringDocument,String cheminDocument) {
-		super();
-		this.idDoc = idDoc;
-		this.stringDocument = stringDocument.toLowerCase();
+	public Document(long idDoc, String stringDocument, String cheminDocument) {
+		this(idDoc, stringDocument);
 		this.setCheminDocument(cheminDocument);
 	}
 	
 	
-	public int getIdDoc() {
+	public long getId() {
+		return id;
+	}
+	
+	public void setId(long id) {
+		this.id = id;
+	}
+	
+	public long getIdDoc() {
 		return idDoc;
 	}
-	
-	public void setIdDoc(int idDoc) {
+
+
+	public void setIdDoc(long idDoc) {
 		this.idDoc = idDoc;
 	}
-	
+
+
 	public String getStringDocument() {
 		return stringDocument;
 	}
@@ -49,14 +59,6 @@ public class Document {
 	public int getLength() {
 		int c = 0;
 		String[] arrString = stringDocument.split(" ");
-		
-		/*for (int i = 0; i < arrString.length; i++) {
-			if (arrString[i] == "" || arrString[i] == " ") {
-				c += 1;
-			}
-		}
-		
-		System.out.println("Ligne vide doc " + idDoc + " : " + c);*/
 		
 		return arrString.length;
 		
@@ -128,9 +130,7 @@ public class Document {
 				
 		}
 
-		 return builder.toString().trim();//trim enleve les surespacementss
-	
-	
+		 return builder.toString().trim();  // trim enleve les surespacementss
 	}
 
 
@@ -141,5 +141,16 @@ public class Document {
 
 	public void setCheminDocument(String cheminDocument) {
 		this.cheminDocument = cheminDocument;
+	}
+
+
+	public static Document getDocumentFromId(Long id, List<Document> docs) {
+		
+		for (int i = 0; i < docs.size(); i++) {
+			if (id == docs.get(i).getId())
+				return docs.get(i);
+		}
+		
+		return null;
 	}
 }

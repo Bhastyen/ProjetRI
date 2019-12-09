@@ -1,4 +1,6 @@
+import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -9,10 +11,10 @@ import java.util.Map.Entry;
 
 public class Models {
 
-	public static List<Entry<Integer, Float>> CosineScore (
+	public static List<Entry<Document, Float>> CosineScore (
 			String query,
-			HashMap<String, Map<Integer, Long>> postingList,
-			HashMap<Integer, Map<String, Long>> postingListPerDoc,
+			HashMap<String, Map<Long, Long>> postingList,
+			HashMap<Long, Map<String, Long>> postingListPerDoc,
 			List<Document> documents,
 			String param) 
 	{
@@ -20,20 +22,23 @@ public class Models {
 		query= query.toLowerCase();
 		String[] arrQuery = query.split(" ");
 
-		List<Entry<Integer, Long>> docs;  // <id du document , tf>
-		HashMap<Integer, Float> docIdScore = new HashMap<>();  // DocId , score par document
-		ArrayList<Entry<Integer, Float>> list; // DocId , score par document (pour recup plus tard)
-		Map<String,Float> otherParameters = new HashMap<String,Float>();
+		List<Entry<Long, Long>> docs;  // <id du document , tf>
+		HashMap<Long, Float> docIdScore = new HashMap<>();  // DocId , score par document
+		ArrayList<Entry<Long, Float>> list; // DocId , score par document (pour recup plus tard)
+		Map<String, Float> otherParameters = new HashMap<String, Float>();
+		
 		if (Character.toString(param.charAt(2)).equals("2")){
 			otherParameters.put("k",normalization.k(param));
 			otherParameters.put("b",normalization.b(param));
 			otherParameters.put("ave_len",normalization.ave_len(postingListPerDoc));
 		}
+		
 		if (Character.toString(param.charAt(2)).equals("u")){
 			otherParameters.put("slope",normalization.slope(param));
 			otherParameters.put("pivot",normalization.pivot(postingListPerDoc));
 			otherParameters.put("ave_len",normalization.ave_len(postingListPerDoc));		
 		}
+		
 		//Pour chaque mot de la requete
 		for(String wordQuery : arrQuery) {
 
@@ -47,13 +52,13 @@ public class Models {
 				//				weight = normalization.W(param, wordQuery, 0, postingListPerDoc, postingList, true);
 
 				docs = new ArrayList<>(postingList.get(wordQuery).entrySet());
-				for (Entry<Integer, Long> pair : docs) {   // <id du document , tf>
+				for (Entry<Long, Long> pair : docs) {   // <id du document , tf>
 
 					if (docIdScore.get(pair.getKey()) == null)   // ajout de l entree dans le dico s il n existe pas
 						docIdScore.put(pair.getKey(), 0f);
 
 					score = docIdScore.get(pair.getKey());
-					score += normalization.W(param, wordQuery, pair.getKey(), postingListPerDoc, postingList, otherParameters,false) ;
+					score += normalization.W(param, wordQuery, pair.getKey(), postingListPerDoc, postingList, otherParameters, false);
 					//					score *= weight;
 
 					docIdScore.put(pair.getKey(), score);
@@ -63,12 +68,15 @@ public class Models {
 			}
 		}
 
+		// gerer le recouvrement
+		
+		
 		// trie les documents par rapport a leur score calcule pour la requete
 		list = new ArrayList<>(docIdScore.entrySet());
-		Collections.sort(list, new Comparator<Entry<Integer, Float>>() {
+		Collections.sort(list, new Comparator<Entry<Long, Float>>() {
 
 			@Override
-			public int compare(Entry<Integer, Float> e1, Entry<Integer, Float> e2) {
+			public int compare(Entry<Long, Float> e1, Entry<Long, Float> e2) {
 				if (e1.getValue() > e2.getValue())
 					return -1;
 
@@ -79,7 +87,22 @@ public class Models {
 			}
 
 		});
+		
+		// corriger les problemes de recouvrement
+		List<Entry<Document, Float>> results = new ArrayList<>();
+		for (int i = 0; i < list.size() && i < Main.NUMBER_OF_DOCUMENT_BY_QUERY; i ++) {
+			results.add(new AbstractMap.SimpleEntry<Document, Float>(Document.getDocumentFromId(list.get(i).getKey(), documents), list.get(i).getValue()));
+		}
 
-		return list;   // renvoie la liste des resultats tries
+		return results;   // renvoie la liste des resultats tries
 	}
+	
+	
+	private static List<Entry<Document, Float>> SupprimerRecouvrement(List<Entry<Document, Float>> docs){
+		//Arrays.binarySearch(docs, arg1, arg2)
+		
+		
+		return docs;
+	}
+	
 }

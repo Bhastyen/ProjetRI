@@ -9,8 +9,8 @@ public class IDF {
 	public static float idf(
 			String smart, 
 			String term, 
-			Map<String, Map<Integer,Long>> postingListTerm, 
-			Map<Integer, Map<String,Long>> postingListDoc) {
+			Map<String, Map<Long,Long>> postingListTerm, 
+			Map<Long, Map<String,Long>> postingListDoc) {
 		switch(smart) {
 		case "n":
 			return (float) n(term, postingListTerm, postingListDoc);
@@ -37,8 +37,8 @@ public class IDF {
 	
 	public static int n(
 			String term, 
-			Map<String, Map<Integer, Long>> postingListTerm, 
-			Map<Integer, Map<String, Long>> postingListDoc) {
+			Map<String, Map<Long, Long>> postingListTerm, 
+			Map<Long, Map<String, Long>> postingListDoc) {
 		
 		int idf;
 		
@@ -49,12 +49,12 @@ public class IDF {
 	
 	public static double i(
 			String term, 
-			Map<String, Map<Integer, Long>> postingListTerm, 
-			Map<Integer, Map<String, Long>> postingListDoc) {
+			Map<String, Map<Long, Long>> postingListTerm, 
+			Map<Long, Map<String, Long>> postingListDoc) {
 		
 		double idf; // Weight to return
 		int N = postingListDoc.size();   // number of documents
-		Map<Integer, Long> occDoc = postingListTerm.get(term);   // list of pair of NumOcc,DocId for the term
+		Map<Long, Long> occDoc = postingListTerm.get(term);   // list of pair of NumOcc,DocId for the term
 		int n = occDoc.size(); // number of documents which contain term
 		
 		N=1000;
@@ -82,12 +82,12 @@ public class IDF {
 	
 	public static double l(
 			String term, 
-			Map<String, Map<Integer, Long>> postingListTerm, 
-			Map<Integer, Map<String, Long>> postingListDoc) {
+			Map<String, Map<Long, Long>> postingListTerm, 
+			Map<Long, Map<String, Long>> postingListDoc) {
 		
 		double idf;
 		int N = postingListDoc.size(); //number of documents in the data
-		Map<Integer, Long> occDoc = postingListTerm.get(term);  //Map of docId,occurrence for the term
+		Map<Long, Long> occDoc = postingListTerm.get(term);  //Map of docId,occurrence for the term
 		int n = occDoc.size(); // count how many documents contain the term
 		
 		idf= Math.log10(1 + (float) N/n);
@@ -97,11 +97,11 @@ public class IDF {
 	
 	public static double f(
 			String term, 
-			Map<String, Map<Integer, Long>> postingListTerm, 
-			Map<Integer, Map<String, Long>> postingListDoc) {
+			Map<String, Map<Long, Long>> postingListTerm, 
+			Map<Long, Map<String, Long>> postingListDoc) {
 		
 		double idf;
-		Map<Integer, Long> occDoc = postingListTerm.get(term);
+		Map<Long, Long> occDoc = postingListTerm.get(term);
 		int n = occDoc.size();
 		
 		idf = 1.0/n;
@@ -112,12 +112,12 @@ public class IDF {
 	
 	public static double p(
 			String term, 
-			Map<String, Map<Integer, Long>> postingListTerm, 
-			Map<Integer, Map<String, Long>> postingListDoc) {
+			Map<String, Map<Long, Long>> postingListTerm, 
+			Map<Long, Map<String, Long>> postingListDoc) {
 
 		double idf;
 		int N = postingListDoc.size();
-		Map<Integer, Long> occDoc = postingListTerm.get(term);
+		Map<Long, Long> occDoc = postingListTerm.get(term);
 		int n = occDoc.size();
 
 		idf= Math.log10((N-n)/(float) n);
@@ -127,18 +127,18 @@ public class IDF {
 
 	public static double P(
 			String term, 
-			Map<String, Map<Integer, Long>> postingListTerm, 
-			Map<Integer, Map<String, Long>> postingListDoc) {
+			Map<String, Map<Long, Long>> postingListTerm, 
+			Map<Long, Map<String, Long>> postingListDoc) {
 		
 		double idf;
 		List<Integer> N = new ArrayList<Integer>();  //List of all the df
-		Map<Integer, Long> occDoc = postingListTerm.get(term);
+		Map<Long, Long> occDoc = postingListTerm.get(term);
 		int n = occDoc.size();
 		int maxN;
 		
 
-        for (Map.Entry<String, Map<Integer, Long>> mapentry : postingListTerm.entrySet()) {
-			Map<Integer, Long> TermMap = (Map<Integer, Long>) mapentry.getValue();
+        for (Map.Entry<String, Map<Long, Long>> mapentry : postingListTerm.entrySet()) {
+			Map<Long, Long> TermMap = (Map<Long, Long>) mapentry.getValue();
         	N.add(TermMap.size()); // for all terms, add the number of doc in which they appear
         }
 		
@@ -151,12 +151,12 @@ public class IDF {
 	
 	public static double s(
 			String term,
-			Map<String, Map<Integer, Long>> postingListTerm, 
-			Map<Integer, Map<String, Long>> postingListDoc) {
+			Map<String, Map<Long, Long>> postingListTerm, 
+			Map<Long, Map<String, Long>> postingListDoc) {
 		
 		double idf;
 		int N = postingListDoc.size();
-		Map<Integer, Long> occDoc = postingListTerm.get(term);
+		Map<Long, Long> occDoc = postingListTerm.get(term);
 		int n = occDoc.size();
 		
 
@@ -169,11 +169,11 @@ public class IDF {
 	
 	private static float bm25(
 			String term, 
-			Map<String, Map<Integer, Long>> postingListTerm,
-			Map<Integer, Map<String, Long>> postingListDoc) {
+			Map<String, Map<Long, Long>> postingListTerm,
+			Map<Long, Map<String, Long>> postingListDoc) {
 		double idf;
 		int N = postingListDoc.size();
-		Map<Integer, Long> occDoc = postingListTerm.get(term);
+		Map<Long, Long> occDoc = postingListTerm.get(term);
 		int n = occDoc.size();
 
 		// for test

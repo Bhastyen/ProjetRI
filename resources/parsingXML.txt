@@ -1,8 +1,16 @@
-idDoc 17630792Contenu c d d d e e e e a d e
+idDoc 176307921111 Contenu c d d d e e e e a d e Chemin article[1]/bdy[1]/sec[1]/p[1]/
 
+idDoc 17630792111 Contenu c d d d e e e e a d e Chemin article[1]/bdy[1]/sec[1]/
 
+idDoc 1763079211 Contenu c d d d e e e e a d e Chemin article[1]/bdy[1]/
 
-idDoc 17630793Contenu a b b b b c
+idDoc 176307921 Contenu c d d d e e e e a d e Chemin article[1]/
 
+idDoc 176307931111 Contenu a b b b b c Chemin article[1]/bdy[1]/sec[1]/p[1]/
 
+idDoc 17630793111 Contenu a b b b b c Chemin article[1]/bdy[1]/sec[1]/
+
+idDoc 1763079311 Contenu a b b b b c Chemin article[1]/bdy[1]/
+
+idDoc 176307931 Contenu a b b b b c Chemin article[1]/
 

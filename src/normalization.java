@@ -9,9 +9,9 @@ public class normalization {
 	public static float W(
 			String smart,   // format "***" 
 			String term,
-			int docId,
-			Map<Integer, Map<String, Long>> postingListDoc,
-			Map<String, Map<Integer, Long>> postingListTerm,
+			long docId,
+			Map<Long, Map<String, Long>> postingListDoc,
+			Map<String, Map<Long, Long>> postingListTerm,
 			Map<String, Float> otherParameters,
 			boolean queryMod) {
 
@@ -44,8 +44,8 @@ public class normalization {
 	private static float query(
 			String smart, 
 			String term, 
-			int docId, Map<Integer, Map<String, Long>> postingListDoc,
-			Map<String, Map<Integer, Long>> postingListTerm) 
+			long docId, Map<Long, Map<String, Long>> postingListDoc,
+			Map<String, Map<Long, Long>> postingListTerm) 
 	{
 		String dfMethod = Character.toString(smart.charAt(1));  //function to use for idf
 		float idf;
@@ -61,9 +61,9 @@ public class normalization {
 	public static float n(
 			String smart,   // format "***"
 			String term,
-			int docId,
-			Map<Integer, Map<String, Long>> postingListDoc,
-			Map<String, Map<Integer, Long>> postingListTerm)
+			long docId,
+			Map<Long, Map<String, Long>> postingListDoc,
+			Map<String, Map<Long, Long>> postingListTerm)
 	{
 		
 		String tfMethod = Character.toString(smart.charAt(0));  //function to use for tf
@@ -85,9 +85,9 @@ public class normalization {
 	public static float c(
 			String smart,
 			String term,
-			int docId,
-			Map<Integer, Map<String, Long>> postingListDoc,
-			Map<String, Map<Integer, Long>> postingListTerm)
+			long docId,
+			Map<Long, Map<String, Long>> postingListDoc,
+			Map<String, Map<Long, Long>> postingListTerm)
 	{
 		
 		String tfMethod = Character.toString(smart.charAt(0));
@@ -97,7 +97,7 @@ public class normalization {
 		float w;
 		float sum = 0;
 		float sumElement;
-		Map<String,Long> docMap = postingListDoc.get(docId); //Map of term,occ for doc=docId
+		Map<String, Long> docMap = postingListDoc.get(docId); //Map of term,occ for doc=docId
 		
 		for(Entry<String, Long> mapentry : docMap.entrySet()) {
 			tf = TF.tf(tfMethod, mapentry.getKey(), docId, postingListDoc);
@@ -118,9 +118,9 @@ public class normalization {
 	public static float s(
 			String smart,
 			String term,
-			int docId,
-			Map<Integer, Map<String, Long>> postingListDoc,
-			Map<String, Map<Integer, Long>> postingListTerm)
+			long docId,
+			Map<Long, Map<String, Long>> postingListDoc,
+			Map<String, Map<Long, Long>> postingListTerm)
 	{
 		
 		String tfMethod = Character.toString(smart.charAt(0));
@@ -150,9 +150,9 @@ public class normalization {
 	public static float u(		
 			String smart,
 			String term,
-			int docId,
-			Map<Integer, Map<String, Long>> postingListDoc,
-			Map<String, Map<Integer, Long>> postingListTerm,
+			long docId,
+			Map<Long, Map<String, Long>> postingListDoc,
+			Map<String, Map<Long, Long>> postingListTerm,
 			Map<String, Float> otherParameters)	{
 
 
@@ -187,9 +187,9 @@ public class normalization {
 	public static float bm25(
 			String smart,	// format : "bm25, ___.___, ___.___"
 			String term,
-			int docId,
-			Map<Integer, Map<String, Long>> postingListDoc,
-			Map<String, Map<Integer, Long>> postingListTerm,
+			long docId,
+			Map<Long, Map<String, Long>> postingListDoc,
+			Map<String, Map<Long, Long>> postingListTerm,
 			Map<String, Float> otherParameters)
 	{
 		String tfMethod = "n";
@@ -222,21 +222,21 @@ public class normalization {
 	
 	/// Other functions useful for avoiding repeating operations each time
 
-	public static float pivot(Map<Integer, Map<String, Long>> postingListDoc) {
+	public static float pivot(Map<Long, Map<String, Long>> postingListDoc) {
 		int pivot=0;
 		
-		for(Entry<Integer, Map<String, Long>> docMap : postingListDoc.entrySet()) { // for each documents
+		for(Entry<Long, Map<String, Long>> docMap : postingListDoc.entrySet()) { // for each documents
 			pivot += docMap.getValue().size();		// add the distinct terms to the average
 		}
 		pivot /= postingListDoc.size(); // divide the total of distinct terms by the number of doc
 		return pivot;
 	}
 	
-	public static float ave_len(Map<Integer, Map<String, Long>> postingListDoc) {
+	public static float ave_len(Map<Long, Map<String, Long>> postingListDoc) {
 		Map<String, Long> doc_pairs;
 		int ave_len=0;
 		
-		for(Entry<Integer, Map<String, Long>> docMap : postingListDoc.entrySet()) { // for each documents
+		for(Entry<Long, Map<String, Long>> docMap : postingListDoc.entrySet()) { // for each documents
 			doc_pairs = docMap.getValue(); 	// get the pairs of this document
 			for(Entry<String, Long> pair : doc_pairs.entrySet()) { // for each term per documents...
 				ave_len += pair.getValue(); 						// ...add the occurrence of this term

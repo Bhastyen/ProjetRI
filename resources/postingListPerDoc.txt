@@ -1,0 +1,8 @@
+key 176307921 term/nbOccu{a=1, c=1, d=4, e=5}
+key 17630793111 term/nbOccu{a=1, b=4, c=1}
+key 1763079311 term/nbOccu{a=1, b=4, c=1}
+key 176307931 term/nbOccu{a=1, b=4, c=1}
+key 176307921111 term/nbOccu{a=1, c=1, d=4, e=5}
+key 17630792111 term/nbOccu{a=1, c=1, d=4, e=5}
+key 176307931111 term/nbOccu{a=1, b=4, c=1}
+key 1763079211 term/nbOccu{a=1, c=1, d=4, e=5}

@@ -10,19 +10,19 @@ import java.util.stream.Collectors;
 
 public class Indexator {
 
-	private HashMap<String, Map<Integer, Long>> postingList;
-	private HashMap<Integer, Map<String, Long>> postingListPerDoc;
+	private HashMap<String, Map<Long, Long>> postingList;
+	private HashMap<Long, Map<String, Long>> postingListPerDoc;
 
 	public Indexator() {
-		postingList = new HashMap<String, Map<Integer, Long>>();
-		postingListPerDoc = new HashMap<Integer, Map<String, Long>>();
+		postingList = new HashMap<String, Map<Long, Long>>();
+		postingListPerDoc = new HashMap<Long, Map<String, Long>>();
 	}
 
-	public HashMap<String, Map<Integer, Long>> getPostingList() {
+	public HashMap<String, Map<Long, Long>> getPostingList() {
 		return postingList;
 	}
 
-	public HashMap<Integer, Map<String, Long>> getPostingListPerDoc() {
+	public HashMap<Long, Map<String, Long>> getPostingListPerDoc() {
 		return postingListPerDoc;
 	}
 
@@ -30,14 +30,16 @@ public class Indexator {
 	public void createIndex(List<Document> listDoc) {
 		List<String> listWords;
 
-		int docid = 0;
+		long docid = 0;
 		long nbOcc = 0;
-		String stem; 
+		
+		String stem;
+		
 		// Pour tous les documents
 		for (Document doc : listDoc) {
 
 			// On récupère le doc Id
-			docid = doc.getIdDoc();
+			docid = doc.getId();
 
 			// On split le string selon les espaces
 			String[] splitString = doc.getStringDocument().split(" +");
@@ -52,7 +54,7 @@ public class Indexator {
 			postingListPerDoc.put(docid, frequencyMap);
 			
 			// Loop pour faire la posting list
-			for (Map.Entry<String,Long> word : frequencyMap.entrySet()) {
+			for (Map.Entry<String, Long> word : frequencyMap.entrySet()) {
 
 					// On récupère le nombre d'occurence du mot
 					nbOcc = word.getValue();
@@ -64,14 +66,14 @@ public class Indexator {
 					if (postingList.containsKey(stem)) {
 						postingList.get(stem).put(docid, nbOcc);
 					}else {
-						postingList.put(stem, new HashMap<Integer, Long>());
+						postingList.put(stem, new HashMap<Long, Long>());
 						postingList.get(stem).put(docid, nbOcc);
 					}
 			}
 
 		}
 
-		System.out.println(postingListPerDoc.size() + "  " + listDoc.size());
-		System.out.println(postingList.size());
+		System.out.println("Posting List Per Doc : " + postingListPerDoc.size() + "  " + listDoc.size());
+		System.out.println("Posting List : " + postingList.size());
 	}
 }

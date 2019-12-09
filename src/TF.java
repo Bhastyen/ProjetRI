@@ -4,7 +4,7 @@ import java.util.Map.Entry;
 public class TF {
 	
 	
-	public static float tf(String smart, String term, int docId, Map<Integer, Map<String, Long>> postingList) {
+	public static float tf(String smart, String term, long docId, Map<Long, Map<String, Long>> postingList) {
 		// need postingList with docId as key
 		
 //		try{
@@ -35,7 +35,7 @@ public class TF {
 	}
 	
 
-	public static float b(String term, int docId, Map<Integer, Map<String, Long>> postingList) {
+	public static float b(String term, long docId, Map<Long, Map<String, Long>> postingList) {
 		try {
 			Map<String, Long> docMap = postingList.get(docId);
 			long tf = docMap.get(term);
@@ -47,7 +47,7 @@ public class TF {
 
 
 	
-	public static float n(String term, int docId, Map<Integer, Map<String, Long>> postingList) {
+	public static float n(String term, long docId, Map<Long, Map<String, Long>> postingList) {
 		Map<String, Long> docMap = postingList.get(docId);
 		long tf = docMap.get(term);
 
@@ -55,7 +55,7 @@ public class TF {
 	}
 	
 	
-	public static float m(String term, int docId, Map<Integer, Map<String, Long>> postingList) {
+	public static float m(String term, long docId, Map<Long, Map<String, Long>> postingList) {
 		Map<String, Long> docMap = postingList.get(docId);
 		List<Long> occ = new ArrayList<Long>();
 		float tf;
@@ -70,7 +70,7 @@ public class TF {
 		return tf;
 	}
 	
-	public static float a(String term, int docId, Map<Integer, Map<String, Long>> postingList) {
+	public static float a(String term, long docId, Map<Long, Map<String, Long>> postingList) {
 		Map<String, Long> docMap = postingList.get(docId);
 		List<Long> occ = new ArrayList<Long>();
 		float tf;
@@ -86,7 +86,7 @@ public class TF {
 	}
 	
 	
-	public static float s(String term, int docId, Map<Integer, Map<String, Long>> postingList) {
+	public static float s(String term, long docId, Map<Long, Map<String, Long>> postingList) {
 		Map<String, Long> docMap = postingList.get(docId);
 		float tf = docMap.get(term);
 		
@@ -96,9 +96,9 @@ public class TF {
 	}
 	
 	
-	public static float l(String term, int docId, Map<Integer, Map<String, Long>> postingList) {
+	public static float l(String term, long docId, Map<Long, Map<String, Long>> postingList) {
 		Map<String, Long> docMap = postingList.get(docId);
-		float tf = docMap.get(term);
+		float tf = docMap.get(term) == null? 0 : docMap.get(term);
 
 		tf = (float) (1 + Math.log10(tf));
 			
@@ -106,7 +106,7 @@ public class TF {
 	}
 	
 	
-	public static float L(String term, int docId, Map<Integer, Map<String, Long>> postingList) {
+	public static float L(String term, long docId, Map<Long, Map<String, Long>> postingList) {
 		Map<String, Long> docMap = postingList.get(docId);
 		long occ = 0;
 		long positiveocc = 0;

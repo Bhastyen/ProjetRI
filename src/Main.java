@@ -30,10 +30,11 @@ public class Main {
 		List<Document> docsBrut, docsXML;
 		List<String> queries;
 
-		HashMap<String, Map<Integer, Long>> postingList = null;
-		HashMap<Integer, Map<String, Long>> postingListPerDoc = null;
-		HashMap<String, Map<Integer, Long>> postingListXML = null;
-		HashMap<Integer, Map<String, Long>> postingListPerDocXML = null;
+		HashMap<String, Map<Long, Long>> postingList = null;
+		HashMap<Long, Map<String, Long>> postingListPerDoc = null;
+		HashMap<String, Map<Long, Long>> postingListXML = null;
+		HashMap<Long, Map<String, Long>> postingListPerDocXML = null;
+		
 		//File query = new File("resources/topics_M2WI7Q_2019_20.txt");
 		File query = new File("resources/test-reduit/queryTest/query.txt");
 
@@ -56,9 +57,10 @@ public class Main {
 		postingListPerDocXML = indexatorXML.getPostingListPerDoc();
 		System.out.println("Indexator End");
 
-		System.out.println("Posting list size : " + postingList.size());
+		System.out.println("Posting list size : " + postingListXML.size());
 		
-		 OutPutFilePostingList(postingList);
+		OutPutFilePostingList(postingListXML);
+		OutPutFilePostingListPerDoc(postingListPerDocXML);
 		//System.out.println("Doc "+ docsBrut.get(1597).getIdDoc() + "   Brut " + docsBrut.get(1597).getLength() +
 		//		" Doc " + docsXML.get(1597).getIdDoc() + "  XML " + docsXML.get(1597).getLength());
 
@@ -108,22 +110,22 @@ public class Main {
 	public static void writeAllRuns(List<String> queries, String path,
 			String nomEquipe, String etape,
 			String granularite, List<Document> docs,
-			HashMap<String, Map<Integer, Long>> postingList,
-			HashMap<Integer, Map<String, Long>> postingListPerDoc) {
+			HashMap<String, Map<Long, Long>> postingList,
+			HashMap<Long, Map<String, Long>> postingListPerDoc) {
 
-		List<Entry<Integer, Float>> cosScore;
+		List<Entry<Document, Float>> cosScore;
 
 		for (int numRun = 0; numRun < PARAMETERS.length; numRun ++) {
 			BufferedWriter buff;
-			File out = new File(path + nomEquipe + "_" + etape + "_" + "0"+(numRun+1) + "_" + PARAMETERS[numRun].toUpperCase() + "_" + "articles" + ".txt");
+			File out = new File(path + nomEquipe + "_" + etape + "_" + "0" + (numRun + 1) + "_" + PARAMETERS[numRun].toUpperCase() + "_" + GRANULARITE + ".txt");
 
 			try {
 				buff = new BufferedWriter(new FileWriter(out));
 
 				for (String q : queries) {
+					cosScore = Models.CosineScore(q.substring(8), postingList, postingListPerDoc, docs, PARAMETERS[numRun]);
 					//TODO futur Hash par liste de document du "gros doc" faire loop pour appeler cosine score
 					//TODO comparatif score entre parents / enfants
-					cosScore = Models.CosineScore(q.substring(8), postingList, postingListPerDoc, docs, PARAMETERS[numRun]);
 					writeRun(buff, nomEquipe, q.substring(0, 7), cosScore);
 				}
 
@@ -136,20 +138,22 @@ public class Main {
 
 	}
 
-	public static void writeRun(BufferedWriter buff, String nomEquipe, String numQuery, List<Entry<Integer, Float>> cosScore) throws IOException {
+	public static void writeRun(BufferedWriter buff, String nomEquipe, String numQuery, List<Entry<Document, Float>> cosScore) throws IOException {
+		Document d;
 		int number_doc = cosScore.size();
 
 		if (number_doc > NUMBER_OF_DOCUMENT_BY_QUERY)
 			number_doc = NUMBER_OF_DOCUMENT_BY_QUERY;
 
 		for (int i = 0; i < number_doc; i++) {
-			buff.append(numQuery + " Q0 " + cosScore.get(i).getKey() + " " + (i+1) + " " + cosScore.get(i).getValue() + " " + nomEquipe + " /article[1]");
+			d = cosScore.get(i).getKey();
+			buff.append(numQuery + " Q0 " + d.getIdDoc() + " " + (i+1) + " " + cosScore.get(i).getValue() + " " + nomEquipe + " " + d.getCheminDocument());
 			buff.newLine();
 		}
 
 	}
 
-	public static  void  OutPutFilePostingList(HashMap<String, Map<Integer, Long>> postingList) {
+	public static  void  OutPutFilePostingList(HashMap<String, Map<Long, Long>> postingList) {
 		BufferedWriter buff;
 		File out = new File("resources/postingList.txt");
 		System.out.println("Ecrit posting fichier");
@@ -157,7 +161,7 @@ public class Main {
 		try {
 			buff = new BufferedWriter(new FileWriter(out));
 			System.out.println("dans try");
-			for (Entry<String, Map<Integer, Long>> p : postingList.entrySet()) {//String : key (mot) Map Integer:doc id Long nombre occurence
+			for (Entry<String, Map<Long, Long>> p : postingList.entrySet()) {//String : key (mot) Map Integer:doc id Long nombre occurence
 				buff.append("key " + p.getKey() + " DocId/nbOccu" + p.getValue().toString());
 				buff.newLine();
 			}
@@ -166,9 +170,28 @@ public class Main {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
 		System.out.println("Ecrit posting fichier FIN");
 
 	}
+
+	public static void OutPutFilePostingListPerDoc(HashMap<Long, Map<String, Long>> postingListPerDocXML) {
+		BufferedWriter buff;
+		File out = new File("resources/postingListPerDoc.txt");
+		
+		try {
+			buff = new BufferedWriter(new FileWriter(out));
+			for (Entry<Long, Map<String, Long>> p : postingListPerDocXML.entrySet()) {//String : key (mot) Map Integer:doc id Long nombre occurence
+				buff.append("key " + p.getKey() + " term/nbOccu" + p.getValue().toString());
+				buff.newLine();
+			}
+
+			buff.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	public static  void  OutPutFileParsingBrut(List<Document> docs) {
 		BufferedWriter buff;
 		File out = new File("resources/parsingBrut.txt");
@@ -178,7 +201,7 @@ public class Main {
 //			System.out.println("dans try");
 			for (Document doc : docs) {//String : key (mot) Map Integer:doc id Long nombre occurence
 //				System.out.println(" Brut doc size : " + doc.getLength());
-				buff.append("idDoc " + doc.getIdDoc() + "Contenu " + doc.getStringDocument());
+				buff.append("idDoc " + doc.getId() + "Contenu " + doc.getStringDocument());
 				buff.newLine();
 				buff.newLine();
 				buff.newLine();
@@ -202,9 +225,7 @@ public class Main {
 //			System.out.println("dans try");
 			for (Document doc : docs) {//String : key (mot) Map Integer:doc id Long nombre occurence
 //				System.out.println(" XML doc size : " + doc.getLength());
-				buff.append("idDoc " + doc.getIdDoc() + "Contenu " + doc.getStringDocument());
-				buff.newLine();
-				buff.newLine();
+				buff.append("idDoc " + doc.getId() + " Contenu " + doc.getStringDocument() + " Chemin " + doc.getCheminDocument());
 				buff.newLine();
 				buff.newLine();
 			}

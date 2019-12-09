@@ -29,7 +29,6 @@ public class ParserXML{
 		}
     }
     
-	
 	public List<Document> parse() {
 		List<Document> docs = new ArrayList<Document>();
 		MyDocHandler handler;

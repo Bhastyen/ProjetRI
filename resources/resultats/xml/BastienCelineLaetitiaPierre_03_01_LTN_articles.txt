@@ -1,2 +1,8 @@
-1234567 Q0 17630792 1 3.022882 BastienCelineLaetitiaPierre /article[1]
-1234567 Q0 17630793 2 2.0 BastienCelineLaetitiaPierre /article[1]
+1234567 Q0 17630792 1 2.7406456 BastienCelineLaetitiaPierre article[1]/
+1234567 Q0 17630792 2 2.7406456 BastienCelineLaetitiaPierre article[1]/bdy[1]/sec[1]/p[1]/
+1234567 Q0 17630792 3 2.7406456 BastienCelineLaetitiaPierre article[1]/bdy[1]/sec[1]/
+1234567 Q0 17630792 4 2.7406456 BastienCelineLaetitiaPierre article[1]/bdy[1]/
+1234567 Q0 17630793 5 2.0 BastienCelineLaetitiaPierre article[1]/bdy[1]/sec[1]/
+1234567 Q0 17630793 6 2.0 BastienCelineLaetitiaPierre article[1]/bdy[1]/
+1234567 Q0 17630793 7 2.0 BastienCelineLaetitiaPierre article[1]/
+1234567 Q0 17630793 8 2.0 BastienCelineLaetitiaPierre article[1]/bdy[1]/sec[1]/p[1]/
