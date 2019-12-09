@@ -121,6 +121,8 @@ public class Main {
 				buff = new BufferedWriter(new FileWriter(out));
 
 				for (String q : queries) {
+					//TODO futur Hash par liste de document du "gros doc" faire loop pour appeler cosine score
+					//TODO comparatif score entre parents / enfants
 					cosScore = Models.CosineScore(q.substring(8), postingList, postingListPerDoc, docs, PARAMETERS[numRun]);
 					writeRun(buff, nomEquipe, q.substring(0, 7), cosScore);
 				}

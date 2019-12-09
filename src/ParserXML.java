@@ -50,6 +50,7 @@ public class ParserXML{
 					//docs.add(new Document(handler.getId(), Document.sentenceProcessing(handler.getContenu())));
 					//docs + docsHandler
 					docs.addAll(handler.getDocs());
+					//HashMap(id,docs); docs = new list
 				}
 			}
 		} catch (SAXException | IOException e) {
