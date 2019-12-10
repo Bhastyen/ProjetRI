@@ -22,9 +22,9 @@ public class Models {
 		query= query.toLowerCase();
 		String[] arrQuery = query.split(" ");
 
+		List<Entry<Document, Float>> results;   // document, score  resultats du cosine score
 		List<Entry<Long, Long>> docs;  // <id du document , tf>
 		HashMap<Long, Float> docIdScore = new HashMap<>();  // DocId , score par document
-		ArrayList<Entry<Long, Float>> list; // DocId , score par document (pour recup plus tard)
 		Map<String, Float> otherParameters = new HashMap<String, Float>();
 		
 		if (Character.toString(param.charAt(2)).equals("2")){
@@ -69,14 +69,17 @@ public class Models {
 		}
 
 		// gerer le recouvrement
+		results = getDocumentAndScore(docIdScore, documents);
+		
+		// TODO Ajouter les fils d'un element
+		// TODO Parcourir l'arbre du document et ressortir les elements les plus pertinents
 		
 		
 		// trie les documents par rapport a leur score calcule pour la requete
-		list = new ArrayList<>(docIdScore.entrySet());
-		Collections.sort(list, new Comparator<Entry<Long, Float>>() {
+		Collections.sort(results, new Comparator<Entry<Document, Float>>() {
 
 			@Override
-			public int compare(Entry<Long, Float> e1, Entry<Long, Float> e2) {
+			public int compare(Entry<Document, Float> e1, Entry<Document, Float> e2) {
 				if (e1.getValue() > e2.getValue())
 					return -1;
 
@@ -88,18 +91,29 @@ public class Models {
 
 		});
 		
-		// corriger les problemes de recouvrement
-		List<Entry<Document, Float>> results = new ArrayList<>();
-		for (int i = 0; i < list.size() && i < Main.NUMBER_OF_DOCUMENT_BY_QUERY; i ++) {
-			results.add(new AbstractMap.SimpleEntry<Document, Float>(Document.getDocumentFromId(list.get(i).getKey(), documents), list.get(i).getValue()));
-		}
 
 		return results;   // renvoie la liste des resultats tries
 	}
 	
+	private static List<Entry<Document, Float>> getDocumentAndScore(Map<Long, Float> docIdScore, List<Document> docs){
+		List<Entry<Document, Float>> results;
+		ArrayList<Entry<Long, Float>> list; // DocId , score par document
+		HashMap<Long, Document> docsMap = new HashMap<>();  // DocId , document  sert a cherhcer efficacement un document par rapport a l'id
+		
+		// TODO chercher le doc de maniere efficace a partir de l'id
+		docsMap = Document.getDocumentsHashMap(docs); 
+
+		// TODO construire la liste List<Entry<Document, Float>>
+		list = new ArrayList<>(docIdScore.entrySet());   // on recupere le score et l'id du document
+		results = new ArrayList<>();
+		for (int i = 0; i < list.size(); i ++) {
+			results.add(new AbstractMap.SimpleEntry<Document, Float>(docsMap.get(list.get(i).getKey()), list.get(i).getValue()));
+		}
+		
+		return results;
+	}
 	
-	private static List<Entry<Document, Float>> SupprimerRecouvrement(List<Entry<Document, Float>> docs){
-		//Arrays.binarySearch(docs, arg1, arg2)
+	private static List<Entry<Document, Float>> RemoveCover(List<Entry<Document, Float>> docs){
 		
 		
 		return docs;

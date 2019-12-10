@@ -2,6 +2,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -144,13 +145,13 @@ public class Document {
 	}
 
 
-	public static Document getDocumentFromId(Long id, List<Document> docs) {
+	public static HashMap<Long, Document> getDocumentsHashMap(List<Document> docs) {
+		HashMap<Long, Document> docsMap = new HashMap<>();
 		
 		for (int i = 0; i < docs.size(); i++) {
-			if (id == docs.get(i).getId())
-				return docs.get(i);
+			docsMap.put(docs.get(i).getId(), docs.get(i));
 		}
 		
-		return null;
+		return docsMap;
 	}
 }
