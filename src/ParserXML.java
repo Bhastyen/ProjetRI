@@ -43,12 +43,14 @@ public class ParserXML{
 				for (int i = 0; i < fichiers.length; i++) {
 					handler = new MyDocHandler();
 					parser.parse(fichiers[i].getPath(), handler);
+					
+					//System.err.println("Docs  " + handler.getId() + " " + i + "  " + fichiers.length);
+					docs.add(handler.getDoc());
 
 					//System.out.println("ID : " + handler.getId());
 					
 					//docs.add(new Document(handler.getId(), Document.sentenceProcessing(handler.getContenu())));
 					//docs + docsHandler
-					docs.addAll(handler.getDocs());
 					//HashMap(id,docs); docs = new list
 				}
 			}

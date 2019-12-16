@@ -195,7 +195,7 @@ public class IDF {
 		}
 		
 		//
-		idf= Math.log10((N-n+0.5)/(n+0.5));
+		idf =  Math.log10((N-n+0.5)/(n+0.5));
 //		System.out.println("idf :"+term+n);
 		return (float) idf;
 	}

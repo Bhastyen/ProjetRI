@@ -15,6 +15,7 @@ public class Document {
 	private long idDoc;
 	private String stringDocument;
 	private String cheminDocument;
+	private List<Long> idFils;
 	
 	
 	public Document(long idDoc, String stringDocument) {
@@ -22,6 +23,7 @@ public class Document {
 		this.idDoc = idDoc;
 		this.stringDocument = stringDocument.toLowerCase();
 		cheminDocument = "/article[1]";
+		setIdFils(new ArrayList<>());
 	}
 	
 
@@ -57,6 +59,16 @@ public class Document {
 		this.stringDocument = stringDocument;
 	}
 	
+	public List<Long> getIdFils() {
+		return idFils;
+	}
+
+
+	public void setIdFils(List<Long> idFils) {
+		this.idFils = idFils;
+	}
+
+
 	public int getLength() {
 		int c = 0;
 		String[] arrString = stringDocument.split(" ");
@@ -90,8 +102,7 @@ public class Document {
 	}
 	
 	public static String createStemming(String original) {
-	
-	return Stemming.stemTerm(original);	
+		return Stemming.stemTerm(original);	
 	}
 	
 	public static String sentenceProcessing(String original) {
@@ -101,37 +112,36 @@ public class Document {
 		StringBuilder builder = new StringBuilder();
 		
 		List<String> stopword = new ArrayList<String>();
-		if(Main.STOPWORD) {//if STOPWORD
+		
+		if (Main.STOPWORD) {//if STOPWORD
 			try {
 				stopword = loadStopwords();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
-		for(String word : allWords) {
-			if(Main.STOPWORD) {//if STOPWORD
-				if(!stopword.contains(word)) {
-					if(Main.STEMMING) {//if STEMMING
+		
+		for (String word : allWords) {
+			if (Main.STOPWORD) {//if STOPWORD
+				if (!stopword.contains(word)) {
+					if (Main.STEMMING) {//if STEMMING
 						word = createStemming(word);
 					}
+					
 					builder.append(word);
 					builder.append(' ');
 				}
-			}
-			else if(Main.STEMMING) {//if STEMMING
+			} else if(Main.STEMMING) {//if STEMMING
 				word = createStemming(word);
 				builder.append(word);
 				builder.append(' ');
-			}else {
+			} else {
 				builder.append(word);
 				builder.append(' ');
 			}
-			
-				
 		}
 
-		 return builder.toString().trim();  // trim enleve les surespacementss
+		return builder.toString().trim();  // trim enleve les surespacementss
 	}
 
 

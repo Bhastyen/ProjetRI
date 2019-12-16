@@ -21,8 +21,8 @@ public class Main {
 	public static final String GRANULARITE = "articles";
 	public static final String OUTPUT_DIR = "resources/resultats/";
 	public static final String OUTPUT_NAME = "BastienCelineLaetitiaPierre";
-	public static final String[] PARAMETERS = new String[] {"ltn"};
-	public static final Boolean STEMMING = true;
+	public static final String[] PARAMETERS = new String[] {"ltn", "bm25,k=1,b=0.5"};
+	public static final Boolean STEMMING = false;
 	public static final Boolean STOPWORD = false;
 
 
@@ -35,29 +35,30 @@ public class Main {
 		HashMap<String, Map<Long, Long>> postingListXML = null;
 		HashMap<Long, Map<String, Long>> postingListPerDocXML = null;
 		
-		//File query = new File("resources/topics_M2WI7Q_2019_20.txt");
-		File query = new File("resources/test-reduit/queryTest/query.txt");
+		File query = new File("resources/topics_M2WI7Q_2019_20.txt");
+		//File query = new File("resources/test-reduit/queryTest/query.txt");
 
 		// parsing des documents
-		docsBrut = parserDoc("resources/test-reduit/TD", Document.Type.BRUT);
-
-		docsXML = parserDoc("resources/test-reduit/XML", Document.Type.XML);
-
-		OutPutFileParsingBrut(docsBrut);
+		//docsBrut = parserDoc("resources/test-reduit/TD", Document.Type.BRUT);
+		//docsXML = parserDoc("resources/test-reduit/XML", Document.Type.XML);
+		//docsBrut = parserDoc("resources/textes_brut", Document.Type.BRUT);
+		docsXML = parserDoc("resources/coll", Document.Type.XML);
+		
+		//OutPutFileParsingBrut(docsBrut);
 		OutPutFileParsingXML(docsXML);
 
 		// indexation
-		Indexator indexator = new Indexator();
+		//Indexator indexator = new Indexator();
 		Indexator indexatorXML = new Indexator();
-		indexator.createIndex(docsBrut);
+		//indexator.createIndex(docsBrut);
 		indexatorXML.createIndex(docsXML);
-		postingList = indexator.getPostingList();
-		postingListPerDoc = indexator.getPostingListPerDoc();
+		//postingList = indexator.getPostingList();
+		//postingListPerDoc = indexator.getPostingListPerDoc();
 		postingListXML = indexatorXML.getPostingList();
 		postingListPerDocXML = indexatorXML.getPostingListPerDoc();
-		System.out.println("Indexator End");
+		//System.out.println("Indexator End");
 
-		System.out.println("Posting list size : " + postingListXML.size());
+		//System.out.println("Posting list size : " + postingListXML.size());
 		
 		OutPutFilePostingList(postingListXML);
 		OutPutFilePostingListPerDoc(postingListPerDocXML);
@@ -66,12 +67,14 @@ public class Main {
 
 		// TEXTE BRUT : calcul du score des documents pour chaque requete et ecriture du run
 		queries = readQuery(query);
-		writeAllRuns(queries, OUTPUT_DIR + "brut/", OUTPUT_NAME, "03", "articles", docsBrut, postingList, postingListPerDoc);
+		//writeAllRuns(queries, OUTPUT_DIR + "brut/", OUTPUT_NAME, "06", "articles", docsBrut, postingList, postingListPerDoc);
 
 		// TEXTE XML : calcul du score des documents pour chaque requete et ecriture du run
-		writeAllRuns(queries, OUTPUT_DIR + "xml/", OUTPUT_NAME, "03", "articles", docsXML, postingListXML, postingListPerDocXML);
+		writeAllRuns(queries, OUTPUT_DIR + "xml/", OUTPUT_NAME, "06", "elements", docsXML, postingListXML, postingListPerDocXML);
+		
+		System.err.println("Size : " + docsXML.size());
 
-		System.out.println("Runs write");
+		//System.out.println("Runs write");
 	}
 
 	// function : parserDoc(String pathResources, Document.Type type) output(List<Document>)  , type = "xml" ou "brut"
@@ -124,9 +127,9 @@ public class Main {
 
 				for (String q : queries) {
 					cosScore = Models.CosineScore(q.substring(8), postingList, postingListPerDoc, docs, PARAMETERS[numRun]);
-					//TODO futur Hash par liste de document du "gros doc" faire loop pour appeler cosine score
-					//TODO comparatif score entre parents / enfants
 					writeRun(buff, nomEquipe, q.substring(0, 7), cosScore);
+					
+					System.err.println("Nombre resultat : " + cosScore.size());
 				}
 
 				buff.close();
@@ -156,11 +159,10 @@ public class Main {
 	public static  void  OutPutFilePostingList(HashMap<String, Map<Long, Long>> postingList) {
 		BufferedWriter buff;
 		File out = new File("resources/postingList.txt");
-		System.out.println("Ecrit posting fichier");
+		//System.out.println("Ecrit posting fichier");
 		
 		try {
 			buff = new BufferedWriter(new FileWriter(out));
-			System.out.println("dans try");
 			for (Entry<String, Map<Long, Long>> p : postingList.entrySet()) {//String : key (mot) Map Integer:doc id Long nombre occurence
 				buff.append("key " + p.getKey() + " DocId/nbOccu" + p.getValue().toString());
 				buff.newLine();
@@ -171,7 +173,7 @@ public class Main {
 			e.printStackTrace();
 		}
 		
-		System.out.println("Ecrit posting fichier FIN");
+		//System.out.println("Ecrit posting fichier FIN");
 
 	}
 
@@ -195,7 +197,7 @@ public class Main {
 	public static  void  OutPutFileParsingBrut(List<Document> docs) {
 		BufferedWriter buff;
 		File out = new File("resources/parsingBrut.txt");
-		System.out.println("Ecrit parser Brut fichier");
+		//System.out.println("Ecrit parser Brut fichier");
 		try {
 			buff = new BufferedWriter(new FileWriter(out));
 //			System.out.println("dans try");
@@ -212,14 +214,14 @@ public class Main {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		System.out.println("Ecrit parsing Brut fichier FIN");
+		//System.out.println("Ecrit parsing Brut fichier FIN");
 
 	}
 	//Faire une seule methode pour Brut et XML mais j'avais la flemme pour tester
 	public static  void  OutPutFileParsingXML(List<Document> docs) {
 		BufferedWriter buff;
 		File out = new File("resources/parsingXML.txt");
-		System.out.println("Ecrit parser XML fichier");
+		//System.out.println("Ecrit parser XML fichier");
 		try {
 			buff = new BufferedWriter(new FileWriter(out));
 //			System.out.println("dans try");
@@ -234,7 +236,7 @@ public class Main {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		System.out.println("Ecrit parsing XML fichier FIN");
+		//System.out.println("Ecrit parsing XML fichier FIN");
 
 	}
 	

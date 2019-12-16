@@ -194,10 +194,10 @@ public class normalization {
 	{
 		String tfMethod = "n";
 		String dfMethod = "bm25";
-		float k=otherParameters.get("k");
-		float b=otherParameters.get("b");
+		float k = otherParameters.get("k");
+		float b = otherParameters.get("b");
 		float tf, idf, w;
-		float ave_len=otherParameters.get("ave_len"), doc_len=0;
+		float ave_len = otherParameters.get("ave_len"), doc_len = 0;
 		
 
 		// compute length of the document we're working on
@@ -209,7 +209,7 @@ public class normalization {
 
 		tf = TF.tf(tfMethod, term, docId, postingListDoc);
 		idf = IDF.idf(dfMethod, term, postingListTerm, postingListDoc);
-		w = (tf*(k+1)) / (tf + k *(1-b+b*(doc_len/ave_len))) * idf; // BM25 formula
+		w = (tf * (k + 1)) / (tf + k * (1 - b + b * (doc_len / ave_len))) * idf; // BM25 formula
 
 		return w;
 	}
@@ -223,18 +223,20 @@ public class normalization {
 	/// Other functions useful for avoiding repeating operations each time
 
 	public static float pivot(Map<Long, Map<String, Long>> postingListDoc) {
-		int pivot=0;
+		float  pivot = 0;
 		
 		for(Entry<Long, Map<String, Long>> docMap : postingListDoc.entrySet()) { // for each documents
 			pivot += docMap.getValue().size();		// add the distinct terms to the average
 		}
+		
 		pivot /= postingListDoc.size(); // divide the total of distinct terms by the number of doc
+		
 		return pivot;
 	}
 	
 	public static float ave_len(Map<Long, Map<String, Long>> postingListDoc) {
 		Map<String, Long> doc_pairs;
-		int ave_len=0;
+		float ave_len = 0;
 		
 		for(Entry<Long, Map<String, Long>> docMap : postingListDoc.entrySet()) { // for each documents
 			doc_pairs = docMap.getValue(); 	// get the pairs of this document
@@ -242,24 +244,31 @@ public class normalization {
 				ave_len += pair.getValue(); 						// ...add the occurrence of this term
 			}
 		}
-		ave_len /= postingListDoc.size(); // divide the total of occurrence by the number of doc
+		
+		ave_len /= (postingListDoc.size() + 0.00001f); // divide the total of occurrence by the number of doc
 		return ave_len;
 	}
 	
 	public static float k(String smart) {
+		//System.out.println("Smart : " + smart);
 		String[] splitted = smart.split(",");
 		String k_string = splitted[1].split("=")[1];
+		
 		float k = Float.valueOf(k_string.trim()).floatValue();
 		return k;
 	}
+	
 	public static float b(String smart) {
 		String[] splitted = smart.split(",");
 		String b_string = splitted[2].split("=")[1];
+		
 		float b = Float.valueOf(b_string.trim()).floatValue();
 		return b;
 	}
+	
 	public static float slope(String smart) {
 		String slope_string = smart.split(",")[1];
+		
 		float slope = Float.valueOf(slope_string.trim()).floatValue();
 		return slope;
 	}
