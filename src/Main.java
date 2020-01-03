@@ -70,7 +70,7 @@ public class Main {
 		//writeAllRuns(queries, OUTPUT_DIR + "brut/", OUTPUT_NAME, "06", "articles", docsBrut, postingList, postingListPerDoc);
 
 		// TEXTE XML : calcul du score des documents pour chaque requete et ecriture du run
-		writeAllRuns(queries, OUTPUT_DIR + "xml/", OUTPUT_NAME, "06", "elements", docsXML, postingListXML, postingListPerDocXML);
+		writeAllRuns(queries, OUTPUT_DIR + "xml/", OUTPUT_NAME, "07", "elements", docsXML, postingListXML, postingListPerDocXML);
 		
 		System.err.println("Size : " + docsXML.size());
 
@@ -84,7 +84,7 @@ public class Main {
 			ParserBrut parser = new ParserBrut(path);
 			return parser.parse();
 		}else {
-			ParserXML parser = new ParserXML(path);
+			ParserXMLElement parser = new ParserXMLElement(path);
 			return parser.parse();
 		}
 	}

@@ -48,6 +48,7 @@ public class ParserXMLElement{
 					docs.addAll(handler.getDocs());
 
 					//System.out.println("ID : " + handler.getId());
+					parser.reset();
 					
 					//docs.add(new Document(handler.getId(), Document.sentenceProcessing(handler.getContenu())));
 					//docs + docsHandler

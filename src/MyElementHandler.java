@@ -36,6 +36,7 @@ public class MyElementHandler extends DefaultHandler {
 				return (d.getStringDocument().isEmpty());
 			}
 		});
+		
 		System.err.println("Nombre de doc viable : " +  docs.size());
 	}
 		
