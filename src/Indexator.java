@@ -3,7 +3,9 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 
@@ -72,8 +74,19 @@ public class Indexator {
 			}
 
 		}
+		
+		// remove lonely words
+		/*ArrayList<Entry<String, Map<Long, Long>>> posting = new ArrayList<>(postingList.entrySet());
+		posting.removeIf(new Predicate<Entry<String, Map<Long, Long>>>() {
+			@Override
+			public boolean test(Entry<String, Map<Long, Long>> entry) {
+				return (entry.getValue().size() <= 1);
+			}
+		});*/
 
+		
 		System.out.println("Posting List Per Doc : " + postingListPerDoc.size() + "  " + listDoc.size());
 		System.out.println("Posting List : " + postingList.size());
+		//System.out.println("Nouvelle Posting List : " + posting.size());
 	}
 }

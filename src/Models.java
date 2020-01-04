@@ -117,18 +117,23 @@ public class Models {
 	
 	// gere le recouvrement de chaque document et renvoie tous les elements pertinents
 	private static List<Long> removeAllCover(List<Document> docs, Map<Long, Float> idDocScore, Map<Long, Document> idDocDoc){
+		List<Entry<Long, Float>> idEntries = new ArrayList<Entry<Long, Float>>(idDocScore.entrySet());
 		List<Long> results = new ArrayList<Long>();
 		List<Long> resultsFils = new ArrayList<Long>();
 		
-		for (int i = 0; i < docs.size(); i++) {
+		for (int i = 0; i < idEntries.size(); i++) {
 			//System.err.println("ID  fils  " + Long.toString(docs.get(i).getId()) + "  doc + 1  " + Long.toString(docs.get(i).getIdDoc()) + "1");
 			
-			if (Long.toString(docs.get(i).getId()).equals(Long.toString(docs.get(i).getIdDoc()) + "1")) {  // si il s'agit de l'element racine "article"
+			/*if (docs.get(i).getType() == Document.Type_Element.ARTICLE) {  // si il s'agit de l'element racine "article"
 				System.out.println("Document : " + docs.get(i).getIdDoc());
 				resultsFils = removeCover(docs.get(i), idDocScore, idDocDoc);
 				results.addAll(resultsFils);   // recupere les elements interessants du document
 				
 				//System.err.println("Nombre resultat : " + resultsFils.size());
+			}*/
+			
+			if (!Float.isNaN(idEntries.get(i).getValue())) {
+				results.add(idEntries.get(i).getKey());   // recupere les elements interessants du document
 			}
 		}
 		

@@ -49,6 +49,7 @@ public class TF {
 	
 	public static float n(String term, long docId, Map<Long, Map<String, Long>> postingList) {
 		Map<String, Long> docMap = postingList.get(docId);
+		System.out.println(term);
 		long tf = docMap.get(term);
 
 		return tf;
@@ -96,12 +97,15 @@ public class TF {
 	}
 	
 	
-	public static float l(String term, long docId, Map<Long, Map<String, Long>> postingList) {
-		Map<String, Long> docMap = postingList.get(docId);
-		float tf = docMap.get(term) == null? 0 : docMap.get(term);
+	public static float l(String term, long docId, Map<Long, Map<String, Long>> postingListDoc) {
+		Map<String, Long> docMap = postingListDoc.get(docId);
+		float tf = 0;
+		
+		if (docMap.containsKey(term))
+			tf = docMap.get(term);
 
 		tf = (float) (1 + Math.log10(tf));
-			
+		
 		return (float) (1f + Math.log10(tf));
 	}
 	

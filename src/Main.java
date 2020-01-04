@@ -21,9 +21,9 @@ public class Main {
 	public static final String GRANULARITE = "articles";
 	public static final String OUTPUT_DIR = "resources/resultats/";
 	public static final String OUTPUT_NAME = "BastienCelineLaetitiaPierre";
-	public static final String[] PARAMETERS = new String[] {"ltn", "bm25,k=1,b=0.5"};
+	public static final String[] PARAMETERS = new String[] {"ltn"};
+	public static final Boolean STOPWORD = true;
 	public static final Boolean STEMMING = false;
-	public static final Boolean STOPWORD = false;
 
 
 	public static void main(String[] args) {
@@ -57,6 +57,10 @@ public class Main {
 		postingListXML = indexatorXML.getPostingList();
 		postingListPerDocXML = indexatorXML.getPostingListPerDoc();
 		//System.out.println("Indexator End");
+		
+		for (int i = 0; i < docsXML.size(); i++) {
+			docsXML.get(i).setStringDocument("");
+		}
 
 		//System.out.println("Posting list size : " + postingListXML.size());
 		

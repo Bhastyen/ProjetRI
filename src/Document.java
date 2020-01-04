@@ -4,18 +4,20 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 
 
 
 public class Document {
+	public static final List<String> STOP_WORD = loadStopwords();
 	public enum Type {XML, BRUT} ;
+	public enum Type_Element {VIDE, ARTICLE, SECTION, PARAGRAPH, TITLE, BOLD, ITALIC, NAME, LINK};
 	
 	private long id;
 	private long idDoc;
 	private String stringDocument;
 	private String cheminDocument;
 	private List<Long> idFils;
+	private Type_Element type = Type_Element.VIDE;
 	
 	
 	public Document(long idDoc, String stringDocument) {
@@ -77,9 +79,15 @@ public class Document {
 		
 	}
 	
-	private static List<String> loadStopwords() throws IOException {
+	private static List<String> loadStopwords(){
+		List<String> stopwords = null;
 		
-		List<String> stopwords = Files.readAllLines(Paths.get("resources/stop-words-eng.txt"));
+		try {
+			stopwords = Files.readAllLines(Paths.get("resources/stop-words-eng.txt"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
 		return stopwords;
 	}
 
@@ -107,19 +115,21 @@ public class Document {
 	
 	public static String sentenceProcessing(String original) {
 		
+		original = original.replaceAll("[^A-Za-z ]", " ");
+		
 		String[] allWords = original.toLowerCase().split(" ");
 		//StringBuilder permet de ne pas surcharger le CPU , utile pour les concatenation
 		StringBuilder builder = new StringBuilder();
 		
-		List<String> stopword = new ArrayList<String>();
+		List<String> stopword = STOP_WORD;
 		
-		if (Main.STOPWORD) {//if STOPWORD
+		/*if (Main.STOPWORD) {//if STOPWORD
 			try {
 				stopword = loadStopwords();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-		}
+		}*/
 		
 		for (String word : allWords) {
 			if (Main.STOPWORD) {//if STOPWORD
@@ -152,6 +162,16 @@ public class Document {
 
 	public void setCheminDocument(String cheminDocument) {
 		this.cheminDocument = cheminDocument;
+	}
+
+
+	public Type_Element getType() {
+		return type;
+	}
+
+
+	public void setType(Type_Element type) {
+		this.type = type;
 	}
 
 
