@@ -103,6 +103,7 @@ public class Models {
 			Long docid = results.get(0).getKey().getIdDoc();
 			int c = 2;
 			int i = 0;
+			
 			//List<Entry<Document, Float>> res = new ArrayList<Entry<Document, Float>>(results);
 			while(i < results.size()) {
 				if (results.get(i).getKey().getIdDoc() == docid && c > 0) {
@@ -113,14 +114,14 @@ public class Models {
 				else if(results.get(i).getKey().getIdDoc() == docid && c == 0) {
 					results.remove(i);
 				}
-				
 				else{
 					i++;
 				}
 
-				System.out.println("Size result: " + results.size());
+				//System.out.println("Size result: " + results.size());
 			}
 		}
+		
 		return resultGrouped;   // renvoie la liste des resultats tries
 	}
 

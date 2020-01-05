@@ -180,9 +180,6 @@ public class normalization {
 		return w;
 	}
 	
-	
-	
-	
 	public static float bm25(
 			String smart,	// format : "bm25, ___.___, ___.___"
 			String term,
@@ -208,19 +205,15 @@ public class normalization {
 
 		tf = TF.tf(tfMethod, term, docId, postingListDoc);
 		idf = IDF.idf(dfMethod, term, postingListTerm, postingListDoc);
+		
+		//System.out.println("TF : " + tf + "  IDF : " + idf + " Method " + dfMethod);
+		
 		w = (tf * (k + 1)) / (tf + k * (1 - b + b * (doc_len / ave_len))) * idf; // BM25 formula
 
 		return w;
 	}
 	
-	
-	
-	
-	
-	
-	
 	/// Other functions useful for avoiding repeating operations each time
-
 	public static float pivot(Map<Long, Map<String, Long>> postingListDoc) {
 		float  pivot = 0;
 		

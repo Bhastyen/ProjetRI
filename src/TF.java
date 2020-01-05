@@ -49,8 +49,10 @@ public class TF {
 	
 	public static float n(String term, long docId, Map<Long, Map<String, Long>> postingList) {
 		Map<String, Long> docMap = postingList.get(docId);
-		System.out.println(term);
-		long tf = docMap.get(term);
+		float tf = 0;
+		
+		if (docMap.containsKey(term))
+			tf = docMap.get(term);
 
 		return tf;
 	}

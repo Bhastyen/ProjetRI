@@ -42,7 +42,7 @@ public class IDF {
 		
 		int idf;
 		
-		idf= 1;
+		idf = 1;
 		
 		return idf;
 	}
@@ -74,7 +74,7 @@ public class IDF {
 			n=250;
 		}*/
 		
-		idf = Math.log10(N/n);
+		idf = Math.log10((float) N / n);
 		return idf;
 		
 	}
@@ -86,8 +86,8 @@ public class IDF {
 			Map<Long, Map<String, Long>> postingListDoc) {
 		
 		double idf;
-		int N = postingListDoc.size(); //number of documents in the data
-		Map<Long, Long> occDoc = postingListTerm.get(term);  //Map of docId,occurrence for the term
+		int N = postingListDoc.size(); // number of documents in the data
+		Map<Long, Long> occDoc = postingListTerm.get(term);  // Map of docId,occurrence for the term
 		int n = occDoc.size(); // count how many documents contain the term
 		
 		idf= Math.log10(1 + (float) N/n);
@@ -177,7 +177,7 @@ public class IDF {
 		int n = occDoc.size();
 
 		// for test
-		N=1000;
+		/*N = 1000;
 		if (term.equals("a")) {
 			n=10;
 		}
@@ -192,10 +192,10 @@ public class IDF {
 		}
 		if (term.equals("e")) {
 			n=250;
-		}
+		}*/
 		
 		//
-		idf =  Math.log10((N-n+0.5)/(n+0.5));
+		idf =  Math.log10((N - n + 0.5) / (n + 0.5));
 //		System.out.println("idf :"+term+n);
 		return (float) idf;
 	}

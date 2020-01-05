@@ -5,8 +5,6 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,15 +16,16 @@ import java.util.Map.Entry;
 public class Main {
 	//public static final String ETAPE = "01";
 	public static final int NUMBER_OF_DOCUMENT_BY_QUERY = 1500;
-	public static final String GRANULARITE = "articles";
+	public static final String GRANULARITE = "elements";
 	public static final String OUTPUT_DIR = "resources/resultats/";
 	public static final String OUTPUT_NAME = "BastienCelineLaetitiaPierre";
-	public static final String[] PARAMETERS = new String[] {"ltn"};
-	public static final Boolean STOPWORD = false;
+	public static final String[] PARAMETERS = new String[] {"ltn", "bm25,k=1,b=0.5"};
+	public static final Boolean STOPWORD = true;
 	public static final Boolean STEMMING = false;
 
 
 	public static void main(String[] args) {
+		long begin, end, total = 0;
 		List<Document> docsBrut, docsXML;
 		List<String> queries;
 		ParserXMLElement parserXML;
@@ -37,25 +36,28 @@ public class Main {
 		HashMap<String, Map<Long, Long>> postingListXML = null;
 		HashMap<Long, Map<String, Long>> postingListPerDocXML = null;
 		
-		//File query = new File("resources/topics_M2WI7Q_2019_20.txt");
-		File query = new File("resources/test-reduit/queryTest/query.txt");
+		File query = new File("resources/topics_M2WI7Q_2019_20.txt");
+		//File query = new File("resources/test-reduit/queryTest/query.txt");
 
 		// parsing des documents
 		//docsBrut = parserDocBrut("resources/test-reduit/TD");		
 		//docsBrut = parserDocBrut("resources/textes_brut");
 		
+		begin = System.currentTimeMillis();
 		//docsXML = parserDocXML("resources/test-reduit/XML");
 		parserXML = parserDocXML("resources/coll");
 		docsXML = parserXML.parse();
 		indexatorXML = parserXML.getPostingLists();
 		postingListXML = indexatorXML.getPostingList();
 		postingListPerDocXML = indexatorXML.getPostingListPerDoc();
-
+		end = System.currentTimeMillis();
+		total += (end - begin);
+		
 		//OutPutFileParsingBrut(docsBrut);
 		//OutPutFileParsingXML(docsXML);
 
-		System.out.println("Taille " + docsXML.size());
 		System.err.println("Memory Size : " + Runtime.getRuntime().totalMemory());
+		System.err.println("Time parsing : " + ((end - begin) / 1000f));
 		
 		// indexation
 		//Indexator indexator = new Indexator();
@@ -66,10 +68,11 @@ public class Main {
 		
 		//System.out.println("Indexator End");
 
+		System.out.println("Taille " + docsXML.size());
 		System.out.println("Posting list size : " + postingListXML.size());
 		
 		OutPutFilePostingList(postingListXML);
-		OutPutFilePostingListPerDoc(postingListPerDocXML);
+		//OutPutFilePostingListPerDoc(postingListPerDocXML);
 		//System.out.println("Doc "+ docsBrut.get(1597).getIdDoc() + "   Brut " + docsBrut.get(1597).getLength() +
 		//		" Doc " + docsXML.get(1597).getIdDoc() + "  XML " + docsXML.get(1597).getLength());
 
@@ -78,10 +81,13 @@ public class Main {
 		//writeAllRuns(queries, OUTPUT_DIR + "brut/", OUTPUT_NAME, "06", "articles", docsBrut, postingList, postingListPerDoc);
 
 		// TEXTE XML : calcul du score des documents pour chaque requete et ecriture du run
-		writeAllRuns(queries, OUTPUT_DIR + "xml/", OUTPUT_NAME, "07", "elements", docsXML, postingListXML, postingListPerDocXML);
+		begin = System.currentTimeMillis();
+		writeAllRuns(queries, OUTPUT_DIR + "xml/", OUTPUT_NAME, "07", GRANULARITE, docsXML, postingListXML, postingListPerDocXML);
+		end = System.currentTimeMillis();
+		total += (end - begin);
+		System.err.println("Runs Time : " + (((end - begin) / 1000f)));
 		
-		System.err.println("Size : " + docsXML.size());
-
+		System.err.println("Total Time : " + (total / 1000f));
 		//System.out.println("Runs write");
 	}
 
@@ -151,13 +157,22 @@ public class Main {
 	public static void writeRun(BufferedWriter buff, String nomEquipe, String numQuery, List<Entry<Document, Float>> cosScore) throws IOException {
 		Document d;
 		int number_doc = cosScore.size();
+		float score;
 
 		if (number_doc > NUMBER_OF_DOCUMENT_BY_QUERY)
 			number_doc = NUMBER_OF_DOCUMENT_BY_QUERY;
 
 		for (int i = 0; i < number_doc; i++) {
 			d = cosScore.get(i).getKey();
-			buff.append(numQuery + " Q0 " + d.getIdDoc() + " " + (i+1) + " " + cosScore.get(i).getValue() + " " + nomEquipe + " " + d.getCheminDocument());
+			
+			// Pour garder des scores decroissants
+			if (GRANULARITE.equals("elements")) {
+				score = (number_doc - i);
+			}else {
+				score = cosScore.get(i).getValue();
+			}
+			
+			buff.append(numQuery + " Q0 " + d.getIdDoc() + " " + (i+1) + " " + score + " " + nomEquipe + " " + d.getCheminDocument());
 			buff.newLine();
 		}
 
