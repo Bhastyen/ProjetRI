@@ -40,7 +40,7 @@ public class Indexator {
 		// Pour tous les documents
 		for (Document doc : listDoc) {
 
-			// On récupère le doc Id
+			// On recupere le doc Id
 			docid = doc.getId();
 
 			// On split le string selon les espaces
@@ -52,6 +52,9 @@ public class Indexator {
 			Map<String, Long> frequencyMap =
 					listWords.stream().collect(Collectors.groupingBy(Function.identity(),
 															Collectors.counting()));
+			// enleve le mot vide
+			frequencyMap.remove("");
+			
 			// Put the document and its list of term/occurency in the HashMap
 			postingListPerDoc.put(docid, frequencyMap);
 			

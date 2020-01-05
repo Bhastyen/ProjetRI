@@ -47,6 +47,8 @@ public class Main {
 		//OutPutFileParsingBrut(docsBrut);
 		OutPutFileParsingXML(docsXML);
 
+		System.out.println("Taille " + docsXML.size());
+		
 		// indexation
 		//Indexator indexator = new Indexator();
 		Indexator indexatorXML = new Indexator();
@@ -58,9 +60,9 @@ public class Main {
 		postingListPerDocXML = indexatorXML.getPostingListPerDoc();
 		//System.out.println("Indexator End");
 		
-		for (int i = 0; i < docsXML.size(); i++) {
+		/*for (int i = 0; i < docsXML.size(); i++) {
 			docsXML.get(i).setStringDocument("");
-		}
+		}*/
 
 		//System.out.println("Posting list size : " + postingListXML.size());
 		

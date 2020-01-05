@@ -30,12 +30,12 @@ public class MyElementHandler extends DefaultHandler {
 	
 	public void endDocument() {
 		// on enleve les documents vides
-		/*docs.removeIf(new Predicate<Document>() {
+		docs.removeIf(new Predicate<Document>() {
 			@Override
 			public boolean test(Document d) {
 				return (d.getStringDocument().isEmpty() || (d.getStringDocument().length() == 1 && d.getStringDocument().charAt(0) == ' '));
 			}
-		});*/
+		});
 		
 		System.err.println("Nombre de doc viable : " +  docs.size());
 	}
@@ -77,7 +77,7 @@ public class MyElementHandler extends DefaultHandler {
 		String contenuFils = "";
 		
 		for (Arbre fils : arbreIndex.getFils()) { // Ajout du contenu des fils au contenu de la section
-			contenuFils += docs.get(fils.getIndexList()).getStringDocument();
+			//contenuFils += docs.get(fils.getIndexList()).getStringDocument();
 			idFils.add(docs.get(fils.getIndexList()).getId());
 		}
 
