@@ -24,18 +24,6 @@
 a b b 
 b b c
 </p>
-<p>
-a a a a
-e e d d c
-</p>
-</sec>
-<sec>
-a a d d b e
-</sec>
-<sec>
-<p>
-b b
-</p>
 </sec>
 </bdy>
 </article>

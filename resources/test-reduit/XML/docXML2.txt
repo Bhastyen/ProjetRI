@@ -22,6 +22,8 @@
 <sec>
 <p>
 a b b 
+</p>
+<p>
 b b c
 </p>
 </sec>
