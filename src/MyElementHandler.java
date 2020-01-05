@@ -30,12 +30,12 @@ public class MyElementHandler extends DefaultHandler {
 	
 	public void endDocument() {
 		// on enleve les documents vides
-		docs.removeIf(new Predicate<Document>() {
+		/*docs.removeIf(new Predicate<Document>() {
 			@Override
 			public boolean test(Document d) {
 				return (d.getStringDocument().isEmpty() || (d.getStringDocument().length() == 1 && d.getStringDocument().charAt(0) == ' '));
 			}
-		});
+		});*/
 		
 		System.err.println("Nombre de doc viable : " +  docs.size());
 	}
