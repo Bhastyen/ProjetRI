@@ -29,6 +29,8 @@ public class Main {
 	public static void main(String[] args) {
 		List<Document> docsBrut, docsXML;
 		List<String> queries;
+		ParserXMLElement parserXML;
+		Indexator indexatorXML = new Indexator();
 
 		HashMap<String, Map<Long, Long>> postingList = null;
 		HashMap<Long, Map<String, Long>> postingListPerDoc = null;
@@ -39,10 +41,13 @@ public class Main {
 		//File query = new File("resources/test-reduit/queryTest/query.txt");
 
 		// parsing des documents
-		//docsBrut = parserDoc("resources/test-reduit/TD", Document.Type.BRUT);
-		//docsXML = parserDoc("resources/test-reduit/XML", Document.Type.XML);
-		//docsBrut = parserDoc("resources/textes_brut", Document.Type.BRUT);
-		docsXML = parserDoc("resources/coll", Document.Type.XML);
+		//docsBrut = parserDocBrut("resources/test-reduit/TD");		
+		//docsBrut = parserDocBrut("resources/textes_brut");
+		
+		//docsXML = parserDocXML("resources/test-reduit/XML");
+		parserXML = parserDocXML("resources/coll");
+		docsXML = parserXML.parse();
+		indexatorXML = parserXML.getPostingLists();
 		
 		//OutPutFileParsingBrut(docsBrut);
 		OutPutFileParsingXML(docsXML);
@@ -51,18 +56,14 @@ public class Main {
 		
 		// indexation
 		//Indexator indexator = new Indexator();
-		Indexator indexatorXML = new Indexator();
 		//indexator.createIndex(docsBrut);
-		indexatorXML.createIndex(docsXML);
+		//indexatorXML.createIndex(docsXML);
 		//postingList = indexator.getPostingList();
 		//postingListPerDoc = indexator.getPostingListPerDoc();
+		
 		postingListXML = indexatorXML.getPostingList();
 		postingListPerDocXML = indexatorXML.getPostingListPerDoc();
 		//System.out.println("Indexator End");
-		
-		/*for (int i = 0; i < docsXML.size(); i++) {
-			docsXML.get(i).setStringDocument("");
-		}*/
 
 		//System.out.println("Posting list size : " + postingListXML.size());
 		
@@ -84,15 +85,14 @@ public class Main {
 	}
 
 	// function : parserDoc(String pathResources, Document.Type type) output(List<Document>)  , type = "xml" ou "brut"
-	public static List<Document> parserDoc(String path, Document.Type type){
-
-		if (type == Document.Type.BRUT) {
-			ParserBrut parser = new ParserBrut(path);
-			return parser.parse();
-		}else {
-			ParserXMLElement parser = new ParserXMLElement(path);
-			return parser.parse();
-		}
+	public static List<Document> parserDocBrut(String path){
+		ParserBrut parser = new ParserBrut(path);	
+		return parser.parse();
+	}
+	
+	public static ParserXMLElement parserDocXML(String path){
+		ParserXMLElement parser = new ParserXMLElement(path);
+		return parser;
 	}
 
 	private static List<String> readQuery(File fileQ) {
