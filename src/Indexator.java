@@ -30,7 +30,6 @@ public class Indexator {
 
 	public void createIndex(List<Document> listDoc) {
 		List<String> listWords;
-		Stream combined;
 		
 		long docid = 0;
 		long nbOcc = 0;
@@ -88,8 +87,8 @@ public class Indexator {
 		});*/
 
 		
-		System.out.println("Posting List Per Doc : " + postingListPerDoc.size() + "  " + listDoc.size());
-		System.out.println("Posting List : " + postingList.size());
+		//System.out.println("Posting List Per Doc : " + postingListPerDoc.size() + "  " + listDoc.size());
+		//System.out.println("Posting List : " + postingList.size());
 		//System.out.println("Nouvelle Posting List : " + posting.size());
 	}
 }

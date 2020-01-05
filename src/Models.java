@@ -41,7 +41,7 @@ public class Models {
 			otherParameters.put("ave_len",normalization.ave_len(postingListPerDoc));
 		}
 		
-		//Pour chaque mot de la requete
+		// Pour chaque mot de la requete
 		for(String wordQuery : arrQuery) {
 
 			if(Main.STEMMING) {

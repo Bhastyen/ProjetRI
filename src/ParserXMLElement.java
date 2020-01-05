@@ -58,14 +58,13 @@ public class ParserXMLElement{
 
 					// ajout de nouveaux elements
 					docs.addAll(elements);
-
+					
 					//System.out.println("ID : " + handler.getId());
 					parser.reset();
 					
-					//docs.add(new Document(handler.getId(), Document.sentenceProcessing(handler.getContenu())));
-					//docs + docsHandler
-					//HashMap(id,docs); docs = new list
+					handler = null;
 				}
+				
 			}
 		} catch (SAXException | IOException e) {
 			e.printStackTrace();

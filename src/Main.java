@@ -48,11 +48,14 @@ public class Main {
 		parserXML = parserDocXML("resources/coll");
 		docsXML = parserXML.parse();
 		indexatorXML = parserXML.getPostingLists();
+		postingListXML = indexatorXML.getPostingList();
+		postingListPerDocXML = indexatorXML.getPostingListPerDoc();
 		
 		//OutPutFileParsingBrut(docsBrut);
-		OutPutFileParsingXML(docsXML);
+		//OutPutFileParsingXML(docsXML);
 
 		System.out.println("Taille " + docsXML.size());
+		System.err.println("Memory Size : " + Runtime.getRuntime().totalMemory());
 		
 		// indexation
 		//Indexator indexator = new Indexator();
@@ -61,11 +64,9 @@ public class Main {
 		//postingList = indexator.getPostingList();
 		//postingListPerDoc = indexator.getPostingListPerDoc();
 		
-		postingListXML = indexatorXML.getPostingList();
-		postingListPerDocXML = indexatorXML.getPostingListPerDoc();
 		//System.out.println("Indexator End");
 
-		//System.out.println("Posting list size : " + postingListXML.size());
+		System.out.println("Posting list size : " + postingListXML.size());
 		
 		OutPutFilePostingList(postingListXML);
 		OutPutFilePostingListPerDoc(postingListPerDocXML);
