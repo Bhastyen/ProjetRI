@@ -22,7 +22,7 @@ public class Main {
 	public static final String OUTPUT_DIR = "resources/resultats/";
 	public static final String OUTPUT_NAME = "BastienCelineLaetitiaPierre";
 	public static final String[] PARAMETERS = new String[] {"ltn"};
-	public static final Boolean STOPWORD = true;
+	public static final Boolean STOPWORD = false;
 	public static final Boolean STEMMING = false;
 
 
@@ -37,8 +37,8 @@ public class Main {
 		HashMap<String, Map<Long, Long>> postingListXML = null;
 		HashMap<Long, Map<String, Long>> postingListPerDocXML = null;
 		
-		File query = new File("resources/topics_M2WI7Q_2019_20.txt");
-		//File query = new File("resources/test-reduit/queryTest/query.txt");
+		//File query = new File("resources/topics_M2WI7Q_2019_20.txt");
+		File query = new File("resources/test-reduit/queryTest/query.txt");
 
 		// parsing des documents
 		//docsBrut = parserDocBrut("resources/test-reduit/TD");		
@@ -50,7 +50,7 @@ public class Main {
 		indexatorXML = parserXML.getPostingLists();
 		postingListXML = indexatorXML.getPostingList();
 		postingListPerDocXML = indexatorXML.getPostingListPerDoc();
-		
+
 		//OutPutFileParsingBrut(docsBrut);
 		//OutPutFileParsingXML(docsXML);
 

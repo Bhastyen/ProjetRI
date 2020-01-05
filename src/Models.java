@@ -4,10 +4,11 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
+import java.util.stream.Collectors;
 
 public class Models {
 
@@ -93,93 +94,125 @@ public class Models {
 
 				return 0;
 			}
-
 		});
+		//PASBON Map<Long, List<Entry<Document, Float>>> res = results.stream().collect(Collectors.groupingBy(Document::getIdDoc));
 		
-		return results;   // renvoie la liste des resultats tries
+		List<Entry<Document, Float>> resultGrouped = new ArrayList<>();
+		
+		while (results.size() != 0) {
+			Long docid = results.get(0).getKey().getIdDoc();
+			int c = 2;
+			int i = 0;
+			//List<Entry<Document, Float>> res = new ArrayList<Entry<Document, Float>>(results);
+			while(i < results.size()) {
+				if (results.get(i).getKey().getIdDoc() == docid && c > 0) {
+					resultGrouped.add(results.get(i));
+					c--;
+					results.remove(i);
+				}
+				else if(results.get(i).getKey().getIdDoc() == docid && c == 0) {
+					results.remove(i);
+				}
+				
+				else{
+					i++;
+				}
+
+				System.out.println("Size result: " + results.size());
+			}
+		}
+		return resultGrouped;   // renvoie la liste des resultats tries
 	}
-	
+
 	// associe a chaque document pertinent son score
-	private static List<Entry<Document, Float>> getDocumentAndScore(List<Long> revelantDocId, Map<Long, Document> docsMap, Map<Long, Float> docIdScore){
+	private static List<Entry<Document, Float>> getDocumentAndScore(List<Long> revelantDocId,
+			Map<Long, Document> docsMap, Map<Long, Float> docIdScore) {
 		List<Entry<Document, Float>> results;
-		long id; float score;
+		long id;
+		float score;
 
 		results = new ArrayList<>();
-		for (int i = 0; i < revelantDocId.size(); i ++) {
+		for (int i = 0; i < revelantDocId.size(); i++) {
 			id = revelantDocId.get(i);
-			score = docIdScore.get(id) == null? 0f : docIdScore.get(id);   // verifie si le score existe et mets 0 sinon (document et query sans point commun)
-			
+			score = docIdScore.get(id) == null ? 0f : docIdScore.get(id); // verifie si le score existe et mets 0 sinon
+																			// (document et query sans point commun)
+
 			results.add(new AbstractMap.SimpleEntry<Document, Float>(docsMap.get(id), score));
 		}
-		
+
 		return results;
 	}
-	
-	// gere le recouvrement de chaque document et renvoie tous les elements pertinents
-	private static List<Long> removeAllCover(List<Document> docs, Map<Long, Float> idDocScore, Map<Long, Document> idDocDoc){
+
+	// gere le recouvrement de chaque document et renvoie tous les elements
+	// pertinents
+	private static List<Long> removeAllCover(List<Document> docs, Map<Long, Float> idDocScore,
+			Map<Long, Document> idDocDoc) {
 		List<Entry<Long, Float>> idEntries = new ArrayList<Entry<Long, Float>>(idDocScore.entrySet());
 		List<Long> results = new ArrayList<Long>();
 		List<Long> resultsFils = new ArrayList<Long>();
-		
+
 		for (int i = 0; i < idEntries.size(); i++) {
-			//System.err.println("ID  fils  " + Long.toString(docs.get(i).getId()) + "  doc + 1  " + Long.toString(docs.get(i).getIdDoc()) + "1");
-			
-			/*if (docs.get(i).getType() == Document.Type_Element.ARTICLE) {  // si il s'agit de l'element racine "article"
-				System.out.println("Document : " + docs.get(i).getIdDoc());
-				resultsFils = removeCover(docs.get(i), idDocScore, idDocDoc);
-				results.addAll(resultsFils);   // recupere les elements interessants du document
-				
-				//System.err.println("Nombre resultat : " + resultsFils.size());
-			}*/
-			
+			// System.err.println("ID fils " + Long.toString(docs.get(i).getId()) + " doc +
+			// 1 " + Long.toString(docs.get(i).getIdDoc()) + "1");
+
+			/*
+			 * if (docs.get(i).getType() == Document.Type_Element.ARTICLE) { // si il s'agit
+			 * de l'element racine "article" System.out.println("Document : " +
+			 * docs.get(i).getIdDoc()); resultsFils = removeCover(docs.get(i), idDocScore,
+			 * idDocDoc); results.addAll(resultsFils); // recupere les elements interessants
+			 * du document
+			 * 
+			 * //System.err.println("Nombre resultat : " + resultsFils.size()); }
+			 */
+
 			if (!Float.isNaN(idEntries.get(i).getValue())) {
-				results.add(idEntries.get(i).getKey());   // recupere les elements interessants du document
+				results.add(idEntries.get(i).getKey()); // recupere les elements interessants du document
 			}
 		}
-		
+
 		return results;
 	}
 
-	// gere le recouvrement pour un document et selectionne les elements avec le meilleur score
-	private static List<Long> removeCover(Document doc, Map<Long, Float> idDocScore, Map<Long, Document> idDocDoc){
+	// gere le recouvrement pour un document et selectionne les elements avec le
+	// meilleur score
+	private static List<Long> removeCover(Document doc, Map<Long, Float> idDocScore, Map<Long, Document> idDocDoc) {
 		List<Long> revelantIds = new ArrayList<Long>();
 		List<Long> revelantIdFils;
 		float scoreParent = 0, scoreFils = 0;
 		boolean father = true;
 		float difference = 0;
-		
-		
+
 		if (doc.getIdFils().size() > 0) {
 			for (int i = 0; i < doc.getIdFils().size(); i++) {
 				revelantIdFils = removeCover(idDocDoc.get(doc.getIdFils().get(i)), idDocScore, idDocDoc);
 				for (int j = 0; j < revelantIdFils.size(); j++) {
-					scoreParent = idDocScore.get(doc.getId()) == null? 0f : idDocScore.get(doc.getId());
-					scoreFils = idDocScore.get(doc.getId()) == null? 0f : idDocScore.get(doc.getId());
-					
+					scoreParent = idDocScore.get(doc.getId()) == null ? 0f : idDocScore.get(doc.getId());
+					scoreFils = idDocScore.get(doc.getId()) == null ? 0f : idDocScore.get(doc.getId());
+
 					difference = ((scoreFils + 0.00001f) / (scoreParent + 0.00001f) * 100f) - 100f;
-					
-					//System.err.println("Difference : " + scoreFils + "   " + scoreParent + "   " + difference);
-					if (difference < -10) {     // si le fils est 10% plus bas que le pere
-						//System.out.println("Ok inf");
+
+					// System.err.println("Difference : " + scoreFils + " " + scoreParent + " " +
+					// difference);
+					if (difference < -10) { // si le fils est 10% plus bas que le pere
+						// System.out.println("Ok inf");
 						revelantIds.add(revelantIdFils.get(j));
 						father = false;
-					} else if (difference > 10) {    // si le fils est 10% plus haut que le pere
-						//System.out.println("Ok sup");
+					} else if (difference > 10) { // si le fils est 10% plus haut que le pere
+						// System.out.println("Ok sup");
 						revelantIds.add(revelantIdFils.get(j));
 						father = false;
-					} else {      // si le fils est entre [-10%, 10%]
-						//System.out.println("Ok equal");
+					} else { // si le fils est entre [-10%, 10%]
+						// System.out.println("Ok equal");
 					}
 				}
 			}
 		}
-		
-		
+
 		if (father) {
 			revelantIds.add(doc.getId());
 		}
-		
+
 		return revelantIds;
 	}
-	
+
 }
