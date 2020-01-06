@@ -95,30 +95,37 @@ public class Models {
 				return 0;
 			}
 		});
-		//PASBON Map<Long, List<Entry<Document, Float>>> res = results.stream().collect(Collectors.groupingBy(Document::getIdDoc));
+		
+		// PASBON Map<Long, List<Entry<Document, Float>>> res = results.stream().collect(Collectors.groupingBy(Document::getIdDoc));
+		
+		int i = 0;
+		while (i < results.size()) {
+			if (results.get(i).getKey().getIdFils().size() > 0) {
+				results.remove(i);
+			} else {
+				i ++;
+			}
+		}
 		
 		List<Entry<Document, Float>> resultGrouped = new ArrayList<>();
-		
 		while (results.size() != 0) {
 			Long docid = results.get(0).getKey().getIdDoc();
-			int c = 2;
-			int i = 0;
+			int c = Main.MAX_ELEMENT;
+			i = 0;
 			
 			//List<Entry<Document, Float>> res = new ArrayList<Entry<Document, Float>>(results);
-			while(i < results.size()) {
+			while (i < results.size()) {
 				if (results.get(i).getKey().getIdDoc() == docid && c > 0) {
 					resultGrouped.add(results.get(i));
 					c--;
 					results.remove(i);
-				}
-				else if(results.get(i).getKey().getIdDoc() == docid && c == 0) {
+				} else if (results.get(i).getKey().getIdDoc() == docid && c == 0) {
 					results.remove(i);
-				}
-				else{
+				} else {
 					i++;
 				}
 
-				//System.out.println("Size result: " + results.size());
+				// System.out.println("Size result: " + results.size());
 			}
 		}
 		

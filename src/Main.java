@@ -14,12 +14,14 @@ import java.util.Map.Entry;
 
 
 public class Main {
-	//public static final String ETAPE = "01";
 	public static final int NUMBER_OF_DOCUMENT_BY_QUERY = 1500;
+	public static final int ETAPE = 4;
+	public static final int BEGIN = 17;
+	public static final int MAX_ELEMENT = 3;
 	public static final String GRANULARITE = "elements";
 	public static final String OUTPUT_DIR = "resources/resultats/";
 	public static final String OUTPUT_NAME = "BastienCelineLaetitiaPierre";
-	public static final String[] PARAMETERS = new String[] {"ltn", "bm25,k=1,b=0.5"};
+	public static final String[] PARAMETERS = new String[] {"ltn", "bm25,k=1,b=0.5", "bm25,k=1.2,b=0.75", "bm25,k=0.9,b=0.9"};
 	public static final Boolean STOPWORD = true;
 	public static final Boolean STEMMING = false;
 
@@ -71,7 +73,7 @@ public class Main {
 		System.out.println("Taille " + docsXML.size());
 		System.out.println("Posting list size : " + postingListXML.size());
 		
-		OutPutFilePostingList(postingListXML);
+		//OutPutFilePostingList(postingListXML);
 		//OutPutFilePostingListPerDoc(postingListPerDocXML);
 		//System.out.println("Doc "+ docsBrut.get(1597).getIdDoc() + "   Brut " + docsBrut.get(1597).getLength() +
 		//		" Doc " + docsXML.get(1597).getIdDoc() + "  XML " + docsXML.get(1597).getLength());
@@ -82,7 +84,7 @@ public class Main {
 
 		// TEXTE XML : calcul du score des documents pour chaque requete et ecriture du run
 		begin = System.currentTimeMillis();
-		writeAllRuns(queries, OUTPUT_DIR + "xml/", OUTPUT_NAME, "07", GRANULARITE, docsXML, postingListXML, postingListPerDocXML);
+		writeAllRuns(queries, OUTPUT_DIR + "xml/", OUTPUT_NAME, "0" + ETAPE, GRANULARITE, docsXML, postingListXML, postingListPerDocXML);
 		end = System.currentTimeMillis();
 		total += (end - begin);
 		System.err.println("Runs Time : " + (((end - begin) / 1000f)));
@@ -133,8 +135,19 @@ public class Main {
 
 		for (int numRun = 0; numRun < PARAMETERS.length; numRun ++) {
 			BufferedWriter buff;
-			File out = new File(path + nomEquipe + "_" + etape + "_" + "0" + (numRun + 1) + "_" + PARAMETERS[numRun].toUpperCase() + "_" + GRANULARITE + ".txt");
+			
+			String finalPath = path + nomEquipe + "_" + etape + "_" + "" + (BEGIN + numRun) + "_" + PARAMETERS[numRun].toUpperCase() + "_E=" + MAX_ELEMENT;
+			
+			if (STOPWORD)
+				finalPath += "_stopwords";
 
+			if (STEMMING)
+				finalPath += "_stem";
+							
+			finalPath +=  "_feuilles_" + GRANULARITE + ".txt";
+			
+			File out = new File(finalPath);
+			
 			try {
 				buff = new BufferedWriter(new FileWriter(out));
 
@@ -172,7 +185,7 @@ public class Main {
 				score = cosScore.get(i).getValue();
 			}
 			
-			buff.append(numQuery + " Q0 " + d.getIdDoc() + " " + (i+1) + " " + score + " " + nomEquipe + " " + d.getCheminDocument());
+			buff.append(numQuery + " Q0 " + d.getIdDoc() + " " + (i+1) + " " + score + " " + nomEquipe + " /" + d.getCheminDocument().substring(0, d.getCheminDocument().length() - 1));
 			buff.newLine();
 		}
 
@@ -188,8 +201,8 @@ public class Main {
 			for (Entry<String, Map<Long, Long>> p : postingList.entrySet()) {//String : key (mot) Map Integer:doc id Long nombre occurence
 				buff.append("key " + p.getKey() + " DocId/nbOccu" + p.getValue().toString());
 				buff.newLine();
+				//System.out.println("Heho");
 			}
-
 			buff.close();
 		} catch (IOException e) {
 			e.printStackTrace();
