@@ -15,26 +15,26 @@ import java.util.Map.Entry;
 
 public class Main {
 	public static final int NUMBER_OF_DOCUMENT_BY_QUERY = 1500;
-	public static final int ETAPE = 4;
-	public static final int BEGIN = 17;
+	public static final int BEGIN = 1;
 	public static final int MAX_ELEMENT = 3;
+	public static final String ETAPE = "04";
 	public static final String GRANULARITE = "elements";
 	public static final String OUTPUT_DIR = "resources/resultats/";
 	public static final String OUTPUT_NAME = "BastienCelineLaetitiaPierre";
 	public static final String[] PARAMETERS = new String[] {"ltn", "bm25,k=1,b=0.5", "bm25,k=1.2,b=0.75", "bm25,k=0.9,b=0.9"};
-	public static final Boolean STOPWORD = true;
+	public static final Boolean STOPWORD = false;
 	public static final Boolean STEMMING = false;
 
 
 	public static void main(String[] args) {
 		long begin, end, total = 0;
-		List<Document> docsBrut, docsXML;
+		List<Document> /*docsBrut, */docsXML;
 		List<String> queries;
 		ParserXMLElement parserXML;
 		Indexator indexatorXML = new Indexator();
 
-		HashMap<String, Map<Long, Long>> postingList = null;
-		HashMap<Long, Map<String, Long>> postingListPerDoc = null;
+		//HashMap<String, Map<Long, Long>> postingList = null;
+		//HashMap<Long, Map<String, Long>> postingListPerDoc = null;
 		HashMap<String, Map<Long, Long>> postingListXML = null;
 		HashMap<Long, Map<String, Long>> postingListPerDocXML = null;
 		
@@ -46,7 +46,7 @@ public class Main {
 		//docsBrut = parserDocBrut("resources/textes_brut");
 		
 		begin = System.currentTimeMillis();
-		//docsXML = parserDocXML("resources/test-reduit/XML");
+		//parserXML = parserDocXML("resources/test-reduit/XML");
 		parserXML = parserDocXML("resources/coll");
 		docsXML = parserXML.parse();
 		indexatorXML = parserXML.getPostingLists();
@@ -56,7 +56,7 @@ public class Main {
 		total += (end - begin);
 		
 		//OutPutFileParsingBrut(docsBrut);
-		//OutPutFileParsingXML(docsXML);
+		OutPutFileParsingXML(docsXML);
 
 		System.err.println("Memory Size : " + Runtime.getRuntime().totalMemory());
 		System.err.println("Time parsing : " + ((end - begin) / 1000f));
@@ -65,16 +65,16 @@ public class Main {
 		//Indexator indexator = new Indexator();
 		//indexator.createIndex(docsBrut);
 		//indexatorXML.createIndex(docsXML);
-		//postingList = indexator.getPostingList();
-		//postingListPerDoc = indexator.getPostingListPerDoc();
+		//postingListXML = indexatorXML.getPostingList();
+		//postingListPerDocXML = indexatorXML.getPostingListPerDoc();
 		
 		//System.out.println("Indexator End");
 
 		System.out.println("Taille " + docsXML.size());
 		System.out.println("Posting list size : " + postingListXML.size());
 		
-		//OutPutFilePostingList(postingListXML);
-		//OutPutFilePostingListPerDoc(postingListPerDocXML);
+		OutPutFilePostingList(postingListXML);
+		OutPutFilePostingListPerDoc(postingListPerDocXML);
 		//System.out.println("Doc "+ docsBrut.get(1597).getIdDoc() + "   Brut " + docsBrut.get(1597).getLength() +
 		//		" Doc " + docsXML.get(1597).getIdDoc() + "  XML " + docsXML.get(1597).getLength());
 
@@ -84,13 +84,12 @@ public class Main {
 
 		// TEXTE XML : calcul du score des documents pour chaque requete et ecriture du run
 		begin = System.currentTimeMillis();
-		writeAllRuns(queries, OUTPUT_DIR + "xml/", OUTPUT_NAME, "0" + ETAPE, GRANULARITE, docsXML, postingListXML, postingListPerDocXML);
+		writeAllRuns(queries, OUTPUT_DIR + "xml/", OUTPUT_NAME, ETAPE, GRANULARITE, docsXML, postingListXML, postingListPerDocXML);
 		end = System.currentTimeMillis();
 		total += (end - begin);
 		System.err.println("Runs Time : " + (((end - begin) / 1000f)));
 		
 		System.err.println("Total Time : " + (total / 1000f));
-		//System.out.println("Runs write");
 	}
 
 	// function : parserDoc(String pathResources, Document.Type type) output(List<Document>)  , type = "xml" ou "brut"
@@ -233,6 +232,7 @@ public class Main {
 		BufferedWriter buff;
 		File out = new File("resources/parsingBrut.txt");
 		//System.out.println("Ecrit parser Brut fichier");
+		
 		try {
 			buff = new BufferedWriter(new FileWriter(out));
 //			System.out.println("dans try");
@@ -257,6 +257,7 @@ public class Main {
 		BufferedWriter buff;
 		File out = new File("resources/parsingXML.txt");
 		//System.out.println("Ecrit parser XML fichier");
+		
 		try {
 			buff = new BufferedWriter(new FileWriter(out));
 //			System.out.println("dans try");

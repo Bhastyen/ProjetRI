@@ -61,7 +61,7 @@ public class Indexator {
 			for (Map.Entry<String, Long> word : frequencyMap.entrySet()) {
 
 					// On récupère le nombre d'occurence du mot
-					nbOcc = word.getValue();
+					nbOcc = word.getValue();   // TODO robertson coeff suivant type
 					stem = word.getKey(); //Sans stemming
 					//
 					// Si le mot est dejà dans la posting list alors on recup la liste et on ajoute

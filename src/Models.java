@@ -98,20 +98,20 @@ public class Models {
 		
 		// PASBON Map<Long, List<Entry<Document, Float>>> res = results.stream().collect(Collectors.groupingBy(Document::getIdDoc));
 		
-		int i = 0;
+		/*int i = 0;
 		while (i < results.size()) {
 			if (results.get(i).getKey().getIdFils().size() > 0) {
 				results.remove(i);
 			} else {
 				i ++;
 			}
-		}
+		}*/
 		
 		List<Entry<Document, Float>> resultGrouped = new ArrayList<>();
 		while (results.size() != 0) {
 			Long docid = results.get(0).getKey().getIdDoc();
 			int c = Main.MAX_ELEMENT;
-			i = 0;
+			int i = 0;
 			
 			//List<Entry<Document, Float>> res = new ArrayList<Entry<Document, Float>>(results);
 			while (i < results.size()) {

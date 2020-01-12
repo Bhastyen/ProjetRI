@@ -18,7 +18,7 @@ public class MyDocHandler extends DefaultHandler {
 		// Creation d'un nouveau document
 		contenu = Document.sentenceProcessing(contenu.replaceAll(" +", " "));
 		
-		doc = new Document(id, contenu, "article[1]/");
+		doc = new Document(id, contenu, "/article[1]/");
 	}
 		
 	public void startElement(String uri, String localName, String qName, Attributes att) {
