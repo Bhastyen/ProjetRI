@@ -36,10 +36,9 @@ public class Main {
 		//HashMap<String, Map<Long, Long>> postingList = null;
 		//HashMap<Long, Map<String, Long>> postingListPerDoc = null;
 		HashMap<String, Map<Long, Long>> postingListXML = null;
-		HashMap<Long, Map<String, Long>> postingListPerDocXML = null;
 		
-		File query = new File("resources/topics_M2WI7Q_2019_20.txt");
-		//File query = new File("resources/test-reduit/queryTest/query.txt");
+//		File query = new File("resources/topics_M2WI7Q_2019_20.txt");
+		File query = new File("resources/test-reduit/queryTest/query.txt");
 
 		// parsing des documents
 		//docsBrut = parserDocBrut("resources/test-reduit/TD");		
@@ -51,7 +50,6 @@ public class Main {
 		docsXML = parserXML.parse();
 		indexatorXML = parserXML.getPostingLists();
 		postingListXML = indexatorXML.getPostingList();
-		postingListPerDocXML = indexatorXML.getPostingListPerDoc();
 		end = System.currentTimeMillis();
 		total += (end - begin);
 		
@@ -74,9 +72,6 @@ public class Main {
 		System.out.println("Posting list size : " + postingListXML.size());
 		
 		OutPutFilePostingList(postingListXML);
-		OutPutFilePostingListPerDoc(postingListPerDocXML);
-		//System.out.println("Doc "+ docsBrut.get(1597).getIdDoc() + "   Brut " + docsBrut.get(1597).getLength() +
-		//		" Doc " + docsXML.get(1597).getIdDoc() + "  XML " + docsXML.get(1597).getLength());
 
 		// TEXTE BRUT : calcul du score des documents pour chaque requete et ecriture du run
 		queries = readQuery(query);
@@ -84,7 +79,7 @@ public class Main {
 
 		// TEXTE XML : calcul du score des documents pour chaque requete et ecriture du run
 		begin = System.currentTimeMillis();
-		writeAllRuns(queries, OUTPUT_DIR + "xml/", OUTPUT_NAME, ETAPE, GRANULARITE, docsXML, postingListXML, postingListPerDocXML);
+		writeAllRuns(queries, OUTPUT_DIR + "xml/", OUTPUT_NAME, "0" + ETAPE, GRANULARITE, docsXML, postingListXML);
 		end = System.currentTimeMillis();
 		total += (end - begin);
 		System.err.println("Runs Time : " + (((end - begin) / 1000f)));
@@ -98,9 +93,9 @@ public class Main {
 		return parser.parse();
 	}
 	
-	public static ParserXMLElement parserDocXML(String path){
-		ParserXMLElement parser = new ParserXMLElement(path);
-		return parser;
+	public static List<Document> parserDocXML(String path){
+		ParserXML parser = new ParserXML(path);
+		return parser.parse();
 	}
 
 	private static List<String> readQuery(File fileQ) {
@@ -127,8 +122,7 @@ public class Main {
 	public static void writeAllRuns(List<String> queries, String path,
 			String nomEquipe, String etape,
 			String granularite, List<Document> docs,
-			HashMap<String, Map<Long, Long>> postingList,
-			HashMap<Long, Map<String, Long>> postingListPerDoc) {
+			HashMap<String, Map<Long, Long>> postingList) {
 
 		List<Entry<Document, Float>> cosScore;
 
@@ -151,7 +145,7 @@ public class Main {
 				buff = new BufferedWriter(new FileWriter(out));
 
 				for (String q : queries) {
-					cosScore = Models.CosineScore(q.substring(8), postingList, postingListPerDoc, docs, PARAMETERS[numRun]);
+					cosScore = Models.CosineScore(q.substring(8), postingList, docs, PARAMETERS[numRun]);
 					writeRun(buff, nomEquipe, q.substring(0, 7), cosScore);
 					
 					System.err.println("Nombre resultat : " + cosScore.size());
@@ -184,7 +178,7 @@ public class Main {
 				score = cosScore.get(i).getValue();
 			}
 			
-			buff.append(numQuery + " Q0 " + d.getIdDoc() + " " + (i+1) + " " + score + " " + nomEquipe + " /" + d.getCheminDocument().substring(0, d.getCheminDocument().length() - 1));
+			buff.append(numQuery + " Q0 " + d.getIdDoc() + " " + (i+1) + " " + cosScore.get(i).getValue() + " " + nomEquipe + " /" + d.getCheminDocument().substring(0, d.getCheminDocument().length() - 1));
 			buff.newLine();
 		}
 

@@ -9,25 +9,25 @@ public class IDF {
 	public static float idf(
 			String smart, 
 			String term, 
-			Map<String, Map<Long,Long>> postingListTerm, 
-			Map<Long, Map<String,Long>> postingListDoc) {
+			int N,
+			Map<String, Map<Long,Long>> postingList) {
 		switch(smart) {
 		case "n":
-			return (float) n(term, postingListTerm, postingListDoc);
+			return  n();
 		case "i":
-			return (float) i(term, postingListTerm, postingListDoc);
+			return  i(term, N, postingList);
 		case "t":
-			return (float) i(term, postingListTerm, postingListDoc);
+			return  i(term, N, postingList);
 		case "l":
-			return (float) l(term, postingListTerm, postingListDoc);
+			return  l(term, N, postingList);
 		case "f":
-			return (float) f(term, postingListTerm, postingListDoc);
+			return  f(term, N, postingList);
 		case "p":
-			return (float) P(term, postingListTerm, postingListDoc);
+			return  P(term, postingList);
 		case "s":
-			return (float) s(term, postingListTerm, postingListDoc);
+			return  s(term, N, postingList);
 		case "bm25":
-			return (float) bm25(term, postingListTerm, postingListDoc);
+			return  bm25(term, N, postingList);
 		default:
 			System.out.println("Pas de fonction idf definie");
 			return 0;
@@ -35,149 +35,128 @@ public class IDF {
 			
 	}
 	
-	public static int n(
-			String term, 
-			Map<String, Map<Long, Long>> postingListTerm, 
-			Map<Long, Map<String, Long>> postingListDoc) {
+	public static float n() {
 		
-		int idf;
-		
-		idf = 1;
+		float idf = (float) 1;
 		
 		return idf;
 	}
 	
-	public static double i(
+	public static float i(
 			String term, 
-			Map<String, Map<Long, Long>> postingListTerm, 
-			Map<Long, Map<String, Long>> postingListDoc) {
+			int N, 	// number of documents
+			Map<String, Map<Long, Long>> postingList) {
 		
-		double idf; // Weight to return
-		int N = postingListDoc.size();   // number of documents
-		Map<Long, Long> occDoc = postingListTerm.get(term);   // list of pair of NumOcc,DocId for the term
-		int n = occDoc.size(); // number of documents which contain term
+		float idf; // Weight to return
+		int n = postingList.get(term).size(); // number of documents which contain term
 		
-		/*N=1000;
-		if (term.equals("a")) {
-			n=10;
-		}
-		if (term.equals("b")) {
-			n=25;
-		}
-		if (term.equals("c")) {
-			n=10;
-		}
-		if (term.equals("d")) {
-			n=24;
-		}
-		if (term.equals("e")) {
-			n=250;
-		}*/
-		
-		idf = Math.log10((float) N / n);
+//		N=1000;
+//		if (term.equals("a")) {
+//			n=10;
+//		}
+//		if (term.equals("b")) {
+//			n=25;
+//		}
+//		if (term.equals("c")) {
+//			n=10;
+//		}
+//		if (term.equals("d")) {
+//			n=24;
+//		}
+//		if (term.equals("e")) {
+//			n=250;
+//		}
+//		System.out.println(n);
+		idf = (float) Math.log10((float) N / n);
 		return idf;
 		
 	}
 	
 	
-	public static double l(
+	public static float l(
 			String term, 
-			Map<String, Map<Long, Long>> postingListTerm, 
-			Map<Long, Map<String, Long>> postingListDoc) {
+			int N,
+			Map<String, Map<Long, Long>> postingList) {
 		
-		double idf;
-		int N = postingListDoc.size(); // number of documents in the data
-		Map<Long, Long> occDoc = postingListTerm.get(term);  // Map of docId,occurrence for the term
-		int n = occDoc.size(); // count how many documents contain the term
+		float idf;
+		int n = postingList.get(term).size(); // count how many documents contain the term
 		
-		idf= Math.log10(1 + (float) N/n);
+		idf= (float) Math.log10(1 + (float) N / n);
 		return idf;
 	}
 	
 	
-	public static double f(
+	public static float f(
 			String term, 
-			Map<String, Map<Long, Long>> postingListTerm, 
-			Map<Long, Map<String, Long>> postingListDoc) {
+			int N,
+			Map<String, Map<Long, Long>> postingList) {
 		
-		double idf;
-		Map<Long, Long> occDoc = postingListTerm.get(term);
-		int n = occDoc.size();
+		float idf;
+		int n = postingList.get(term).size();
 		
-		idf = 1.0/n;
-		
+		idf = (float) (1.0/n);
 		return idf;
 	}
 	
 	
-	public static double p(
+	public static float p(
 			String term, 
-			Map<String, Map<Long, Long>> postingListTerm, 
-			Map<Long, Map<String, Long>> postingListDoc) {
+			int N,
+			Map<String, Map<Long, Long>> postingList) {
 
-		double idf;
-		int N = postingListDoc.size();
-		Map<Long, Long> occDoc = postingListTerm.get(term);
-		int n = occDoc.size();
-
-		idf= Math.log10((N-n)/(float) n);
+		float idf;
+		int n = postingList.get(term).size();
+		
+		idf= (float) Math.log10((N-n)/(float) n);
 		return idf;
 	}
 
 
-	public static double P(
+	public static float P(
 			String term, 
-			Map<String, Map<Long, Long>> postingListTerm, 
-			Map<Long, Map<String, Long>> postingListDoc) {
+			Map<String, Map<Long, Long>> postingList) {
 		
-		double idf;
+		float idf;
 		List<Integer> N = new ArrayList<Integer>();  //List of all the df
-		Map<Long, Long> occDoc = postingListTerm.get(term);
-		int n = occDoc.size();
+		int n = postingList.get(term).size();
 		int maxN;
 		
 
-        for (Map.Entry<String, Map<Long, Long>> mapentry : postingListTerm.entrySet()) {
-			Map<Long, Long> TermMap = (Map<Long, Long>) mapentry.getValue();
-        	N.add(TermMap.size()); // for all terms, add the number of doc in which they appear
+        for (Map.Entry<String, Map<Long, Long>> mapentry : postingList.entrySet()) {
+        	N.add(mapentry.getValue().size()); // for all terms, add the number of doc in which they appear
         }
 		
         maxN = Collections.max(N);
-		idf= Math.log10(1+ (float) maxN/n);
+		idf= (float) Math.log10(1+ (float) maxN/n);
 
 		return idf;
 	}
 	
 	
-	public static double s(
-			String term,
-			Map<String, Map<Long, Long>> postingListTerm, 
-			Map<Long, Map<String, Long>> postingListDoc) {
+	public static float s(
+			String term, 
+			int N,
+			Map<String, Map<Long, Long>> postingList) {
 		
-		double idf;
-		int N = postingListDoc.size();
-		Map<Long, Long> occDoc = postingListTerm.get(term);
-		int n = occDoc.size();
+		float idf;
+		int n = postingList.get(term).size();
 		
-
-		idf = Math.log10((N+1f)/n);
-		idf = Math.pow(idf, 2);
-
+		idf = (float) Math.log10((N+1f)/n);
+		idf = (float) Math.pow(idf, 2);
 		return idf;
 	}
 	
 	
 	private static float bm25(
 			String term, 
-			Map<String, Map<Long, Long>> postingListTerm,
-			Map<Long, Map<String, Long>> postingListDoc) {
-		double idf;
-		int N = postingListDoc.size();
-		Map<Long, Long> occDoc = postingListTerm.get(term);
-		int n = occDoc.size();
+			int N,
+			Map<String, Map<Long, Long>> postingList) {
+		float idf;
+		int n = postingList.get(term).size();
 
 		// for test
-		/*N = 1000;
+		/*
+		N = 1000;
 		if (term.equals("a")) {
 			n=10;
 		}
@@ -195,8 +174,8 @@ public class IDF {
 		}*/
 		
 		//
-		idf =  Math.log10((N - n + 0.5) / (n + 0.5));
-//		System.out.println("idf :"+term+n);
-		return (float) idf;
+		idf = (float) Math.log10((N - n + 0.5) / (n + 0.5));
+//		System.out.println("idf :"+N + " "+ n);
+		return idf;
 	}
 }

@@ -23,7 +23,7 @@ public class Document {
 	
 	public Document(long idDoc, String stringDocument) {
 		String[] arrString = stringDocument.split(" ");
-		
+
 		this.id = idDoc;
 		this.idDoc = idDoc;
 		this.stringDocument = stringDocument.toLowerCase();
@@ -75,10 +75,8 @@ public class Document {
 		this.idFils = idFils;
 	}
 
-
 	public int get_length() {
 		return length;
-		
 	}
 	
 	private static List<String> loadStopwords(){

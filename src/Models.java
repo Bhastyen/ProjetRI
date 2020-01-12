@@ -15,11 +15,10 @@ public class Models {
 	public static List<Entry<Document, Float>> CosineScore (
 			String query,
 			HashMap<String, Map<Long, Long>> postingList,
-			HashMap<Long, Map<String, Long>> postingListPerDoc,
 			List<Document> documents,
 			String param) 
 	{
-		float weight = 0; float score; int key;
+		float score; long doc_id; long dl; int N;
 		query= query.toLowerCase();
 		String[] arrQuery = query.split(" ");
 
@@ -29,17 +28,20 @@ public class Models {
 		HashMap<Long, Float> docIdScore = new HashMap<>();  // DocId , score par document
 		HashMap<Long, Document> docsMap = new HashMap<>();  // DocId , document  sert a cherhcer efficacement un document par rapport a l'id
 		Map<String, Float> otherParameters = new HashMap<String, Float>();
+		// recupere un index des documents par id
+		docsMap = Document.getDocumentsHashMap(documents);
+		N = docsMap.size();
 		
 		if (Character.toString(param.charAt(2)).equals("2")){
 			otherParameters.put("k",normalization.k(param));
 			otherParameters.put("b",normalization.b(param));
-			otherParameters.put("ave_len",normalization.ave_len(postingListPerDoc));
+			otherParameters.put("ave_len",normalization.ave_len(docsMap, N));
 		}
 		
 		if (Character.toString(param.charAt(2)).equals("u")){
 			otherParameters.put("slope",normalization.slope(param));
-			otherParameters.put("pivot",normalization.pivot(postingListPerDoc));
-			otherParameters.put("ave_len",normalization.ave_len(postingListPerDoc));
+			otherParameters.put("pivot",normalization.pivot(postingList, N));
+			otherParameters.put("ave_len",normalization.ave_len(docsMap, N));
 		}
 		
 		// Pour chaque mot de la requete
@@ -52,17 +54,17 @@ public class Models {
 			// Pour chaque pair : nombre occurence / IdDocument du terme wordQuery
 			if (postingList.get(wordQuery) != null) {
 
-				// weight = normalization.W(param, wordQuery, 0, postingListPerDoc, postingList, true);
 
 				docs = new ArrayList<>(postingList.get(wordQuery).entrySet());
 				for (Entry<Long, Long> pair : docs) {   // <id du document , tf>
+					doc_id = pair.getKey();
 
-					if (docIdScore.get(pair.getKey()) == null)   // ajout de l entree dans le dico s il n existe pas
-						docIdScore.put(pair.getKey(), 0f);
-
-					score = docIdScore.get(pair.getKey());
-					score += normalization.W(param, wordQuery, pair.getKey(), postingListPerDoc, postingList, otherParameters, false);
-					//					score *= weight;
+					if (docIdScore.get(doc_id) == null)   // ajout de l entree dans le dico s il n existe pas
+						docIdScore.put(doc_id, 0f);
+					
+					dl = docsMap.get(doc_id).get_length();
+					score = docIdScore.get(doc_id);
+					score += normalization.W(param, wordQuery, doc_id, dl, N, postingList, otherParameters);
 
 					docIdScore.put(pair.getKey(), score);
 //									break;
@@ -72,8 +74,6 @@ public class Models {
 		}
 
 		// gerer le recouvrement
-		// recupere un index des documents par id
-		docsMap = Document.getDocumentsHashMap(documents);
 		
 		// Parcourir l'arbre des documents et ressortir tous les elements les plus pertinents
 		revelantId = removeAllCover(documents, docIdScore, docsMap);
