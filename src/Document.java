@@ -16,16 +16,19 @@ public class Document {
 	private long idDoc;
 	private String stringDocument;
 	private String cheminDocument;
+	private int length;
 	private List<Long> idFils;
 	private Type_Element type = Type_Element.VIDE;
 	
 	
 	public Document(long idDoc, String stringDocument) {
+		String[] arrString = stringDocument.split(" ");
 		this.id = idDoc;
 		this.idDoc = idDoc;
 		this.stringDocument = stringDocument.toLowerCase();
 		cheminDocument = "/article[1]";
 		setIdFils(new ArrayList<>());
+		length = arrString.length;
 	}
 	
 
@@ -71,11 +74,8 @@ public class Document {
 	}
 
 
-	public int getLength() {
-		int c = 0;
-		String[] arrString = stringDocument.split(" ");
-		
-		return arrString.length;
+	public int get_length() {		
+		return length;
 		
 	}
 	

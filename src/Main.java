@@ -21,8 +21,8 @@ public class Main {
 	public static final String GRANULARITE = "elements";
 	public static final String OUTPUT_DIR = "resources/resultats/";
 	public static final String OUTPUT_NAME = "BastienCelineLaetitiaPierre";
-	public static final String[] PARAMETERS = new String[] {"ltn", "bm25,k=1,b=0.5", "bm25,k=1.2,b=0.75", "bm25,k=0.9,b=0.9"};
-	public static final Boolean STOPWORD = true;
+	public static final String[] PARAMETERS = new String[] {"ltn"};
+	public static final Boolean STOPWORD = false;
 	public static final Boolean STEMMING = false;
 
 
@@ -38,20 +38,19 @@ public class Main {
 		HashMap<String, Map<Long, Long>> postingListXML = null;
 		HashMap<Long, Map<String, Long>> postingListPerDocXML = null;
 		
-		File query = new File("resources/topics_M2WI7Q_2019_20.txt");
-		//File query = new File("resources/test-reduit/queryTest/query.txt");
+//		File query = new File("resources/topics_M2WI7Q_2019_20.txt");
+		File query = new File("resources/test-reduit/queryTest/query.txt");
 
 		// parsing des documents
 		//docsBrut = parserDocBrut("resources/test-reduit/TD");		
 		//docsBrut = parserDocBrut("resources/textes_brut");
 		
 		begin = System.currentTimeMillis();
-		//docsXML = parserDocXML("resources/test-reduit/XML");
-		parserXML = parserDocXML("resources/coll");
-		docsXML = parserXML.parse();
-		indexatorXML = parserXML.getPostingLists();
-		postingListXML = indexatorXML.getPostingList();
-		postingListPerDocXML = indexatorXML.getPostingListPerDoc();
+		docsXML = parserDocXML("resources/test-reduit/XML");
+//		parserXML = parserDocXML("resources/coll");
+//		docsXML = parserXML.parse();
+//		indexatorXML = parserXML.getPostingLists();
+//		postingListXML = indexatorXML.getPostingList();
 		end = System.currentTimeMillis();
 		total += (end - begin);
 		
@@ -64,9 +63,8 @@ public class Main {
 		// indexation
 		//Indexator indexator = new Indexator();
 		//indexator.createIndex(docsBrut);
-		//indexatorXML.createIndex(docsXML);
-		//postingList = indexator.getPostingList();
-		//postingListPerDoc = indexator.getPostingListPerDoc();
+		indexatorXML.createIndex(docsXML);
+		postingListXML = indexatorXML.getPostingList();
 		
 		//System.out.println("Indexator End");
 
@@ -84,7 +82,7 @@ public class Main {
 
 		// TEXTE XML : calcul du score des documents pour chaque requete et ecriture du run
 		begin = System.currentTimeMillis();
-		writeAllRuns(queries, OUTPUT_DIR + "xml/", OUTPUT_NAME, "0" + ETAPE, GRANULARITE, docsXML, postingListXML, postingListPerDocXML);
+		writeAllRuns(queries, OUTPUT_DIR + "xml/", OUTPUT_NAME, "0" + ETAPE, GRANULARITE, docsXML, postingListXML);
 		end = System.currentTimeMillis();
 		total += (end - begin);
 		System.err.println("Runs Time : " + (((end - begin) / 1000f)));
@@ -99,9 +97,9 @@ public class Main {
 		return parser.parse();
 	}
 	
-	public static ParserXMLElement parserDocXML(String path){
-		ParserXMLElement parser = new ParserXMLElement(path);
-		return parser;
+	public static List<Document> parserDocXML(String path){
+		ParserXML parser = new ParserXML(path);
+		return parser.parse();
 	}
 
 	private static List<String> readQuery(File fileQ) {
@@ -128,8 +126,7 @@ public class Main {
 	public static void writeAllRuns(List<String> queries, String path,
 			String nomEquipe, String etape,
 			String granularite, List<Document> docs,
-			HashMap<String, Map<Long, Long>> postingList,
-			HashMap<Long, Map<String, Long>> postingListPerDoc) {
+			HashMap<String, Map<Long, Long>> postingList) {
 
 		List<Entry<Document, Float>> cosScore;
 
@@ -152,7 +149,7 @@ public class Main {
 				buff = new BufferedWriter(new FileWriter(out));
 
 				for (String q : queries) {
-					cosScore = Models.CosineScore(q.substring(8), postingList, postingListPerDoc, docs, PARAMETERS[numRun]);
+					cosScore = Models.CosineScore(q.substring(8), postingList, docs, PARAMETERS[numRun]);
 					writeRun(buff, nomEquipe, q.substring(0, 7), cosScore);
 					
 					System.err.println("Nombre resultat : " + cosScore.size());
@@ -185,7 +182,7 @@ public class Main {
 				score = cosScore.get(i).getValue();
 			}
 			
-			buff.append(numQuery + " Q0 " + d.getIdDoc() + " " + (i+1) + " " + score + " " + nomEquipe + " /" + d.getCheminDocument().substring(0, d.getCheminDocument().length() - 1));
+			buff.append(numQuery + " Q0 " + d.getIdDoc() + " " + (i+1) + " " + cosScore.get(i).getValue() + " " + nomEquipe + " /" + d.getCheminDocument().substring(0, d.getCheminDocument().length() - 1));
 			buff.newLine();
 		}
 

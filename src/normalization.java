@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -10,49 +11,28 @@ public class normalization {
 			String smart,   // format "***" 
 			String term,
 			long docId,
-			Map<Long, Map<String, Long>> postingListDoc,
-			Map<String, Map<Long, Long>> postingListTerm,
-			Map<String, Float> otherParameters,
-			boolean queryMod) {
+			long dl,
+			int N,
+			Map<String, Map<Long, Long>> postingList,
+			Map<String, Float> otherParameters) {
 
-		if (queryMod == false) {
-			switch(Character.toString(smart.charAt(2))) {
-			case "n":
-				return n(smart, term, docId, postingListDoc, postingListTerm);
-			case "c":
-				return c(smart, term, docId, postingListDoc, postingListTerm);
-			case "s":
-				return s(smart, term, docId, postingListDoc, postingListTerm);
-			case "u":
-				return u(smart, term, docId, postingListDoc, postingListTerm, otherParameters);
-			case "2":
-				return bm25(smart, term, docId, postingListDoc, postingListTerm, otherParameters);
-			default:
-				System.out.println("Pas de fonction W definie");
-				return 0;
-			}
-			
-		} else {
-			return query(smart, term, docId, postingListDoc, postingListTerm);
+
+		switch(Character.toString(smart.charAt(2))) {
+		case "n":
+			return n(smart, term, docId, N, postingList);
+		case "c":
+			return c(smart, term, docId, N, postingList);
+		case "s":
+			return s(smart, term, docId, N, postingList);
+		case "u":
+			return u(smart, term, docId, dl, N, postingList, otherParameters);
+		case "2":
+			return bm25(smart, term, docId, dl, N, postingList, otherParameters);
+		default:
+			System.out.println("Pas de fonction W definie");
+			return 0;
 		}
-	
-	}
 
-
-	
-	
-	private static float query(
-			String smart, 
-			String term, 
-			long docId, Map<Long, Map<String, Long>> postingListDoc,
-			Map<String, Map<Long, Long>> postingListTerm) 
-	{
-		String dfMethod = Character.toString(smart.charAt(1));  //function to use for idf
-		float idf;
-		
-		idf = IDF.idf(dfMethod, term, postingListTerm, postingListDoc);
-		
-		return idf;
 	}
 
 
@@ -62,8 +42,8 @@ public class normalization {
 			String smart,   // format "***"
 			String term,
 			long docId,
-			Map<Long, Map<String, Long>> postingListDoc,
-			Map<String, Map<Long, Long>> postingListTerm)
+			int N,
+			Map<String, Map<Long, Long>> postingList)
 	{
 		
 		String tfMethod = Character.toString(smart.charAt(0));  //function to use for tf
@@ -72,9 +52,9 @@ public class normalization {
 		float idf;
 		float w;
 		
-		tf = TF.tf(tfMethod, term, docId, postingListDoc);
-		idf = IDF.idf(dfMethod, term, postingListTerm, postingListDoc);
-		//System.out.println("TF : " + tf + "  IDF : " + idf);
+		tf = TF.tf(tfMethod, term, docId, postingList);
+		idf = IDF.idf(dfMethod, term, N, postingList);
+		System.out.println("TF : " + tf + "  IDF : " + idf);
 		w = tf*idf;
 		
 		return w;
@@ -82,11 +62,11 @@ public class normalization {
 	
 	
 	public static float c(
-			String smart,
+			String smart,   // format "***"
 			String term,
 			long docId,
-			Map<Long, Map<String, Long>> postingListDoc,
-			Map<String, Map<Long, Long>> postingListTerm)
+			int N,
+			Map<String, Map<Long, Long>> postingList)
 	{
 		
 		String tfMethod = Character.toString(smart.charAt(0));
@@ -96,17 +76,18 @@ public class normalization {
 		float w;
 		float sum = 0;
 		float sumElement;
-		Map<String, Long> docMap = postingListDoc.get(docId); //Map of term,occ for doc=docId
 		
-		for(Entry<String, Long> mapentry : docMap.entrySet()) {
-			tf = TF.tf(tfMethod, mapentry.getKey(), docId, postingListDoc);
-			idf = IDF.idf(dfMethod, mapentry.getKey(), postingListTerm, postingListDoc);
-			sumElement = tf*idf;
-			sum += Math.pow(sumElement,2); //sum of the square of tf(t',d) for all t' in d
+		for(Entry<String, Map<Long, Long>> entry : postingList.entrySet()) {
+			if (entry.getValue().containsKey(docId)){
+				tf = TF.tf(tfMethod, entry.getKey(), docId, postingList);
+				idf = IDF.idf(dfMethod, entry.getKey(), N, postingList);
+				sumElement = tf*idf;
+				sum += Math.pow(sumElement,2); //sum of the square of tf(t',d) for all t' in d
+			}
 		}
 		
-		tf = TF.tf(tfMethod, term, docId, postingListDoc);
-		idf = IDF.idf(dfMethod, term, postingListTerm, postingListDoc);
+		tf = TF.tf(tfMethod, term, docId, postingList);
+		idf = IDF.idf(dfMethod, term, N, postingList);
 		w = (float) (tf*idf/Math.sqrt(sum));
 		
 		return w;
@@ -115,11 +96,11 @@ public class normalization {
 	
 	
 	public static float s(
-			String smart,
+			String smart,   // format "***"
 			String term,
 			long docId,
-			Map<Long, Map<String, Long>> postingListDoc,
-			Map<String, Map<Long, Long>> postingListTerm)
+			int N,
+			Map<String, Map<Long, Long>> postingList)
 	{
 		
 		String tfMethod = Character.toString(smart.charAt(0));
@@ -129,15 +110,18 @@ public class normalization {
 		float w;
 		float sum = 0;
 		float sumElement;
-		Map<String,Long> docMap = postingListDoc.get(docId); //Map of term,occ for doc=docId
 		
-		for(Entry<String, Long> mapentry : docMap.entrySet()) {
-			sumElement = TF.tf(tfMethod, mapentry.getKey(), docId, postingListDoc);
-			sum += sumElement; //sum of tf(t',d) for all t' in d
+		for(Entry<String, Map<Long, Long>> entry : postingList.entrySet()) {
+			if (entry.getValue().containsKey(docId)){
+				tf = TF.tf(tfMethod, entry.getKey(), docId, postingList);
+				idf = IDF.idf(dfMethod, entry.getKey(), N, postingList);
+				sumElement = tf*idf;
+				sum += Math.pow(sumElement,2); //sum of the square of tf(t',d) for all t' in d
+			}
 		}
 		
-		tf = TF.tf(tfMethod, term, docId, postingListDoc);
-		idf = IDF.idf(dfMethod, term, postingListTerm, postingListDoc);
+		tf = TF.tf(tfMethod, term, docId, postingList);
+		idf = IDF.idf(dfMethod, term, N, postingList);
 		w = tf*idf/sum;
 		
 		return w;
@@ -150,8 +134,9 @@ public class normalization {
 			String smart,
 			String term,
 			long docId,
-			Map<Long, Map<String, Long>> postingListDoc,
-			Map<String, Map<Long, Long>> postingListTerm,
+			long dl,
+			int N,
+			Map<String, Map<Long, Long>> postingList,
 			Map<String, Float> otherParameters)	{
 
 
@@ -160,32 +145,29 @@ public class normalization {
 		float slope=otherParameters.get("slope");
 		float pivot=otherParameters.get("pivot");
 		float tf, idf, w;
-		float ave_len=otherParameters.get("ave_len"), doc_len=0;
+		float ave_dl=otherParameters.get("ave_len");
 		float nt=0;
 
-		
-		// compute length of the document we're working on
-		Map<String,Long> docMap = postingListDoc.get(docId);
-		for(Entry<String, Long> pair : docMap.entrySet()) { // for each term of the document...
-			doc_len += pair.getValue();					// ... add the occurrence of this term
-		}
-
 		// compute nt: distinct terms in the document we're working on
-		nt = postingListDoc.get(docId).size();
-
+		for(Entry<String, Map<Long, Long>> entry : postingList.entrySet()) {
+			if (entry.getValue().containsKey(docId)){
+				nt++;
+			}
+		}
 		
-		tf = TF.tf(tfMethod, term, docId, postingListDoc);
-		idf = IDF.idf(dfMethod, term, postingListTerm, postingListDoc);
-		w = (float) (   (tf*idf)/(1+Math.log(doc_len/ave_len)) / ((1-slope)*pivot + slope*nt)   );
+		tf = TF.tf(tfMethod, term, docId, postingList);
+		idf = IDF.idf(dfMethod, term, N, postingList);
+		w = (float) (   (tf*idf)/(1+Math.log(dl/ave_dl)) / ((1-slope)*pivot + slope*nt)   );
 		return w;
 	}
 	
 	public static float bm25(
-			String smart,	// format : "bm25, ___.___, ___.___"
+			String smart,	// format : "bm25,___.___,___.___"
 			String term,
 			long docId,
-			Map<Long, Map<String, Long>> postingListDoc,
-			Map<String, Map<Long, Long>> postingListTerm,
+			long dl,
+			int N,
+			Map<String, Map<Long, Long>> postingList,
 			Map<String, Float> otherParameters)
 	{
 		String tfMethod = "n";
@@ -193,51 +175,46 @@ public class normalization {
 		float k = otherParameters.get("k");
 		float b = otherParameters.get("b");
 		float tf, idf, w;
-		float ave_len = otherParameters.get("ave_len"), doc_len = 0;
-		
+		float ave_dl = otherParameters.get("ave_len");
 
-		// compute length of the document we're working on
-		Map<String,Long> docMap = postingListDoc.get(docId);
-		for(Entry<String, Long> pair : docMap.entrySet()) { // for each term of the document...
-			 doc_len += pair.getValue();					// ... add the occurrence of this term
-		 }
+		tf = TF.tf(tfMethod, term, docId, postingList);
+		idf = IDF.idf(dfMethod, term, N, postingList);
 		
-
-		tf = TF.tf(tfMethod, term, docId, postingListDoc);
-		idf = IDF.idf(dfMethod, term, postingListTerm, postingListDoc);
+//		System.out.println("TF : " + tf + "  IDF : " + idf + " doc " + docId);
 		
-		//System.out.println("TF : " + tf + "  IDF : " + idf + " Method " + dfMethod);
+		ave_dl = 20;
 		
-		w = (tf * (k + 1)) / (tf + k * (1 - b + b * (doc_len / ave_len))) * idf; // BM25 formula
-
+		
+		w = (tf * (k + 1)) / (tf + k * (1 - b + b * (dl / ave_dl))) * idf; // BM25 formula
 		return w;
 	}
 	
+	
+	
 	/// Other functions useful for avoiding repeating operations each time
-	public static float pivot(Map<Long, Map<String, Long>> postingListDoc) {
+	public static float pivot(Map<String, Map<Long, Long>> postingList, int N) {
 		float  pivot = 0;
 		
-		for(Entry<Long, Map<String, Long>> docMap : postingListDoc.entrySet()) { // for each documents
-			pivot += docMap.getValue().size();		// add the distinct terms to the average
+		for(Entry<String, Map<Long, Long>> entry : postingList.entrySet()) { // for each documents
+			pivot += entry.getValue().size();		// add the distinct terms to the average
 		}
 		
-		pivot /= postingListDoc.size(); // divide the total of distinct terms by the number of doc
+		pivot /= N; // divide the total of distinct terms by the number of doc
 		
 		return pivot;
 	}
 	
-	public static float ave_len(Map<Long, Map<String, Long>> postingListDoc) {
-		Map<String, Long> doc_pairs;
+	public static float ave_len(HashMap<Long, Document> docsMap, int N) {
 		float ave_len = 0;
+		Long docId;
 		
-		for(Entry<Long, Map<String, Long>> docMap : postingListDoc.entrySet()) { // for each documents
-			doc_pairs = docMap.getValue(); 	// get the pairs of this document
-			for(Entry<String, Long> pair : doc_pairs.entrySet()) { // for each term per documents...
-				ave_len += pair.getValue(); 						// ...add the occurrence of this term
-			}
+		for(Entry<Long, Document> entry : docsMap.entrySet()) { // for each documents
+			docId = entry.getKey();
+			ave_len += entry.getValue().get_length(); 						// ...add the length of this document
+			
 		}
 		
-		ave_len /= (postingListDoc.size() + 0.00001f); // divide the total of occurrence by the number of doc
+		ave_len /= N; // divide the total of occurrence by the number of doc
 		return ave_len;
 	}
 	
