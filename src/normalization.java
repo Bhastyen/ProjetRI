@@ -173,8 +173,8 @@ public class normalization {
 		nt = postingListDoc.get(docId).size();
 
 		
-		tf = TF.tf(tfMethod, term, docId, postingListDoc);
-		idf = IDF.idf(dfMethod, term, postingListTerm, postingListDoc);
+		tf = TF.tf(tfMethod, term, docId, postingListDoc);//postingListPerDoc , par doc , tout les mots qu'il contient
+		idf = IDF.idf(dfMethod, term, postingListTerm, postingListDoc);//PostingListTerm par mot tout les docuements ou il apparait
 		w = (float) (   (tf*idf)/(1+Math.log(doc_len/ave_len)) / ((1-slope)*pivot + slope*nt)   );
 		return w;
 	}

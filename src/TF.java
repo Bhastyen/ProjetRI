@@ -96,7 +96,7 @@ public class TF {
 	}
 	
 	
-	public static float l(String term, int docId, Map<Integer, Map<String, Long>> postingList) {
+	public static float l(String term, int docId, Map<Integer, Map<String, Long>> postingList) {//Id du document , <termes , nombre occurences
 		Map<String, Long> docMap = postingList.get(docId);
 		float tf = docMap.get(term);
 

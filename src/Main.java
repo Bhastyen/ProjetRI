@@ -20,9 +20,9 @@ public class Main {
 	public static final String OUTPUT_DIR = "resources/resultats/";
 	public static final String OUTPUT_NAME = "BastienCelineLaetitiaPierre";
 
-	public static final String[] PARAMETERS = new String[] {"ltn", "bm25,1,0.5", "bm25,0.75,1.2"};   // test bm25 b = 0.75, k = 1.2, u with slope=0.75
-	public static final Boolean STEMMING = true;
-	public static final Boolean STOPWORD = false;
+	public static final String[] PARAMETERS = new String[] {"bm25,0.75,1.2"};   // test bm25 b = 0.75, k = 1.2, u with slope=0.75
+	public static final Boolean STEMMING = false;
+	public static final Boolean STOPWORD = true;
 
 
 	public static void main(String[] args) {
@@ -180,7 +180,7 @@ public class Main {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
+	
 	}
 	
 	public static  void  OutPutFileParsing(List<Document> docs, String nameOut) {

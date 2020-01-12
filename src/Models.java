@@ -49,7 +49,7 @@ public class Models {
 
 				weight = normalization.W(param, wordQuery, 0, postingListPerDoc, postingList, otherParameters, true);
 
-				docs = new ArrayList<>(postingList.get(wordQuery).entrySet());
+				docs = new ArrayList<>(postingList.get(wordQuery).entrySet());//Trie pour avoir que les documents qui contient le terme de la query en cours de recherche
 				for (Entry<Integer, Long> pair : docs) {   // <id du document , tf>
 
 					if (docIdScore.get(pair.getKey()) == null)   // ajout de l entree dans le dico s il n existe pas
