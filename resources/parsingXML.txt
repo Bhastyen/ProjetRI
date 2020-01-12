@@ -1,8 +1,0 @@
-idDoc 1763079214 Contenu  c d d d e e e e a d e Chemin article[1]/bdy[1]/sec[1]/p[1]/
-
-idDoc 1763079314 Contenu  a b b Chemin article[1]/bdy[1]/sec[1]/p[1]/
-
-idDoc 1763079315 Contenu  b b c Chemin article[1]/bdy[1]/sec[1]/p[2]/
-
-idDoc 1763079414 Contenu  a b b b b c Chemin article[1]/bdy[1]/sec[1]/p[1]/
-

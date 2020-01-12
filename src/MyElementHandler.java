@@ -35,6 +35,8 @@ public class MyElementHandler extends DefaultHandler {
 			i ++;
 		}
 		
+		arbreIndex = null;
+		
 		// on enleve les documents vides
 		/*docs.removeIf(new Predicate<Document>() {
 			@Override

@@ -22,7 +22,7 @@ public class Main {
 	public static final String OUTPUT_DIR = "resources/resultats/";
 	public static final String OUTPUT_NAME = "BastienCelineLaetitiaPierre";
 	public static final String[] PARAMETERS = new String[] {"ltn", "bm25,k=1,b=0.5", "bm25,k=1.2,b=0.75", "bm25,k=0.9,b=0.9"};
-	public static final Boolean STOPWORD = false;
+	public static final Boolean STOPWORD = true;
 	public static final Boolean STEMMING = false;
 
 
@@ -37,8 +37,8 @@ public class Main {
 		//HashMap<Long, Map<String, Long>> postingListPerDoc = null;
 		HashMap<String, Map<Long, Long>> postingListXML = null;
 		
-//		File query = new File("resources/topics_M2WI7Q_2019_20.txt");
-		File query = new File("resources/test-reduit/queryTest/query.txt");
+		File query = new File("resources/topics_M2WI7Q_2019_20.txt");
+		//File query = new File("resources/test-reduit/queryTest/query.txt");
 
 		// parsing des documents
 		//docsBrut = parserDocBrut("resources/test-reduit/TD");		
@@ -93,9 +93,9 @@ public class Main {
 		return parser.parse();
 	}
 	
-	public static List<Document> parserDocXML(String path){
-		ParserXML parser = new ParserXML(path);
-		return parser.parse();
+	public static ParserXMLElement parserDocXML(String path){
+		ParserXMLElement parser = new ParserXMLElement(path);
+		return parser;
 	}
 
 	private static List<String> readQuery(File fileQ) {

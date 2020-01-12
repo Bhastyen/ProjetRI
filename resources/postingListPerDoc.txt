@@ -1,4 +1,0 @@
-key 1763079414 term/nbOccu{a=1, b=4, c=1}
-key 1763079314 term/nbOccu{a=1, b=2}
-key 1763079315 term/nbOccu{b=2, c=1}
-key 1763079214 term/nbOccu{a=1, c=1, d=4, e=5}

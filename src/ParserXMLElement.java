@@ -20,18 +20,19 @@ public class ParserXMLElement{
     public ParserXMLElement(String path) {
     	this.path = path;
     	
-    	SAXParserFactory factory = SAXParserFactory.newInstance();
     	postingLists = new Indexator();
+    	/*SAXParserFactory factory = SAXParserFactory.newInstance();
     	// factory.setValidating(true);
     	
     	try {
 			parser = factory.newSAXParser();
 		} catch (ParserConfigurationException | SAXException e) {
 			e.printStackTrace();
-		}
+		}*/
     }
     
 	public List<Document> parse() {
+		SAXParserFactory factory = SAXParserFactory.newInstance();
 		List<Document> docs = new ArrayList<Document>();   // ensemble de tous les documents cree a partir des fichiers
 		List<Document> elements = new ArrayList<Document>();   // ensemble des documents qui vienne d'un fichier
 		MyElementHandler handler;    // parse le fichier xml
@@ -44,25 +45,31 @@ public class ParserXMLElement{
 				fichiers = d.listFiles();
 			
 				for (int i = 0; i < fichiers.length; i++) {
-					handler = new MyElementHandler();
-					parser.parse(fichiers[i].getPath(), handler);
-					
-					//System.err.println("Docs  " + handler.getId() + " " + i + "  " + fichiers.length);
-					elements = handler.getDocs();
-					postingLists.createIndex(elements);  // ajout du contenu dans la posting list
-					
-					// suppression du contenu
-					for (int j = 0; j < elements.size(); j++) {
-						elements.get(j).setStringDocument("");
-					}
+					try {
+						parser = factory.newSAXParser();
 
-					// ajout de nouveaux elements
-					docs.addAll(elements);
+						handler = new MyElementHandler();
+						parser.parse(fichiers[i].getPath(), handler);
+						
+						//System.err.println("Docs  " + handler.getId() + " " + i + "  " + fichiers.length);
+						elements = handler.getDocs();
+						postingLists.createIndex(elements);  // ajout du contenu dans la posting list
+						
+						// suppression du contenu
+						for (int j = 0; j < elements.size(); j++) {
+							elements.get(j).setStringDocument("");
+						}
+						
+						// ajout de nouveaux elements
+						docs.addAll(elements);
+						handler = null;
+						elements = null;
+
+						//Thread.sleep(100);
+					} catch (ParserConfigurationException/* | InterruptedException*/ e) {
+						e.printStackTrace();
+					}
 					
-					//System.out.println("ID : " + handler.getId());
-					parser.reset();
-					
-					handler = null;
 				}
 				
 			}
