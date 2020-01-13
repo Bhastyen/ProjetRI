@@ -22,12 +22,13 @@ public class Main {
 	public static final String ETAPE = "04";
 	public static final String OUTPUT_DIR = "resources/resultats/";
 	public static final String OUTPUT_NAME = "BastienCelineLaetitiaPierre";
-	public static final String[] PARAMETERS = new String[] {"ltn", "bm25,k=1,b=0.5", "bm25,k=1.2,b=0.75", "bm25,k=0.9,b=0.9"};
+	public static final String[] PARAMETERS = new String[] {"bm25,k=1,b=0.5,a_title=1.5,a_body=1.5,a_sec=1"};
 
 	public static final int MAX_ELEMENT = 3;
 	public static final Document.Type_Element GRANULARITE = Document.Type_Element.ARTICLE;
 	public static final Boolean STOPWORD = true;
 	public static final Boolean STEMMING = false;
+	public static final Boolean ROBERTSON = true;
 
 
 	public static void main(String[] args) {
@@ -41,7 +42,7 @@ public class Main {
 		THashMap<String, TLongLongMap> postingListXML = null;
 		
 		File query = new File("resources/topics_M2WI7Q_2019_20.txt");
-		//File query = new File("resources/test-reduit/queryTest/query.txt");
+//		File query = new File("resources/test-reduit/queryTest/query.txt");
 		queries = readQuery(query);
 
 		// parsing des documents
@@ -49,7 +50,7 @@ public class Main {
 		//docsBrut = parserDocBrut("resources/textes_brut");
 		
 		begin = System.currentTimeMillis();
-		//parserXML = parserDocXML("resources/test-reduit/XML", queries);
+//		parserXML = parserDocXML("resources/test-reduit/XML", queries);
 		parserXML = parserDocXML("resources/coll", queries);
 		docsXML = parserXML.parse();
 		indexatorXML = parserXML.getPostingLists();
@@ -98,7 +99,7 @@ public class Main {
 	}
 	
 	public static ParserXMLElement parserDocXML(String path, List<String> queries){
-		ParserXMLElement parser = new ParserXMLElement(path, queries);
+		ParserXMLElement parser = new ParserXMLElement(path);
 		return parser;
 	}
 

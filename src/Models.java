@@ -32,7 +32,7 @@ public class Models {
 		List<Long> revelantId;
 		HashMap<Long, Float> docIdScore = new HashMap<>();  // DocId , score par document
 		HashMap<Long, Document> docsMap = new HashMap<>();  // DocId , document  sert a cherhcer efficacement un document par rapport a l'id
-		Map<String, Float> otherParameters = new HashMap<String, Float>();
+		Map<String, Object> otherParameters = new HashMap<String, Object>();
 		// recupere un index des documents par id
 		docsMap = Document.getDocumentsHashMap(documents);
 		N = docsMap.size();
@@ -40,7 +40,13 @@ public class Models {
 		if (Character.toString(param.charAt(2)).equals("2")){
 			otherParameters.put("k",normalization.k(param));
 			otherParameters.put("b",normalization.b(param));
-			otherParameters.put("ave_len",normalization.ave_len(docsMap, N));
+			if (Main.ROBERTSON == true) {
+				otherParameters.put("ave_len",normalization.ave_len_f(docsMap, N, normalization.alphas(param)));
+			} else {
+				otherParameters.put("ave_len",normalization.ave_len(docsMap, N));
+			}
+			otherParameters.put("docMap", docsMap);
+			otherParameters.put("alphas", normalization.alphas(param));
 		}
 		
 		if (Character.toString(param.charAt(2)).equals("u")){
@@ -66,7 +72,7 @@ public class Models {
 					
 					doc_id = ite.key();
 					
-					if (docsMap.get(doc_id).getType() == Main.GRANULARITE || Main.GRANULARITE == Document.Type_Element.ELEMENT) {						
+					if (docsMap.get(doc_id).getType() == Main.GRANULARITE && docsMap.get(doc_id).getCheminDocument().equals("article[1]/")) {						
 						if (!docIdScore.containsKey(doc_id))   // ajout de l entree dans le dico s il n existe pas
 							docIdScore.put(doc_id, 0f);
 						
@@ -177,23 +183,24 @@ public class Models {
 		List<Long> resultsFils = new ArrayList<Long>();
 
 		for (int i = 0; i < idEntries.size(); i++) {
+			
 			// System.err.println("ID fils " + Long.toString(docs.get(i).getId()) + " doc + 1 " + Long.toString(docs.get(i).getIdDoc()) + "1");
 			
-			 if (docs.get(i).getType() == Document.Type_Element.ARTICLE && !docs.get(i).getCheminDocument().matches("/*/*/*")) { // si il s'agit
+//			 if (docs.get(i).getType() == Document.Type_Element.ARTICLE && !docs.get(i).getCheminDocument().matches("/*/*/*")) { // si il s'agit
 				 // de l'element racine "article"
 				 
-				 System.out.println("Type " + docs.get(i).getType() + "  chemin  " + docs.get(i).getCheminDocument());
+//				 System.out.println("Type " + docs.get(i).getType() + "  chemin  " + docs.get(i).getCheminDocument());
 			
-				 resultsFils = removeCover(docs.get(i), idDocScore, idDocDoc); 
-				 results.addAll(resultsFils); // recupere les elements interessants du document
+//				 resultsFils = removeCover(docs.get(i), idDocScore, idDocDoc); 
+//				 results.addAll(resultsFils); // recupere les elements interessants du document
 			 
-			 	System.err.println("Nombre resultat : " + resultsFils.size());
-			 }
+//			 	System.err.println("Nombre resultat : " + resultsFils.size());
+//			 }
 			 
 
-			/*if (!Float.isNaN(idEntries.get(i).getValue())) {
+			if (!Float.isNaN(idEntries.get(i).getValue())) {
 				results.add(idEntries.get(i).getKey()); // recupere les elements interessants du document
-			}*/
+			}
 		}
 
 		return results;
