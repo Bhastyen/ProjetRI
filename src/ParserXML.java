@@ -14,12 +14,10 @@ import org.xml.sax.SAXException;
 public class ParserXML{
 	private String path;
     private SAXParser parser;
-    private List<String> queries;
 	
 	
-    public ParserXML(String path, List<String> queries) {
+    public ParserXML(String path) {
     	this.path = path;
-    	this.queries = queries;
     	
     	SAXParserFactory factory = SAXParserFactory.newInstance();
     	// factory.setValidating(true);

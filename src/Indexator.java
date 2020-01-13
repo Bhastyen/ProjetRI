@@ -25,12 +25,26 @@ public class Indexator {
 		return postingList;
 	}
 
-
+	// fonctionne de base qui cree la posting list en entier
 	public void createIndex(List<Document> listDoc) {
+		createIndex(listDoc, null);
+	}
+	
+	// prends en compte les mots de la requete pour ne calculer que ce dont on a besoin
+	public void createIndex(List<Document> listDoc, List<String> queries) { 
 		List<String> listWords;
+		List<String> listWordQuery = new ArrayList<>();
+		String stem;
 		long docid = 0;
 		long nbOcc = 0;
-		String stem;
+		
+		// concatene tous les termes de la requete dans un tableau
+		if (queries != null) {
+			for (String q : queries) {
+				List<String> wq = Arrays.asList(q.split(" "));
+				listWordQuery.addAll(wq);
+			}
+		}
 		
 		// Pour tous les documents
 		for (Document doc : listDoc) {
@@ -58,11 +72,20 @@ public class Indexator {
 				// Si le mot est deja dans la posting list alors on recup la liste et on ajoute
 				// la nouvelle paire doc_id / tf
 				
-				if (postingList.containsKey(stem)) {
-					postingList.get(stem).put(docid, nbOcc);
-				}else {
-					postingList.put(stem, new TLongLongHashMap());
-					postingList.get(stem).put(docid, nbOcc);
+				if (listWordQuery.size() > 0 && listWordQuery.contains(stem)) {
+					if (postingList.containsKey(stem)) {
+						postingList.get(stem).put(docid, nbOcc);
+					}else {
+						postingList.put(stem, new TLongLongHashMap());
+						postingList.get(stem).put(docid, nbOcc);
+					}
+				} else if (listWordQuery.size() == 0){
+					if (postingList.containsKey(stem)) {
+						postingList.get(stem).put(docid, nbOcc);
+					}else {
+						postingList.put(stem, new TLongLongHashMap());
+						postingList.get(stem).put(docid, nbOcc);
+					}
 				}
 			}
 
