@@ -70,9 +70,10 @@ public class IDF {
 //			n=250;
 //		}
 //		System.out.println(n);
-		idf = (float) Math.log10((float) N / n);
-		return idf;
 		
+		idf = (float) Math.log10((float) N / n);
+		
+		return idf;
 	}
 	
 	

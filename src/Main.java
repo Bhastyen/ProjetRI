@@ -6,9 +6,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 
 import gnu.trove.map.TLongLongMap;
@@ -24,10 +22,11 @@ public class Main {
 	public static final String OUTPUT_NAME = "BastienCelineLaetitiaPierre";
 	public static final String[] PARAMETERS = new String[] {"ltn", "bm25,k=1,b=0.5", "bm25,k=1.2,b=0.75", "bm25,k=0.9,b=0.9"};
 
-	public static final int MAX_ELEMENT = 3;
-	public static final Document.Type_Element GRANULARITE = Document.Type_Element.ARTICLE;
+	public static final int MAX_ELEMENT = 1;
+	public static final Document.Type_Element GRANULARITE = Document.Type_Element.ELEMENT;
 	public static final Boolean STOPWORD = true;
 	public static final Boolean STEMMING = false;
+	public static final Boolean OPTIMISATION_POSTING_LIST = true;
 
 
 	public static void main(String[] args) {
@@ -83,7 +82,7 @@ public class Main {
 
 		// TEXTE XML : calcul du score des documents pour chaque requete et ecriture du run
 		begin = System.currentTimeMillis();
-		writeAllRuns(queries, OUTPUT_DIR + "xml/", OUTPUT_NAME, "0" + ETAPE, GRANULARITE.name(), docsXML, postingListXML);
+		writeAllRuns(queries, OUTPUT_DIR + "xml/", OUTPUT_NAME, ETAPE, GRANULARITE.name(), docsXML, postingListXML);
 		end = System.currentTimeMillis();
 		total += (end - begin);
 		System.err.println("Runs Time : " + (((end - begin) / 1000f)));
@@ -98,7 +97,13 @@ public class Main {
 	}
 	
 	public static ParserXMLElement parserDocXML(String path, List<String> queries){
-		ParserXMLElement parser = new ParserXMLElement(path, queries);
+		ParserXMLElement parser;
+		
+		if (OPTIMISATION_POSTING_LIST)
+			parser = new ParserXMLElement(path, queries);
+		else 
+			parser = new ParserXMLElement(path);
+		
 		return parser;
 	}
 

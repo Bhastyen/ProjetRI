@@ -13,7 +13,7 @@ import gnu.trove.list.array.TLongArrayList;
 public class Document {
 	public static final List<String> STOP_WORD = loadStopwords();
 	public enum Type {XML, BRUT} ;
-	public enum Type_Element {VIDE, ARTICLE, SECTION, PARAGRAPH, TITLE, BOLD, ITALIC, NAME, LINK, ELEMENT};
+	public enum Type_Element {VIDE, ARTICLE, SECTION, PARAGRAPH, TITLE, BOLD, ITALIC, NAME, LINK, ELEMENT, DOCUMENT};
 	
 	private long id;
 	private long idDoc;
@@ -25,7 +25,7 @@ public class Document {
 	
 	
 	public Document(long idDoc, String stringDocument) {
-		String[] arrString = stringDocument.split(" ");
+		String[] arrString = stringDocument.split(" +");
 
 		this.id = idDoc;
 		this.idDoc = idDoc;

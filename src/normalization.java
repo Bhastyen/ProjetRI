@@ -148,8 +148,8 @@ public class normalization {
 		float slope=otherParameters.get("slope");
 		float pivot=otherParameters.get("pivot");
 		float tf, idf, w;
-		float ave_dl=otherParameters.get("ave_len");
-		float nt=0;
+		float ave_dl = otherParameters.get("ave_len");
+		float nt = 0;
 
 		// compute nt: distinct terms in the document we're working on
 		for(Entry<String, TLongLongMap> entry : postingList.entrySet()) {
@@ -160,7 +160,7 @@ public class normalization {
 		
 		tf = TF.tf(tfMethod, term, docId, postingList);
 		idf = IDF.idf(dfMethod, term, N, postingList);
-		w = (float) (   (tf*idf)/(1+Math.log(dl/ave_dl)) / ((1-slope)*pivot + slope*nt)   );
+		w = (float) ( (tf*idf) / (1+Math.log(dl/ave_dl)) / ((1-slope)*pivot + slope*nt) );
 		return w;
 	}
 	
@@ -185,8 +185,7 @@ public class normalization {
 		
 //		System.out.println("TF : " + tf + "  IDF : " + idf + " doc " + docId);
 		
-		ave_dl = 20;
-		
+		//ave_dl = 20;
 		
 		w = (tf * (k + 1)) / (tf + k * (1 - b + b * (dl / ave_dl))) * idf; // BM25 formula
 		return w;
@@ -214,6 +213,23 @@ public class normalization {
 		for(Entry<Long, Document> entry : docsMap.entrySet()) { // for each documents
 			docId = entry.getKey();
 			ave_len += entry.getValue().get_length(); 						// ...add the length of this document
+			
+		}
+		
+		ave_len /= N; // divide the total of occurrence by the number of doc
+		return ave_len;
+	}
+	
+	public static float ave_len_doc(HashMap<Long, Document> docsMap, int N) {
+		float ave_len = 0;
+		Long docId;
+		
+		for(Entry<Long, Document> entry : docsMap.entrySet()) { // for each documents
+			docId = entry.getKey();
+			
+			if (entry.getValue().getType() == Document.Type_Element.ARTICLE && entry.getValue().getCheminDocument().equals("article[1]/")) {
+				ave_len += entry.getValue().get_length(); 						// ...add the length of this document
+			}
 			
 		}
 		

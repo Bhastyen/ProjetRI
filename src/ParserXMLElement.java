@@ -15,12 +15,20 @@ public class ParserXMLElement{
 	private String path;
     private SAXParser parser;
     private Indexator postingLists;
+    private List<String> queries;
 	
-	
+    
     public ParserXMLElement(String path) {
     	this.path = path;
+    	this.queries = null;
     	
     	postingLists = new Indexator();
+    }
+    
+    public ParserXMLElement(String path, List<String> queries) {
+    	this(path);
+    	
+    	this.queries = queries;
     }
     
 	public List<Document> parse() {
@@ -45,7 +53,8 @@ public class ParserXMLElement{
 						
 						//System.err.println("Docs  " + handler.getId() + " " + i + "  " + fichiers.length);
 						elements = handler.getDocs();
-						postingLists.createIndex(elements);  // ajout du contenu dans la posting list
+						postingLists.createIndex(elements, queries);  // ajout du contenu dans la posting list en ne prenant 
+						// en compte que les termes apparaissant dans la requete
 						
 						// suppression du contenu pour liberer de la memoire
 						for (int j = 0; j < elements.size(); j++) {
@@ -56,8 +65,6 @@ public class ParserXMLElement{
 						docs.addAll(elements);
 						handler = null;
 						elements = null;
-
-						//Thread.sleep(100);
 					} catch (ParserConfigurationException/* | InterruptedException*/ e) {
 						e.printStackTrace();
 					}

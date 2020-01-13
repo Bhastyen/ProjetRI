@@ -38,7 +38,7 @@ public class MyElementHandler extends DefaultHandler {
 		
 		//System.err.println("Nombre de doc viable : " +  docs.size());
 	}
-		
+	
 	public void startElement(String uri, String localName, String qName, Attributes att) {
 		// Creation de l element actuel
 		arbreIndex.addFils();
