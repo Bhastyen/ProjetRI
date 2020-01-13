@@ -3,6 +3,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import gnu.trove.map.TLongLongMap;
+import gnu.trove.map.hash.THashMap;
+
 
 
 public class normalization {
@@ -13,7 +16,7 @@ public class normalization {
 			long docId,
 			long dl,
 			int N,
-			Map<String, Map<Long, Long>> postingList,
+			THashMap<String, TLongLongMap> postingList,
 			Map<String, Float> otherParameters) {
 
 
@@ -43,7 +46,7 @@ public class normalization {
 			String term,
 			long docId,
 			int N,
-			Map<String, Map<Long, Long>> postingList)
+			THashMap<String, TLongLongMap> postingList)
 	{
 		
 		String tfMethod = Character.toString(smart.charAt(0));  //function to use for tf
@@ -54,7 +57,7 @@ public class normalization {
 		
 		tf = TF.tf(tfMethod, term, docId, postingList);
 		idf = IDF.idf(dfMethod, term, N, postingList);
-		System.out.println("TF : " + tf + "  IDF : " + idf);
+		//System.out.println("TF : " + tf + "  IDF : " + idf);
 		w = tf*idf;
 		
 		return w;
@@ -66,7 +69,7 @@ public class normalization {
 			String term,
 			long docId,
 			int N,
-			Map<String, Map<Long, Long>> postingList)
+			THashMap<String, TLongLongMap> postingList)
 	{
 		
 		String tfMethod = Character.toString(smart.charAt(0));
@@ -77,7 +80,7 @@ public class normalization {
 		float sum = 0;
 		float sumElement;
 		
-		for(Entry<String, Map<Long, Long>> entry : postingList.entrySet()) {
+		for(Entry<String, TLongLongMap> entry : postingList.entrySet()) {
 			if (entry.getValue().containsKey(docId)){
 				tf = TF.tf(tfMethod, entry.getKey(), docId, postingList);
 				idf = IDF.idf(dfMethod, entry.getKey(), N, postingList);
@@ -100,7 +103,7 @@ public class normalization {
 			String term,
 			long docId,
 			int N,
-			Map<String, Map<Long, Long>> postingList)
+			THashMap<String, TLongLongMap> postingList)
 	{
 		
 		String tfMethod = Character.toString(smart.charAt(0));
@@ -111,7 +114,7 @@ public class normalization {
 		float sum = 0;
 		float sumElement;
 		
-		for(Entry<String, Map<Long, Long>> entry : postingList.entrySet()) {
+		for(Entry<String, TLongLongMap> entry : postingList.entrySet()) {
 			if (entry.getValue().containsKey(docId)){
 				tf = TF.tf(tfMethod, entry.getKey(), docId, postingList);
 				idf = IDF.idf(dfMethod, entry.getKey(), N, postingList);
@@ -136,7 +139,7 @@ public class normalization {
 			long docId,
 			long dl,
 			int N,
-			Map<String, Map<Long, Long>> postingList,
+			THashMap<String, TLongLongMap> postingList,
 			Map<String, Float> otherParameters)	{
 
 
@@ -149,7 +152,7 @@ public class normalization {
 		float nt=0;
 
 		// compute nt: distinct terms in the document we're working on
-		for(Entry<String, Map<Long, Long>> entry : postingList.entrySet()) {
+		for(Entry<String, TLongLongMap> entry : postingList.entrySet()) {
 			if (entry.getValue().containsKey(docId)){
 				nt++;
 			}
@@ -167,7 +170,7 @@ public class normalization {
 			long docId,
 			long dl,
 			int N,
-			Map<String, Map<Long, Long>> postingList,
+			THashMap<String, TLongLongMap> postingList,
 			Map<String, Float> otherParameters)
 	{
 		String tfMethod = "n";
@@ -192,10 +195,10 @@ public class normalization {
 	
 	
 	/// Other functions useful for avoiding repeating operations each time
-	public static float pivot(Map<String, Map<Long, Long>> postingList, int N) {
+	public static float pivot(THashMap<String, TLongLongMap> postingList, int N) {
 		float  pivot = 0;
 		
-		for(Entry<String, Map<Long, Long>> entry : postingList.entrySet()) { // for each documents
+		for(Entry<String, TLongLongMap> entry : postingList.entrySet()) { // for each documents
 			pivot += entry.getValue().size();		// add the distinct terms to the average
 		}
 		

@@ -14,10 +14,12 @@ import org.xml.sax.SAXException;
 public class ParserXML{
 	private String path;
     private SAXParser parser;
+    private List<String> queries;
 	
 	
-    public ParserXML(String path) {
+    public ParserXML(String path, List<String> queries) {
     	this.path = path;
+    	this.queries = queries;
     	
     	SAXParserFactory factory = SAXParserFactory.newInstance();
     	// factory.setValidating(true);
@@ -25,7 +27,7 @@ public class ParserXML{
     	try {
 			parser = factory.newSAXParser();
 		} catch (ParserConfigurationException | SAXException e) {
-			e.printStackTrace();
+			System.err.println("Probleme lors de la creation du parser SAX : " + e.getMessage()); 
 		}
     }
     

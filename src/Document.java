@@ -5,19 +5,22 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import gnu.trove.list.TLongList;
+import gnu.trove.list.array.TLongArrayList;
+
 
 
 public class Document {
 	public static final List<String> STOP_WORD = loadStopwords();
 	public enum Type {XML, BRUT} ;
-	public enum Type_Element {VIDE, ARTICLE, SECTION, PARAGRAPH, TITLE, BOLD, ITALIC, NAME, LINK};
+	public enum Type_Element {VIDE, ARTICLE, SECTION, PARAGRAPH, TITLE, BOLD, ITALIC, NAME, LINK, ELEMENT};
 	
 	private long id;
 	private long idDoc;
 	private String stringDocument;
 	private String cheminDocument;
 	private int length;
-	private List<Long> idFils;
+	private TLongList idFils;
 	private Type_Element type = Type_Element.VIDE;
 	
 	
@@ -28,7 +31,7 @@ public class Document {
 		this.idDoc = idDoc;
 		this.stringDocument = stringDocument.toLowerCase();
 		cheminDocument = "/article[1]";
-		setIdFils(new ArrayList<>());
+		setIdFils(new TLongArrayList());
 		
 		length = arrString.length;  // TODO robertson coeff suivant type
 	}
@@ -66,12 +69,12 @@ public class Document {
 		this.stringDocument = stringDocument;
 	}
 	
-	public List<Long> getIdFils() {
+	public TLongList getIdFils() {
 		return idFils;
 	}
 
 
-	public void setIdFils(List<Long> idFils) {
+	public void setIdFils(TLongList idFils) {
 		this.idFils = idFils;
 	}
 

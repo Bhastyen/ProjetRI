@@ -7,6 +7,9 @@ import java.util.Map;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
 
+import gnu.trove.list.TLongList;
+import gnu.trove.list.array.TLongArrayList;
+
 
 
 public class MyElementHandler extends DefaultHandler {
@@ -25,18 +28,6 @@ public class MyElementHandler extends DefaultHandler {
 	}
 	
 	public void endDocument() {
-		int i = 0;
-		String idStr;
-		
-		// recalcul certain id d'element qui ne pouvait etre calcule
-		while (docs.get(i).getId() < 10000) {   // id = idDoc + nombre d'element donc toujours sup a 10 000
-			idStr = Long.toString(docs.get(i).getId());
-			docs.get(i).setId(Long.valueOf(id + idStr));
-			i ++;
-		}
-		
-		arbreIndex = null;
-		
 		// on enleve les documents vides
 		/*docs.removeIf(new Predicate<Document>() {
 			@Override
@@ -73,13 +64,13 @@ public class MyElementHandler extends DefaultHandler {
 	
 	public void endElement(String uri, String localName, String qName) {
 		Document d;
-		List<Long> idFils = new ArrayList<>();
+		TLongList idFils = new TLongArrayList();
 		
 		// Verification si l'element a eu des fils terminé
 		String contenuFils = "";
 		
 		for (Arbre fils : arbreIndex.getFils()) { // Ajout du contenu des fils au contenu de la section
-			//contenuFils += docs.get(fils.getIndexList()).getStringDocument();
+			contenuFils += docs.get(fils.getIndexList()).getStringDocument();
 			idFils.add(docs.get(fils.getIndexList()).getId());
 		}
 
@@ -91,9 +82,6 @@ public class MyElementHandler extends DefaultHandler {
 		d = new Document(id, contenu, calculChemin());
 		d.setId(calculId(id));
 		d.setIdFils(idFils);
-		
-		if (id == 0 && !qName.equals("title"))
-			System.out.println("Qname : " + qName);
 		
 		switch (qName) {
 			case "article":
@@ -159,11 +147,20 @@ public class MyElementHandler extends DefaultHandler {
 	}
 	
 	public void characters(char[] caracteres, int depart, int longueur) {
+		int i = 0;
 		String mot = new String(caracteres, depart, longueur);
+		String idStr;
 		
 		if (idDoc) {
 			id = Long.parseLong(mot);
 			idDoc = false;
+			
+			// recalcul certain id d'element qui ne pouvait etre calcule sans id
+			while (i < docs.size() && docs.get(i).getId() < 10000) {   // tous les premiers docs qui n'avait id du doc de pret
+				idStr = Long.toString(docs.get(i).getId());
+				docs.get(i).setId(Long.valueOf(id + idStr));
+				i ++;
+			}
 		}else {
 			contenu += mot.replace('\n', ' ').replaceAll(" +", " ") + " ";
 		}

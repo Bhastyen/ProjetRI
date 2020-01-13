@@ -21,14 +21,6 @@ public class ParserXMLElement{
     	this.path = path;
     	
     	postingLists = new Indexator();
-    	/*SAXParserFactory factory = SAXParserFactory.newInstance();
-    	// factory.setValidating(true);
-    	
-    	try {
-			parser = factory.newSAXParser();
-		} catch (ParserConfigurationException | SAXException e) {
-			e.printStackTrace();
-		}*/
     }
     
 	public List<Document> parse() {
@@ -55,7 +47,7 @@ public class ParserXMLElement{
 						elements = handler.getDocs();
 						postingLists.createIndex(elements);  // ajout du contenu dans la posting list
 						
-						// suppression du contenu
+						// suppression du contenu pour liberer de la memoire
 						for (int j = 0; j < elements.size(); j++) {
 							elements.get(j).setStringDocument("");
 						}

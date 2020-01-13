@@ -10,11 +10,16 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
+import gnu.trove.iterator.TLongLongIterator;
+import gnu.trove.map.TLongLongMap;
+import gnu.trove.map.hash.THashMap;
+import gnu.trove.procedure.TLongLongProcedure;
+
 public class Models {
 
 	public static List<Entry<Document, Float>> CosineScore (
 			String query,
-			HashMap<String, Map<Long, Long>> postingList,
+			THashMap<String, TLongLongMap> postingList,
 			List<Document> documents,
 			String param) 
 	{
@@ -52,11 +57,28 @@ public class Models {
 			}
 
 			// Pour chaque pair : nombre occurence / IdDocument du terme wordQuery
-			if (postingList.get(wordQuery) != null) {
+			if (postingList.contains(wordQuery)) {
 
-
-				docs = new ArrayList<>(postingList.get(wordQuery).entrySet());
-				for (Entry<Long, Long> pair : docs) {   // <id du document , tf>
+				//docs = new ArrayList<>(postingList.get(wordQuery).entrySet());
+				TLongLongIterator ite = postingList.get(wordQuery).iterator();
+				while(ite.hasNext()) {
+					ite.advance();
+					
+					doc_id = ite.key();
+					
+					if (docsMap.get(doc_id).getType() == Main.GRANULARITE || Main.GRANULARITE == Document.Type_Element.ELEMENT) {						
+						if (!docIdScore.containsKey(doc_id))   // ajout de l entree dans le dico s il n existe pas
+							docIdScore.put(doc_id, 0f);
+						
+						dl = docsMap.get(doc_id).get_length();
+						score = docIdScore.get(doc_id);
+						score += normalization.W(param, wordQuery, doc_id, dl, N, postingList, otherParameters);
+	
+						docIdScore.put(doc_id, score);
+					}
+				}
+				
+				/*for (Entry<Long, Long> pair : docs) {   // <id du document , tf>
 					doc_id = pair.getKey();
 
 					if (docIdScore.get(doc_id) == null)   // ajout de l entree dans le dico s il n existe pas
@@ -67,9 +89,7 @@ public class Models {
 					score += normalization.W(param, wordQuery, doc_id, dl, N, postingList, otherParameters);
 
 					docIdScore.put(pair.getKey(), score);
-//									break;
-				}
-//							break;
+				}*/
 			}
 		}
 
@@ -95,8 +115,6 @@ public class Models {
 				return 0;
 			}
 		});
-		
-		// PASBON Map<Long, List<Entry<Document, Float>>> res = results.stream().collect(Collectors.groupingBy(Document::getIdDoc));
 		
 		/*int i = 0;
 		while (i < results.size()) {
@@ -153,36 +171,35 @@ public class Models {
 
 	// gere le recouvrement de chaque document et renvoie tous les elements
 	// pertinents
-	private static List<Long> removeAllCover(List<Document> docs, Map<Long, Float> idDocScore,
-			Map<Long, Document> idDocDoc) {
+	private static List<Long> removeAllCover(List<Document> docs, Map<Long, Float> idDocScore, Map<Long, Document> idDocDoc) {
 		List<Entry<Long, Float>> idEntries = new ArrayList<Entry<Long, Float>>(idDocScore.entrySet());
 		List<Long> results = new ArrayList<Long>();
 		List<Long> resultsFils = new ArrayList<Long>();
 
 		for (int i = 0; i < idEntries.size(); i++) {
-			// System.err.println("ID fils " + Long.toString(docs.get(i).getId()) + " doc +
-			// 1 " + Long.toString(docs.get(i).getIdDoc()) + "1");
+			// System.err.println("ID fils " + Long.toString(docs.get(i).getId()) + " doc + 1 " + Long.toString(docs.get(i).getIdDoc()) + "1");
+			
+			 if (docs.get(i).getType() == Document.Type_Element.ARTICLE && !docs.get(i).getCheminDocument().matches("/*/*/*")) { // si il s'agit
+				 // de l'element racine "article"
+				 
+				 System.out.println("Type " + docs.get(i).getType() + "  chemin  " + docs.get(i).getCheminDocument());
+			
+				 resultsFils = removeCover(docs.get(i), idDocScore, idDocDoc); 
+				 results.addAll(resultsFils); // recupere les elements interessants du document
+			 
+			 	System.err.println("Nombre resultat : " + resultsFils.size());
+			 }
+			 
 
-			/*
-			 * if (docs.get(i).getType() == Document.Type_Element.ARTICLE) { // si il s'agit
-			 * de l'element racine "article" System.out.println("Document : " +
-			 * docs.get(i).getIdDoc()); resultsFils = removeCover(docs.get(i), idDocScore,
-			 * idDocDoc); results.addAll(resultsFils); // recupere les elements interessants
-			 * du document
-			 * 
-			 * //System.err.println("Nombre resultat : " + resultsFils.size()); }
-			 */
-
-			if (!Float.isNaN(idEntries.get(i).getValue())) {
+			/*if (!Float.isNaN(idEntries.get(i).getValue())) {
 				results.add(idEntries.get(i).getKey()); // recupere les elements interessants du document
-			}
+			}*/
 		}
 
 		return results;
 	}
 
-	// gere le recouvrement pour un document et selectionne les elements avec le
-	// meilleur score
+	// gere le recouvrement pour un document et selectionne les elements avec le meilleur score
 	private static List<Long> removeCover(Document doc, Map<Long, Float> idDocScore, Map<Long, Document> idDocDoc) {
 		List<Long> revelantIds = new ArrayList<Long>();
 		List<Long> revelantIdFils;
@@ -190,27 +207,27 @@ public class Models {
 		boolean father = true;
 		float difference = 0;
 
+		//System.out.println("Fils  " + doc.getIdFils());
 		if (doc.getIdFils().size() > 0) {
 			for (int i = 0; i < doc.getIdFils().size(); i++) {
 				revelantIdFils = removeCover(idDocDoc.get(doc.getIdFils().get(i)), idDocScore, idDocDoc);
 				for (int j = 0; j < revelantIdFils.size(); j++) {
-					scoreParent = idDocScore.get(doc.getId()) == null ? 0f : idDocScore.get(doc.getId());
-					scoreFils = idDocScore.get(doc.getId()) == null ? 0f : idDocScore.get(doc.getId());
+					scoreParent = !idDocScore.containsKey(doc.getId()) ? 0f : idDocScore.get(doc.getId());
+					scoreFils = !idDocScore.containsKey(revelantIdFils.get(j)) ? 0f : idDocScore.get(revelantIdFils.get(j));
 
 					difference = ((scoreFils + 0.00001f) / (scoreParent + 0.00001f) * 100f) - 100f;
 
-					// System.err.println("Difference : " + scoreFils + " " + scoreParent + " " +
-					// difference);
+					// System.err.println("Difference : " + scoreFils + " " + scoreParent + " " + difference);
 					if (difference < -10) { // si le fils est 10% plus bas que le pere
-						// System.out.println("Ok inf");
+						//System.out.println("Ok inf");
 						revelantIds.add(revelantIdFils.get(j));
 						father = false;
 					} else if (difference > 10) { // si le fils est 10% plus haut que le pere
-						// System.out.println("Ok sup");
+						//System.out.println("Ok sup");
 						revelantIds.add(revelantIdFils.get(j));
 						father = false;
 					} else { // si le fils est entre [-10%, 10%]
-						// System.out.println("Ok equal");
+						//System.out.println("Ok equal");
 					}
 				}
 			}
