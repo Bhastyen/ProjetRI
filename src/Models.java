@@ -15,6 +15,8 @@ import gnu.trove.map.TLongLongMap;
 import gnu.trove.map.hash.THashMap;
 import gnu.trove.procedure.TLongLongProcedure;
 
+
+
 public class Models {
 
 	public static List<Entry<Document, Float>> CosineScore (
@@ -41,6 +43,8 @@ public class Models {
 			N = GetNumberDoc(documents);
 		else N = docsMap.size();
 		
+		System.out.println("N : " + N);
+		
 		if (Character.toString(param.charAt(2)).equals("2")){
 			otherParameters.put("k",normalization.k(param));
 			otherParameters.put("b",normalization.b(param));
@@ -61,10 +65,14 @@ public class Models {
 		
 		// Pour chaque mot de la requete
 		for(String wordQuery : arrQuery) {
-
 			if(Main.STEMMING) {
 				wordQuery = Stemming.stemTerm(wordQuery);
 			}
+
+			//wordQuery = Document.sentenceProcessing(wordQuery);
+			if (wordQuery.charAt(0) == '+')
+				wordQuery = wordQuery.substring(1);
+			System.out.println("word en cours : " + wordQuery);
 
 			// Pour chaque pair : nombre occurence / IdDocument du terme wordQuery
 			if (postingList.contains(wordQuery)) {
@@ -84,13 +92,14 @@ public class Models {
 					}
 					
 					// ne calcul un score que si l'element est d'un certain type
-					if (docsMap.get(doc_id).getType() == Main.GRANULARITE || Main.GRANULARITE == Document.Type_Element.ELEMENT) {						
+					if (docsMap.get(doc_id).getType() == Main.GRANULARITE || Main.GRANULARITE == Document.Type_Element.ELEMENT
+							 || Main.GRANULARITE == Document.Type_Element.DOCUMENT) {
 						if (!docIdScore.containsKey(doc_id))   // ajout de l entree dans le dico s il n existe pas
 							docIdScore.put(doc_id, 0f);
 						
 						dl = docsMap.get(doc_id).get_length();
 						score = docIdScore.get(doc_id);
-						score += normalization.W(param, wordQuery, doc_id, dl, N, postingList, otherParameters);
+						score += normalization.W(param, wordQuery, doc_id, dl, N, postingList, otherParameters, docsMap);
 	
 						docIdScore.put(doc_id, score);
 					}
@@ -99,6 +108,7 @@ public class Models {
 		}
 
 		// gerer le recouvrement
+		System.out.println("OK");
 		
 		// Parcourir l'arbre des documents et ressortir tous les elements les plus pertinents
 		revelantId = removeAllCover(roots, docIdScore, docsMap);
@@ -175,7 +185,10 @@ public class Models {
 			doc = idDocDoc.get(roots.get(i));
 			
 			resultsFils = removeCover(doc, idDocScore, idDocDoc);
-			results.addAll(resultsFils);   // recupere les elements interessants du document
+			
+			if (Main.GRANULARITE != Document.Type_Element.DOCUMENT)
+				results.addAll(resultsFils);   // recupere les elements interessants du document
+			else results.add(roots.get(i));
 		}
 		
 		// supprime le chevauchement restant s'il existe
@@ -234,7 +247,8 @@ public class Models {
 							scoreFils = 0;
 						else scoreFils = idDocScore.get(revelantIdFils.get(j));
 						
-						if ((idDocDoc.get(revelantIdFils.get(j)).getType() == Main.GRANULARITE || Main.GRANULARITE == Document.Type_Element.ELEMENT)
+						if ((idDocDoc.get(revelantIdFils.get(j)).getType() == Main.GRANULARITE || Main.GRANULARITE == Document.Type_Element.ELEMENT
+								 || Main.GRANULARITE == Document.Type_Element.DOCUMENT)
 								&& scoreFils != 0) {
 							revelantIds.add(revelantIdFils.get(j));
 						}
@@ -248,7 +262,8 @@ public class Models {
 						scoreParent = 0;
 					else scoreParent = idDocScore.get(doc.getIdFils().get(i));
 	
-					if ((idDocDoc.get(doc.getIdFils().get(i)).getType() == Main.GRANULARITE || Main.GRANULARITE == Document.Type_Element.ELEMENT)
+					if ((idDocDoc.get(doc.getIdFils().get(i)).getType() == Main.GRANULARITE || Main.GRANULARITE == Document.Type_Element.ELEMENT
+							 || Main.GRANULARITE == Document.Type_Element.DOCUMENT)
 							&& scoreParent != 0) {
 						revelantIds.add(doc.getIdFils().get(i));
 					}
@@ -286,7 +301,8 @@ public class Models {
 				scoreParent = 0;
 			else scoreParent = idDocScore.get(doc.getId());
 			
-			if ((idDocDoc.get(doc.getId()).getType() == Main.GRANULARITE || Main.GRANULARITE == Document.Type_Element.ELEMENT) && scoreParent != 0)
+			if ((idDocDoc.get(doc.getId()).getType() == Main.GRANULARITE || Main.GRANULARITE == Document.Type_Element.ELEMENT
+					 || Main.GRANULARITE == Document.Type_Element.DOCUMENT) && scoreParent != 0)
 				revelantIds.add(doc.getId());
 		}
 

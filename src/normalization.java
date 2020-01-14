@@ -17,20 +17,21 @@ public class normalization {
 			long dl,
 			int N,
 			THashMap<String, TLongLongMap> postingList,
-			Map<String, Float> otherParameters) {
+			Map<String, Float> otherParameters,
+			Map<Long, Document> docsMap) {
 
 
 		switch(Character.toString(smart.charAt(2))) {
 		case "n":
-			return n(smart, term, docId, N, postingList);
+			return n(smart, term, docId, N, postingList, docsMap);
 		case "c":
-			return c(smart, term, docId, N, postingList);
+			return c(smart, term, docId, N, postingList, docsMap);
 		case "s":
-			return s(smart, term, docId, N, postingList);
+			return s(smart, term, docId, N, postingList, docsMap);
 		case "u":
-			return u(smart, term, docId, dl, N, postingList, otherParameters);
+			return u(smart, term, docId, dl, N, postingList, otherParameters, docsMap);
 		case "2":
-			return bm25(smart, term, docId, dl, N, postingList, otherParameters);
+			return bm25(smart, term, docId, dl, N, postingList, otherParameters, docsMap);
 		default:
 			System.out.println("Pas de fonction W definie");
 			return 0;
@@ -46,7 +47,8 @@ public class normalization {
 			String term,
 			long docId,
 			int N,
-			THashMap<String, TLongLongMap> postingList)
+			THashMap<String, TLongLongMap> postingList,
+			Map<Long, Document> docsMap)
 	{
 		
 		String tfMethod = Character.toString(smart.charAt(0));  //function to use for tf
@@ -56,7 +58,7 @@ public class normalization {
 		float w;
 		
 		tf = TF.tf(tfMethod, term, docId, postingList);
-		idf = IDF.idf(dfMethod, term, N, postingList);
+		idf = IDF.idf(dfMethod, term, N, postingList, docsMap);
 		//System.out.println("TF : " + tf + "  IDF : " + idf);
 		w = tf*idf;
 		
@@ -69,7 +71,8 @@ public class normalization {
 			String term,
 			long docId,
 			int N,
-			THashMap<String, TLongLongMap> postingList)
+			THashMap<String, TLongLongMap> postingList,
+			Map<Long, Document> docsMap)
 	{
 		
 		String tfMethod = Character.toString(smart.charAt(0));
@@ -83,14 +86,14 @@ public class normalization {
 		for(Entry<String, TLongLongMap> entry : postingList.entrySet()) {
 			if (entry.getValue().containsKey(docId)){
 				tf = TF.tf(tfMethod, entry.getKey(), docId, postingList);
-				idf = IDF.idf(dfMethod, entry.getKey(), N, postingList);
+				idf = IDF.idf(dfMethod, entry.getKey(), N, postingList, docsMap);
 				sumElement = tf*idf;
 				sum += Math.pow(sumElement,2); //sum of the square of tf(t',d) for all t' in d
 			}
 		}
 		
 		tf = TF.tf(tfMethod, term, docId, postingList);
-		idf = IDF.idf(dfMethod, term, N, postingList);
+		idf = IDF.idf(dfMethod, term, N, postingList, docsMap);
 		w = (float) (tf*idf/Math.sqrt(sum));
 		
 		return w;
@@ -103,7 +106,8 @@ public class normalization {
 			String term,
 			long docId,
 			int N,
-			THashMap<String, TLongLongMap> postingList)
+			THashMap<String, TLongLongMap> postingList,
+			Map<Long, Document> docsMap)
 	{
 		
 		String tfMethod = Character.toString(smart.charAt(0));
@@ -117,14 +121,14 @@ public class normalization {
 		for(Entry<String, TLongLongMap> entry : postingList.entrySet()) {
 			if (entry.getValue().containsKey(docId)){
 				tf = TF.tf(tfMethod, entry.getKey(), docId, postingList);
-				idf = IDF.idf(dfMethod, entry.getKey(), N, postingList);
+				idf = IDF.idf(dfMethod, entry.getKey(), N, postingList, docsMap);
 				sumElement = tf*idf;
 				sum += Math.pow(sumElement,2); //sum of the square of tf(t',d) for all t' in d
 			}
 		}
 		
 		tf = TF.tf(tfMethod, term, docId, postingList);
-		idf = IDF.idf(dfMethod, term, N, postingList);
+		idf = IDF.idf(dfMethod, term, N, postingList, docsMap);
 		w = tf*idf/sum;
 		
 		return w;
@@ -140,7 +144,8 @@ public class normalization {
 			long dl,
 			int N,
 			THashMap<String, TLongLongMap> postingList,
-			Map<String, Float> otherParameters)	{
+			Map<String, Float> otherParameters,
+			Map<Long, Document> docsMap)	{
 
 
 		String tfMethod = Character.toString(smart.charAt(0));
@@ -159,7 +164,7 @@ public class normalization {
 		}
 		
 		tf = TF.tf(tfMethod, term, docId, postingList);
-		idf = IDF.idf(dfMethod, term, N, postingList);
+		idf = IDF.idf(dfMethod, term, N, postingList, docsMap);
 		w = (float) ( (tf*idf) / (1+Math.log(dl/ave_dl)) / ((1-slope)*pivot + slope*nt) );
 		return w;
 	}
@@ -171,7 +176,8 @@ public class normalization {
 			long dl,
 			int N,
 			THashMap<String, TLongLongMap> postingList,
-			Map<String, Float> otherParameters)
+			Map<String, Float> otherParameters,
+			Map<Long, Document> docsMap)
 	{
 		String tfMethod = "n";
 		String dfMethod = "bm25";
@@ -181,7 +187,7 @@ public class normalization {
 		float ave_dl = otherParameters.get("ave_len");
 
 		tf = TF.tf(tfMethod, term, docId, postingList);
-		idf = IDF.idf(dfMethod, term, N, postingList);
+		idf = IDF.idf(dfMethod, term, N, postingList, docsMap);
 		
 //		System.out.println("TF : " + tf + "  IDF : " + idf + " doc " + docId);
 		
