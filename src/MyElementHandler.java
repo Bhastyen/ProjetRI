@@ -3,6 +3,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
@@ -28,15 +29,13 @@ public class MyElementHandler extends DefaultHandler {
 	}
 	
 	public void endDocument() {
-		// on enleve les documents vides
-		/*docs.removeIf(new Predicate<Document>() {
+		// on enleve les documents trop petit en contenu
+		docs.removeIf(new Predicate<Document>() {
 			@Override
 			public boolean test(Document d) {
-				return (d.getStringDocument().isEmpty() || (d.getStringDocument().length() == 1 && d.getStringDocument().charAt(0) == ' '));
+				return d.get_length() < Main.MIN_LENGTH_AUTHORIZED;
 			}
-		});*/
-		
-		//System.err.println("Nombre de doc viable : " +  docs.size());
+		});
 	}
 	
 	public void startElement(String uri, String localName, String qName, Attributes att) {

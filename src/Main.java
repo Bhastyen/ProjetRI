@@ -27,11 +27,12 @@ public class Main {
 			//"bm25,k=1.3,b=0.2", "bm25,k=1.3,b=0.4", "bm25,k=1.3,b=0.6", "bm25,k=1.3,b=0.8", "bm25,k=1.3,b=1",
 			//"bm25,k=1.5,b=0.2", "bm25,k=1.5,b=0.4", "bm25,k=1.5,b=0.6", "bm25,k=1.5,b=0.8", "bm25,k=1.5,b=1"};
 
-	public static final int MAX_ELEMENT = 1;
-	public static final Document.Type_Element GRANULARITE = Document.Type_Element.DOCUMENT;
+	public static final int MAX_ELEMENT = 2;
+	public static final Document.Type_Element GRANULARITE = Document.Type_Element.ELEMENT;
 	public static final Boolean STOPWORD = true;
 	public static final Boolean STEMMING = false;
 	public static final Boolean OPTIMISATION_POSTING_LIST = true;
+	public static final int MIN_LENGTH_AUTHORIZED = 10;
 
 
 	public static void main(String[] args) {
@@ -143,7 +144,7 @@ public class Main {
 		for (int numRun = 0; numRun < PARAMETERS.length; numRun ++) {
 			BufferedWriter buff;
 			
-			String finalPath = path + nomEquipe + "_" + etape + "_" + "" + (BEGIN + numRun) + "_" + PARAMETERS[numRun].toUpperCase() + "_E=" + MAX_ELEMENT;
+			String finalPath = path + nomEquipe + "_" + etape + "_" + "" + (BEGIN + numRun) + "_" + PARAMETERS[numRun].toUpperCase() + "_E=" + MAX_ELEMENT + "_ML=" + MIN_LENGTH_AUTHORIZED;
 			
 			if (STOPWORD)
 				finalPath += "_stopwords";

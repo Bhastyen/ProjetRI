@@ -224,8 +224,10 @@ public class Models {
 			for (int i = 0; i < doc.getIdFils().size(); i++) {
 				fils = true;
 				moyScoreFils = 0;
+				revelantIdFils = new ArrayList<>();
 				
-				revelantIdFils = removeCover(idDocDoc.get(doc.getIdFils().get(i)), idDocScore, idDocDoc);
+				if (idDocScore.containsKey(doc.getIdFils().get(i)))
+					revelantIdFils = removeCover(idDocDoc.get(doc.getIdFils().get(i)), idDocScore, idDocDoc);
 				
 				for (int j = 0; j < revelantIdFils.size(); j++) {
 					if (!idDocScore.containsKey(revelantIdFils.get(j)))
@@ -262,9 +264,10 @@ public class Models {
 						scoreParent = 0;
 					else scoreParent = idDocScore.get(doc.getIdFils().get(i));
 	
-					if ((idDocDoc.get(doc.getIdFils().get(i)).getType() == Main.GRANULARITE || Main.GRANULARITE == Document.Type_Element.ELEMENT
-							 || Main.GRANULARITE == Document.Type_Element.DOCUMENT)
-							&& scoreParent != 0) {
+					if ((idDocScore.containsKey(doc.getIdFils().get(i)) && (idDocDoc.get(doc.getIdFils().get(i)).getType() == Main.GRANULARITE || 
+							Main.GRANULARITE == Document.Type_Element.ELEMENT ||
+							Main.GRANULARITE == Document.Type_Element.DOCUMENT)) &&
+							scoreParent != 0) {
 						revelantIds.add(doc.getIdFils().get(i));
 					}
 				}
