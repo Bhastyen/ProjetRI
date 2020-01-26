@@ -20,10 +20,18 @@ public class Main {
 	public static final String ETAPE = "04";
 	public static final String OUTPUT_DIR = "resources/resultats/";
 	public static final String OUTPUT_NAME = "BastienCelineLaetitiaPierre";
-	public static final String[] PARAMETERS = new String[] {"bm25,k=1,b=0.5,a_title=1.5,a_body=1.5,a_sec=1"};
+	public static final String[] PARAMETERS = new String[] {"bm25,k=0.5,b=0.5,a_title=1.5,a_body=1,a_sec=1",
+			"bm25,k=1,b=0.5,a_title=1.5,a_body=1,a_sec=1",
+			"bm25,k=1.5,b=0.5,a_title=1.5,a_body=1,a_sec=1",
+			"bm25,k=0.5,b=0.7,a_title=1.5,a_body=1,a_sec=1",
+			"bm25,k=1,b=0.7,a_title=1.5,a_body=1,a_sec=1",
+			"bm25,k=1.5,b=0.7,a_title=1.5,a_body=1,a_sec=1",
+			"bm25,k=0.5,b=0.9,a_title=1.5,a_body=1,a_sec=1",
+			"bm25,k=1,b=0.9,a_title=1.5,a_body=1,a_sec=1",
+			"bm25,k=1.5,b=0.9,a_title=1.5,a_body=1,a_sec=1"};
 
 	public static final int MAX_ELEMENT = 1;
-	public static final Document.Type_Element GRANULARITE = Document.Type_Element.ELEMENT;
+	public static final Document.Type_Element GRANULARITE = Document.Type_Element.ARTICLE;
 	public static final Boolean STOPWORD = true;
 	public static final Boolean STEMMING = false;
 	public static final Boolean ROBERTSON = true;

@@ -171,6 +171,9 @@ public class normalization {
 		alphaType.put(Document.Type_Element.BODY, alphas.get(1));
 		alphaType.put(Document.Type_Element.SECTION, alphas.get(2));
 		alphaType.put(Document.Type_Element.VIDE, 1F);
+		alphaType.put(Document.Type_Element.ARTICLE, 1F);
+		alphaType.put(Document.Type_Element.ELEMENT, 1F);
+		alphaType.put(Document.Type_Element.DOCUMENT, 1F);
 
 		tf = TF.f(term, docId, postingList, docsMap, alphaType);
 
