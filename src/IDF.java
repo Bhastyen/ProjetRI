@@ -14,7 +14,7 @@ public class IDF {
 			String term, 
 			int N,
 			THashMap<String, TLongLongMap> postingList) {
-		switch(smart) {
+		switch(smart) { // select the correct tf function depending of the SMART specification
 		case "n":
 			return  n();
 		case "i":
@@ -52,25 +52,7 @@ public class IDF {
 		
 		float idf; // Weight to return
 		int n = postingList.get(term).size(); // number of documents which contain term
-		
-//		N=1000;
-//		if (term.equals("a")) {
-//			n=10;
-//		}
-//		if (term.equals("b")) {
-//			n=25;
-//		}
-//		if (term.equals("c")) {
-//			n=10;
-//		}
-//		if (term.equals("d")) {
-//			n=24;
-//		}
-//		if (term.equals("e")) {
-//			n=250;
-//		}
-//		System.out.println(n);
-		
+
 		idf = (float) Math.log10((float) N / n);
 		
 		return idf;
@@ -151,35 +133,15 @@ public class IDF {
 	}
 	
 	
-	private static float bm25(
+	private static float bm25( // idf for BM25 function
 			String term, 
 			int N,
 			THashMap<String, TLongLongMap> postingList) {
 		float idf;
 		int n = postingList.get(term).size();
 
-		// for test
-		/*
-		N = 1000;
-		if (term.equals("a")) {
-			n=10;
-		}
-		if (term.equals("b")) {
-			n=25;
-		}
-		if (term.equals("c")) {
-			n=10;
-		}
-		if (term.equals("d")) {
-			n=24;
-		}
-		if (term.equals("e")) {
-			n=250;
-		}*/
-		
-		//
 		idf = (float) Math.log10((N - n + 0.5) / (n + 0.5));
-//		System.out.println("idf :"+N + " "+ n);
+
 		return idf;
 	}
 }

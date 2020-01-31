@@ -16,8 +16,8 @@ public class Document {
 	};
 
 	public enum Type_Element {
-		VIDE, BODY, TITLE, SECTION, ARTICLE, DOCUMENT, ELEMENT
-	}; // LINK, SECTION, PARAGRAPH, BOLD, ITALIC, NAME, ELEMENT,
+		VIDE, BODY, TITLE, SECTION, ARTICLE, DOCUMENT, ELEMENT, LINK, PARAGRAPH, BOLD, ITALIC, NAME,
+	}; 
 
 	private long id;
 	private long idDoc;

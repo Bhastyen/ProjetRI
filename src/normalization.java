@@ -13,7 +13,7 @@ public class normalization {
 			String term, long docId, long dl, int N, THashMap<String, TLongLongMap> postingList,
 			Map<String, Object> otherParameters) {
 
-		switch (Character.toString(smart.charAt(2))) {
+		switch (Character.toString(smart.charAt(2))) { // select the good normalization (SMART or BM25 or BM25f) depending of the specifications of Main.PARAMETERS
 		case "n":
 			return n(smart, term, docId, N, postingList);
 		case "c":
@@ -47,7 +47,6 @@ public class normalization {
 
 		tf = TF.tf(tfMethod, term, docId, postingList);
 		idf = IDF.idf(dfMethod, term, N, postingList);
-		// System.out.println("TF : " + tf + " IDF : " + idf);
 		w = tf * idf;
 
 		return w;
@@ -147,8 +146,6 @@ public class normalization {
 		tf = TF.tf(tfMethod, term, docId, postingList);
 		idf = IDF.idf(dfMethod, term, N, postingList);
 
-//		System.out.println("TF : " + tf + "  IDF : " + idf + " doc " + docId);
-
 		w = (tf * (k + 1)) / (tf + k * (1 - b + b * (dl / ave_dl))) * idf; // BM25 formula
 		return w;
 	}
@@ -165,6 +162,7 @@ public class normalization {
 		float ave_dl = (float) otherParameters.get("ave_len");
 
 		HashMap<Long, Document> docsMap = (HashMap<Long, Document>) otherParameters.get("docMap");
+		// get the correct alpha weights to the associated element
 		List<Float> alphas = (List<Float>) otherParameters.get("alphas");
 		HashMap<Document.Type_Element, Float> alphaType = new HashMap<Document.Type_Element, Float>();
 		alphaType.put(Document.Type_Element.TITLE, alphas.get(0));
@@ -176,21 +174,25 @@ public class normalization {
 		alphaType.put(Document.Type_Element.DOCUMENT, 1F);
 
 		tf = TF.f(term, docId, postingList, docsMap, alphaType);
-
 		idf = IDF.idf(dfMethod, term, N, postingList);
 
 		dl = dlBM25f(docId, docsMap, alphaType);
 		
-//		ave_dl = 23;
-
-		
 		w = (tf * (k + 1)) / (tf + k * (1 - b + b * (dl / ave_dl))) * idf; // BM25 formula
-//		System.out.println("ave "  + ave_dl);
 		return w;
 	}
 
-	public static long dlBM25f(long docId, HashMap<Long, Document> docsMap, HashMap<Document.Type_Element, Float> alphaType) {
-		Document doc = docsMap.get(docId);
+	
+	
+	/// Other functions useful for avoiding repeating operations each time
+	
+	
+	
+	public static long dlBM25f(long docId,
+			HashMap<Long, Document> docsMap,
+			HashMap<Document.Type_Element, Float> alphaType) { // recursive function for computing the document length for bm25f
+		
+		Document doc = docsMap.get(docId);	
 
 		long dl = 0L;
 		long dlTemp = 0L;
@@ -207,22 +209,10 @@ public class normalization {
 		return dl;
 	}
 
-	/// Other functions useful for avoiding repeating operations each time
-	public static float pivot(THashMap<String, TLongLongMap> postingList, int N) {
-		float pivot = 0;
-
-		for (Entry<String, TLongLongMap> entry : postingList.entrySet()) { // for each documents
-			pivot += entry.getValue().size(); // add the distinct terms to the average
-		}
-
-		pivot /= N; // divide the total of distinct terms by the number of doc
-
-		return pivot;
-	}
 
 	public static float ave_len(HashMap<Long, Document> docsMap, int N) {
 		float ave_len = 0;
-		Long docId;
+		Long docId = 0L;
 
 		for (Entry<Long, Document> entry : docsMap.entrySet()) { // for each documents
 			docId = entry.getKey();
@@ -234,7 +224,7 @@ public class normalization {
 		return ave_len;
 	}
 	
-	public static float ave_len_f(HashMap<Long, Document> docsMap, int N, List<Float> alphas) {
+	public static float ave_len_f(HashMap<Long, Document> docsMap, int N, List<Float> alphas) { // same as ave_len but taking the modified doc length into account
 		float ave_len = 0;
 		Long docId;
 
@@ -245,13 +235,13 @@ public class normalization {
 		alphaType.put(Document.Type_Element.VIDE, 1F);
 		alphaType.put(Document.Type_Element.ARTICLE, 1F);
 			
-		for (Entry<Long, Document> entry : docsMap.entrySet()) { // for each documents
+		for (Entry<Long, Document> entry : docsMap.entrySet()) { 
 			docId = entry.getKey();
-			ave_len += dlBM25f(docId, docsMap, alphaType); // ...add the length of this document
+			ave_len += dlBM25f(docId, docsMap, alphaType);
 
 		}
 
-		ave_len /= N; // divide the total of occurrence by the number of doc
+		ave_len /= N; 
 		return ave_len;
 	}
 
@@ -272,7 +262,7 @@ public class normalization {
 		return ave_len;
 	}
 	
-	public static float k(String smart) {
+	public static float k(String smart) {	// parse the k parameter from Main.PARAMETERS
 		// System.out.println("Smart : " + smart);
 		String[] splitted = smart.split(",");
 		String k_string = splitted[1].split("=")[1];
@@ -281,26 +271,7 @@ public class normalization {
 		return k;
 	}
 
-	public static List<Float> alphas(String smart) {
-
-		List<Float> alphas = new ArrayList<>();
-
-		String[] splitted = smart.split(",");
-		String a_title_str = splitted[3].split("=")[1];
-		String a_body_str = splitted[4].split("=")[1];
-		String a_sec_str = splitted[5].split("=")[1];
-
-		float a_title = Float.valueOf(a_title_str.trim()).floatValue();
-		float a_body = Float.valueOf(a_body_str.trim()).floatValue();
-		float a_sec = Float.valueOf(a_sec_str.trim()).floatValue();
-
-		alphas.add(a_title);
-		alphas.add(a_body);
-		alphas.add(a_sec);
-		return alphas;
-	}
-
-	public static float b(String smart) {
+	public static float b(String smart) { 	// parse the b parameter from Main.PARAMETERS
 		String[] splitted = smart.split(",");
 		String b_string = splitted[2].split("=")[1];
 
@@ -308,10 +279,41 @@ public class normalization {
 		return b;
 	}
 
-	public static float slope(String smart) {
+	public static List<Float> alphas(String smart) {
+
+		List<Float> alphas = new ArrayList<>();
+
+		String[] splitted = smart.split(",");
+		String a_1_str = splitted[3].split("=")[1];
+		String a_2_str = splitted[4].split("=")[1];
+		String a_3_str = splitted[5].split("=")[1];
+
+		float a_1 = Float.valueOf(a_1_str.trim()).floatValue();
+		float a_2 = Float.valueOf(a_2_str.trim()).floatValue();
+		float a_3 = Float.valueOf(a_3_str.trim()).floatValue();
+
+		alphas.add(a_1);
+		alphas.add(a_2);
+		alphas.add(a_3);
+		return alphas;
+	}
+
+	public static float slope(String smart) { // parse the slope parameter from Main.PARAMETERS
 		String slope_string = smart.split(",")[1];
 
 		float slope = Float.valueOf(slope_string.trim()).floatValue();
 		return slope;
+	}
+	
+	public static float pivot(THashMap<String, TLongLongMap> postingList, int N) { // compute the pivot for **u normalization 
+		float pivot = 0;
+
+		for (Entry<String, TLongLongMap> entry : postingList.entrySet()) { // for each documents
+			pivot += entry.getValue().size(); // add the distinct terms to the average
+		}
+
+		pivot /= N; // divide the total of distinct terms by the number of doc
+
+		return pivot;
 	}
 }

@@ -94,22 +94,21 @@ public class MyElementHandler extends DefaultHandler {
 		case "bdy":
 			d.setType(Document.Type_Element.BODY);
 			break;
-//		case "link":
-//			d.setType(Document.Type_Element.LINK);
-//			break;
-//		case "p":
-//			d.setType(Document.Type_Element.PARAGRAPH);
-//			break;
-//		case "name":
-//			d.setType(Document.Type_Element.NAME);
-//			break;
-//		case "b":
-//			d.setType(Document.Type_Element.BOLD);
-//			break;
-//
-//		case "it":
-//			d.setType(Document.Type_Element.ITALIC);
-//			break;
+		case "link":
+			d.setType(Document.Type_Element.LINK);
+			break;
+		case "p":
+			d.setType(Document.Type_Element.PARAGRAPH);
+			break;
+		case "name":
+			d.setType(Document.Type_Element.NAME);
+			break;
+		case "b":
+			d.setType(Document.Type_Element.BOLD);
+			break;
+		case "it":
+			d.setType(Document.Type_Element.ITALIC);
+			break;
 
 		default:
 			d.setType(Document.Type_Element.VIDE);
