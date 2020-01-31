@@ -16,7 +16,7 @@ import gnu.trove.map.hash.THashMap;
 
 public class Main {
 	public static final int NUMBER_OF_DOCUMENT_BY_QUERY = 1500;
-	public static final int BEGIN = 66;  // 66 + 5 = 
+	public static final int BEGIN = 66;
 	public static final String ETAPE = "04";
 	public static final String OUTPUT_DIR = "resources/resultats/";
 	public static final String OUTPUT_NAME = "BastienCelineLaetitiaPierre";
