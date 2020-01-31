@@ -46,8 +46,8 @@ public class ParserXML{
 					parser.parse(fichiers[i].getPath(), handler);
 
 					//System.out.println("ID : " + handler.getId());
-					//System.out.println("Contenu : " + handler.getContenu());
-					docs.add(new Document(handler.getId(), handler.getContenu()));
+					
+					docs.add(new Document(handler.getId(), Document.removeStopWord(handler.getContenu())));
 				}
 			}
 		} catch (SAXException | IOException e) {
