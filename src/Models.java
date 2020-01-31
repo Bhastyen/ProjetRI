@@ -49,11 +49,11 @@ public class Models {
 			otherParameters.put("b",normalization.b(param));
 			if (Main.ROBERTSON == true) {
 				otherParameters.put("ave_len",normalization.ave_len_f(docsMap, N, normalization.alphas(param)));
+				otherParameters.put("alphas", normalization.alphas(param));
 			} else {
 				otherParameters.put("ave_len",normalization.ave_len(docsMap, N));
 			}
 			otherParameters.put("docMap", docsMap);
-			otherParameters.put("alphas", normalization.alphas(param));
 			
 			if (Main.GRANULARITE == Document.Type_Element.DOCUMENT)
 				otherParameters.put("ave_len", normalization.ave_len_doc(docsMap, N));

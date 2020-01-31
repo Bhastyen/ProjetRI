@@ -8,17 +8,8 @@ import gnu.trove.map.hash.THashMap;
 
 public class TF {
 
-	public static float tf(String smart, String term, long docId, THashMap<String, TLongLongMap> postingList) {
-		// need postingList with docId as key
-
-//		try{
-//			Map<String, Long> docMap = postingList.get(docId);
-//			long tf = docMap.get(term);
-//		} catch (Exception ie) {
-//			System.out.println("term not in this document");
-//		}
-
-		switch (smart) {
+	public static float tf(String smart, String term, long docId, THashMap<String, TLongLongMap> postingList) { 
+		switch (smart) { 	// select the correct tf function depending of the SMART specification
 		case "b":
 			return b(term, docId, postingList);
 		case "n":
@@ -36,26 +27,6 @@ public class TF {
 			return 0;
 		}
 
-	}
-
-	public static float f(String term, long docId, THashMap<String, TLongLongMap> postingList,
-			HashMap<Long, Document> docsMap, HashMap<Document.Type_Element, Float> alphaType) {
-		
-		Document doc = docsMap.get(docId);
-
-
-		float tf = 0F;
-		float tfTemp = 0F;
-		if(doc.getIdFils().size() == 0){
-			tfTemp = postingList.get(term).get(docId);
-			tf += tfTemp * alphaType.get(doc.getType());
-		}else {
-			for(int i =0; i<doc.getIdFils().size(); i++){
-				Document child = docsMap.get(doc.getIdFils().get(i));
-				tf += (f(term, child.getId(), postingList, docsMap, alphaType)) * alphaType.get(doc.getType());
-			}
-		}
-		return tf;
 	}
 
 	public static float b(String term, long docId, THashMap<String, TLongLongMap> postingList) {
@@ -126,4 +97,24 @@ public class TF {
 		return tf;
 	}
 
+	
+	public static float f(String term, long docId, THashMap<String, TLongLongMap> postingList,	// function tf for BM25f : take alphas into account
+			HashMap<Long, Document> docsMap, HashMap<Document.Type_Element, Float> alphaType) { 
+		
+		Document doc = docsMap.get(docId);
+
+
+		float tf = 0F;
+		float tfTemp = 0F;
+		if(doc.getIdFils().size() == 0){
+			tfTemp = postingList.get(term).get(docId);
+			tf += tfTemp * alphaType.get(doc.getType());
+		}else {
+			for(int i =0; i<doc.getIdFils().size(); i++){
+				Document child = docsMap.get(doc.getIdFils().get(i));
+				tf += (f(term, child.getId(), postingList, docsMap, alphaType)) * alphaType.get(doc.getType());
+			}
+		}
+		return tf;
+	}
 }
