@@ -16,23 +16,20 @@ import gnu.trove.map.hash.THashMap;
 
 public class Main {
 	public static final int NUMBER_OF_DOCUMENT_BY_QUERY = 1500;
-	public static final int BEGIN = 66;
+	public static final int BEGIN = 1;    // num de depart pour les runs
 	public static final String ETAPE = "04";
-	public static final String OUTPUT_DIR = "resources/resultats/";
+	public static final String OUTPUT_DIR = "resources/resultats/";   // sorti des resultats
 	public static final String OUTPUT_NAME = "BastienCelineLaetitiaPierre";
 	public static final String[] PARAMETERS = new String[] {"ltn", "bm25,k=1,b=0.5", "bm25,k=1.2,b=0.75", "bm25,k=1,b=1", "bm25,k=0.1,b=0.75"};
-			//"bm25,k=0.7,b=0.2", "bm25,k=0.7,b=0.4", "bm25,k=0.7,b=0.6", "bm25,k=0.7,b=0.8", "bm25,k=0.7,b=1",
-			//"bm25,k=0.9,b=0.2", "bm25,k=0.9,b=0.4", "bm25,k=0.9,b=0.6", "bm25,k=0.9,b=0.8", "bm25,k=0.9,b=1",
-			//"bm25,k=1.1,b=0.2", "bm25,k=1.1,b=0.4", "bm25,k=1.1,b=0.6", "bm25,k=1.1,b=0.8", "bm25,k=1.1,b=1",
-			//"bm25,k=1.3,b=0.2", "bm25,k=1.3,b=0.4", "bm25,k=1.3,b=0.6", "bm25,k=1.3,b=0.8", "bm25,k=1.3,b=1",
-			//"bm25,k=1.5,b=0.2", "bm25,k=1.5,b=0.4", "bm25,k=1.5,b=0.6", "bm25,k=1.5,b=0.8", "bm25,k=1.5,b=1"};
+	//, "bm25,k=0.5,b=0.5,a_title=1.5,a_body=1,a_sec=1"  // forme run robertson
 
-	public static final int MAX_ELEMENT = 1;
-	public static final Document.Type_Element GRANULARITE = Document.Type_Element.LINK;
-	public static final Boolean STOPWORD = true;
-	public static final Boolean STEMMING = false;
-	public static final Boolean OPTIMISATION_POSTING_LIST = true;
-	public static final int MIN_LENGTH_AUTHORIZED = 15;
+	public static final int MAX_ELEMENT = 1;    // nombre d'element max renvoye par document, inutile pour granularite a ARTICLE et DOCUMENT
+	public static final Document.Type_Element GRANULARITE = Document.Type_Element.ARTICLE;
+	public static final Boolean STOPWORD = true;   // active l'enti dictionnaire
+	public static final Boolean STEMMING = false;    // active le stemming de Porter
+	public static final Boolean ROBERTSON = false;   // active le calcul du tf avec la methode robertson
+	public static final Boolean OPTIMISATION_POSTING_LIST = true;   // enleve les termes inutiles de la posting list
+	public static final int MIN_LENGTH_AUTHORIZED = 15;    // longueur minimum pour qu'un element soit pris en compte
 
 
 	public static void main(String[] args) {
@@ -46,7 +43,7 @@ public class Main {
 		THashMap<String, TLongLongMap> postingListXML = null;
 		
 		File query = new File("resources/topics_M2WI7Q_2019_20.txt");
-		//File query = new File("resources/test-reduit/queryTest/query.txt");
+//		File query = new File("resources/test-reduit/queryTest/query.txt");
 		queries = readQuery(query);
 
 		// parsing des documents
@@ -54,7 +51,7 @@ public class Main {
 		//docsBrut = parserDocBrut("resources/textes_brut");
 		
 		begin = System.currentTimeMillis();
-		//parserXML = parserDocXML("resources/test-reduit/XML", queries);
+//		parserXML = parserDocXML("resources/test-reduit/XML", queries);
 		parserXML = parserDocXML("resources/coll", queries);
 		docsXML = parserXML.parse();
 		indexatorXML = parserXML.getPostingLists();
@@ -81,7 +78,7 @@ public class Main {
 		System.out.println("Taille " + docsXML.size());
 		System.out.println("Posting list size : " + postingListXML.size());
 		
-		OutPutFilePostingList(postingListXML);
+		//OutPutFilePostingList(postingListXML);   // decommenter pour ecrire la posting list dans un fichier "posting list", utile pour debugger
 
 		// TEXTE BRUT : calcul du score des documents pour chaque requete et ecriture du run
 		//writeAllRuns(queries, OUTPUT_DIR + "brut/", OUTPUT_NAME, "06", "articles", docsBrut, postingList, postingListPerDoc);

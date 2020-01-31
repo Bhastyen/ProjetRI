@@ -34,8 +34,7 @@ public class Models {
 		List<Long> revelantId, roots = new ArrayList<>();
 		HashMap<Long, Float> docIdScore = new HashMap<>();  // DocId , score par document
 		HashMap<Long, Document> docsMap = new HashMap<>();  // DocId , document  sert a cherhcer efficacement un document par rapport a l'id
-		Map<String, Float> otherParameters = new HashMap<String, Float>();
-		
+		Map<String, Object> otherParameters = new HashMap<String, Object>();
 		// recupere un index des documents par id
 		docsMap = Document.getDocumentsHashMap(documents);
 		
@@ -48,6 +47,13 @@ public class Models {
 		if (Character.toString(param.charAt(2)).equals("2")){
 			otherParameters.put("k",normalization.k(param));
 			otherParameters.put("b",normalization.b(param));
+			if (Main.ROBERTSON == true) {
+				otherParameters.put("ave_len",normalization.ave_len_f(docsMap, N, normalization.alphas(param)));
+			} else {
+				otherParameters.put("ave_len",normalization.ave_len(docsMap, N));
+			}
+			otherParameters.put("docMap", docsMap);
+			otherParameters.put("alphas", normalization.alphas(param));
 			
 			if (Main.GRANULARITE == Document.Type_Element.DOCUMENT)
 				otherParameters.put("ave_len", normalization.ave_len_doc(docsMap, N));
@@ -177,6 +183,7 @@ public class Models {
 		List<Long> finalResults = new ArrayList<Long>();
 		List<Long> resultsFils = new ArrayList<Long>();
 		Document doc;
+
 
 		for (int i = 0; i < roots.size(); i++) {
 			doc = idDocDoc.get(roots.get(i));
