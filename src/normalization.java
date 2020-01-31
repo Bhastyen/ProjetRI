@@ -17,7 +17,7 @@ public class normalization {
 			long dl,
 			int N,
 			THashMap<String, TLongLongMap> postingList,
-			Map<String, Float> otherParameters,
+			Map<String, Object> otherParameters,
 			Map<Long, Document> docsMap) {
 
 		switch (Character.toString(smart.charAt(2))) { // select the good normalization (SMART or BM25 or BM25f) depending of the specifications of Main.PARAMETERS
@@ -31,7 +31,7 @@ public class normalization {
 			return u(smart, term, docId, dl, N, postingList, otherParameters, docsMap);
 		case "2":
 			if (Main.ROBERTSON == true) {
-				return bm25f(smart, term, docId, dl, N, postingList, otherParameters, docsMap);
+				return bm25f(smart, term, docId, dl, N, postingList, otherParameters);
 			} else {
 				return bm25(smart, term, docId, dl, N, postingList, otherParameters, docsMap);
 			}
@@ -128,6 +128,7 @@ public class normalization {
 		w = tf * idf / sum;
 
 		return w;
+	}
 
 	public static float u(		
 			String smart,
@@ -136,7 +137,7 @@ public class normalization {
 			long dl,
 			int N,
 			THashMap<String, TLongLongMap> postingList,
-			Map<String, Float> otherParameters,
+			Map<String, Object> otherParameters,
 			Map<Long, Document> docsMap)	{
 
 		String tfMethod = Character.toString(smart.charAt(0));
@@ -168,7 +169,7 @@ public class normalization {
 			long dl,
 			int N,
 			THashMap<String, TLongLongMap> postingList,
-			Map<String, Float> otherParameters,
+			Map<String, Object> otherParameters,
 			Map<Long, Document> docsMap)
 	{
 		String tfMethod = "n";
@@ -210,7 +211,7 @@ public class normalization {
 		alphaType.put(Document.Type_Element.DOCUMENT, 1F);
 
 		tf = TF.f(term, docId, postingList, docsMap, alphaType);
-		idf = IDF.idf(dfMethod, term, N, postingList);
+		idf = IDF.idf(dfMethod, term, N, postingList, docsMap);
 
 		dl = dlBM25f(docId, docsMap, alphaType);
 		
@@ -218,12 +219,12 @@ public class normalization {
 		return w;
 	}
 
-	// Other functions useful for avoiding repeating operations each time	
+	// Other functions useful for avoiding repeating operations each time
 	public static long dlBM25f(long docId,
 			HashMap<Long, Document> docsMap,
 			HashMap<Document.Type_Element, Float> alphaType) { // recursive function for computing the document length for bm25f
 		
-		Document doc = docsMap.get(docId);	
+		Document doc = docsMap.get(docId);
 		long dl = 0L;
 		long dlTemp = 0L;
 
@@ -231,14 +232,15 @@ public class normalization {
 			dlTemp = doc.get_length();
 			if (alphaType.containsKey(doc.getType()))
 				dl += dlTemp * alphaType.get(doc.getType());
-			else dl += dlTemp * 1f;   // si coef element non determine on multiplit par 1  
+			else dl += dlTemp * alphaType.get(Document.Type_Element.VIDE);   // si coef element non determine on multiplit par le coeff d'un element non connu  
 		} else {
 			for (int i = 0; i < doc.getIdFils().size(); i++) {
 				Document child = docsMap.get(doc.getIdFils().get(i));
-
+				long result = dlBM25f(child.getId(), docsMap, alphaType);   // crée une erreur si MIN_LENGTH_AUTHORIZED est different de 0
+				
 				if (alphaType.containsKey(doc.getType()))
-					dl += (dlBM25f(child.getId(), docsMap, alphaType)) * alphaType.get(doc.getType());
-				else dl += (dlBM25f(child.getId(), docsMap, alphaType)) * 1f;  // si coef element non determine on multiplit par 1
+					dl += result * alphaType.get(doc.getType());
+				else dl += result * alphaType.get(Document.Type_Element.VIDE);  // si coef element non determine on multiplit par le coeff d'un element non connu
 			}
 		}
 
@@ -253,10 +255,10 @@ public class normalization {
 		for (Entry<Long, Document> entry : docsMap.entrySet()) { // for each documents
 			docId = entry.getKey();
 			ave_len += entry.getValue().get_length(); // ...add the length of this document
-
 		}
 
 		ave_len /= N; // divide the total of occurrence by the number of doc
+		
 		return ave_len;
 	}
 	
@@ -274,10 +276,10 @@ public class normalization {
 		for (Entry<Long, Document> entry : docsMap.entrySet()) { 
 			docId = entry.getKey();
 			ave_len += dlBM25f(docId, docsMap, alphaType);
-
 		}
 
-		ave_len /= N; 
+		ave_len /= N;
+		
 		return ave_len;
 	}
 
@@ -299,7 +301,6 @@ public class normalization {
 	}
 	
 	public static float k(String smart) {	// parse the k parameter from Main.PARAMETERS
-		// System.out.println("Smart : " + smart);
 		String[] splitted = smart.split(",");
 		String k_string = splitted[1].split("=")[1];
 
@@ -331,6 +332,7 @@ public class normalization {
 		alphas.add(a_1);
 		alphas.add(a_2);
 		alphas.add(a_3);
+		
 		return alphas;
 	}
 

@@ -20,16 +20,17 @@ public class Main {
 	public static final String ETAPE = "04";
 	public static final String OUTPUT_DIR = "resources/resultats/";   // sorti des resultats
 	public static final String OUTPUT_NAME = "BastienCelineLaetitiaPierre";
-	public static final String[] PARAMETERS = new String[] {"ltn", "bm25,k=1,b=0.5", "bm25,k=1.2,b=0.75", "bm25,k=1,b=1", "bm25,k=0.1,b=0.75"};
-	//, "bm25,k=0.5,b=0.5,a_title=1.5,a_body=1,a_sec=1"  // forme run robertson
+	public static final String[] PARAMETERS = new String[] {"ltn", "bm25,k=0.5,b=0.5"};
+	//, "bm25,k=0.5,b=0.5,a_title=1.5,a_body=1,a_sec=1"  // forme parametre bm25f avec robertson 
+	// "bm25,k=1,b=0.5", "bm25,k=1.2,b=0.75", "bm25,k=1,b=1", "bm25,k=0.1,b=0.75",  // forme parametre bm25 classique
 
 	public static final int MAX_ELEMENT = 1;    // nombre d'element max renvoye par document, inutile pour granularite a ARTICLE et DOCUMENT
 	public static final Document.Type_Element GRANULARITE = Document.Type_Element.ARTICLE;
 	public static final Boolean STOPWORD = true;   // active l'enti dictionnaire
 	public static final Boolean STEMMING = false;    // active le stemming de Porter
-	public static final Boolean ROBERTSON = false;   // active le calcul du tf avec la methode robertson
+	public static final Boolean ROBERTSON = false;   // active le calcul du tf avec la methode robertson, attention a la forme du parametre 
 	public static final Boolean OPTIMISATION_POSTING_LIST = true;   // enleve les termes inutiles de la posting list
-	public static final int MIN_LENGTH_AUTHORIZED = 15;    // longueur minimum pour qu'un element soit pris en compte
+	public static final int MIN_LENGTH_AUTHORIZED = 0;    // longueur minimum pour qu'un element soit pris en compte
 
 
 	public static void main(String[] args) {

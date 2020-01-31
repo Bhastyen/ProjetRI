@@ -90,7 +90,7 @@ public class Models {
 					doc_id = ite.key();
 					
 					// recupere les racines des documents traitees pour gerer ensuite le reouvrement
-					if (docsMap.get(doc_id).getType() == Document.Type_Element.ARTICLE 
+					if (docsMap.get(doc_id).getType() == Document.Type_Element.ARTICLE
 							&& docsMap.get(doc_id).getCheminDocument().equals("article[1]/") 
 							&& !roots.contains(doc_id)) {
 						roots.add(doc_id);

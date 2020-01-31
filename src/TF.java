@@ -102,17 +102,22 @@ public class TF {
 			HashMap<Long, Document> docsMap, HashMap<Document.Type_Element, Float> alphaType) { 
 		
 		Document doc = docsMap.get(docId);
-
-
 		float tf = 0F;
 		float tfTemp = 0F;
+		
 		if(doc.getIdFils().size() == 0){
 			tfTemp = postingList.get(term).get(docId);
-			tf += tfTemp * alphaType.get(doc.getType());
+			
+			if (alphaType.containsKey(doc.getType()))
+				tf += tfTemp * alphaType.get(doc.getType());
+			else tf += tfTemp * alphaType.get(Document.Type_Element.VIDE);  // si coef element non determine on multiplit par le coeff d'un element non connu
 		}else {
 			for(int i =0; i<doc.getIdFils().size(); i++){
-				Document child = docsMap.get(doc.getIdFils().get(i));
-				tf += (f(term, child.getId(), postingList, docsMap, alphaType)) * alphaType.get(doc.getType());
+				Document child = docsMap.get(doc.getIdFils().get(i));   // crée une erreur si MIN_LENGTH_AUTHORIZED est different de 0
+				
+				if (alphaType.containsKey(doc.getType()))
+					tf += (f(term, child.getId(), postingList, docsMap, alphaType)) * alphaType.get(doc.getType());
+				else tf += (f(term, child.getId(), postingList, docsMap, alphaType)) * alphaType.get(Document.Type_Element.VIDE);  // si coef element non determine on multiplit par le coeff d'un element non connu
 			}
 		}
 		return tf;
