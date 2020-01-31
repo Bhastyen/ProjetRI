@@ -16,23 +16,23 @@ import gnu.trove.map.hash.THashMap;
 
 public class Main {
 	public static final int NUMBER_OF_DOCUMENT_BY_QUERY = 1500;
-	public static final int BEGIN = 100;  // 49 + 25 = 74
-	public static final String ETAPE = "02";
+	public static final int BEGIN = 66;  // 66 + 5 = 
+	public static final String ETAPE = "04";
 	public static final String OUTPUT_DIR = "resources/resultats/";
 	public static final String OUTPUT_NAME = "BastienCelineLaetitiaPierre";
-	public static final String[] PARAMETERS = new String[] {"bm25,k=1.2,b=0.75"};
+	public static final String[] PARAMETERS = new String[] {"ltn", "bm25,k=1,b=0.5", "bm25,k=1.2,b=0.75", "bm25,k=1,b=1", "bm25,k=0.1,b=0.75"};
 			//"bm25,k=0.7,b=0.2", "bm25,k=0.7,b=0.4", "bm25,k=0.7,b=0.6", "bm25,k=0.7,b=0.8", "bm25,k=0.7,b=1",
 			//"bm25,k=0.9,b=0.2", "bm25,k=0.9,b=0.4", "bm25,k=0.9,b=0.6", "bm25,k=0.9,b=0.8", "bm25,k=0.9,b=1",
 			//"bm25,k=1.1,b=0.2", "bm25,k=1.1,b=0.4", "bm25,k=1.1,b=0.6", "bm25,k=1.1,b=0.8", "bm25,k=1.1,b=1",
 			//"bm25,k=1.3,b=0.2", "bm25,k=1.3,b=0.4", "bm25,k=1.3,b=0.6", "bm25,k=1.3,b=0.8", "bm25,k=1.3,b=1",
 			//"bm25,k=1.5,b=0.2", "bm25,k=1.5,b=0.4", "bm25,k=1.5,b=0.6", "bm25,k=1.5,b=0.8", "bm25,k=1.5,b=1"};
 
-	public static final int MAX_ELEMENT = 2;
-	public static final Document.Type_Element GRANULARITE = Document.Type_Element.ELEMENT;
+	public static final int MAX_ELEMENT = 1;
+	public static final Document.Type_Element GRANULARITE = Document.Type_Element.LINK;
 	public static final Boolean STOPWORD = true;
 	public static final Boolean STEMMING = false;
 	public static final Boolean OPTIMISATION_POSTING_LIST = true;
-	public static final int MIN_LENGTH_AUTHORIZED = 10;
+	public static final int MIN_LENGTH_AUTHORIZED = 15;
 
 
 	public static void main(String[] args) {
@@ -189,7 +189,7 @@ public class Main {
 			// Pour garder des scores decroissants
 			score = (number_doc - i);
 			
-			buff.append(numQuery + " Q0 " + d.getIdDoc() + " " + (i+1) + " " + cosScore.get(i).getValue() + " " + nomEquipe + " /" + d.getCheminDocument().substring(0, d.getCheminDocument().length() - 1));
+			buff.append(numQuery + " Q0 " + d.getIdDoc() + " " + (i+1) + " " + score + " " + nomEquipe + " /" + d.getCheminDocument().substring(0, d.getCheminDocument().length() - 1));
 			buff.newLine();
 		}
 

@@ -69,10 +69,9 @@ public class Models {
 				wordQuery = Stemming.stemTerm(wordQuery);
 			}
 
-			//wordQuery = Document.sentenceProcessing(wordQuery);
 			if (wordQuery.charAt(0) == '+')
 				wordQuery = wordQuery.substring(1);
-			System.out.println("word en cours : " + wordQuery);
+			System.out.println("Word en cours : " + wordQuery);
 
 			// Pour chaque pair : nombre occurence / IdDocument du terme wordQuery
 			if (postingList.contains(wordQuery)) {
@@ -107,10 +106,7 @@ public class Models {
 			}
 		}
 
-		// gerer le recouvrement
-		System.out.println("OK");
-		
-		// Parcourir l'arbre des documents et ressortir tous les elements les plus pertinents
+		// Parcourir l'arbre des documents et ressortir tous les elements les plus pertinents sans recouvrement
 		revelantId = removeAllCover(roots, docIdScore, docsMap);
 		
 		// construit une liste de paire document et score
@@ -130,6 +126,7 @@ public class Models {
 				return 0;
 			}
 		});
+		
 		
 		List<Entry<Document, Float>> resultGrouped = new ArrayList<>();
 		while (results.size() != 0) {
@@ -184,15 +181,15 @@ public class Models {
 		for (int i = 0; i < roots.size(); i++) {
 			doc = idDocDoc.get(roots.get(i));
 			
-			resultsFils = removeCover(doc, idDocScore, idDocDoc);
 			
-			if (Main.GRANULARITE != Document.Type_Element.DOCUMENT)
+			if (Main.GRANULARITE != Document.Type_Element.DOCUMENT && Main.GRANULARITE != Document.Type_Element.ARTICLE) {
+				resultsFils = removeCover(doc, idDocScore, idDocDoc);
 				results.addAll(resultsFils);   // recupere les elements interessants du document
-			else results.add(roots.get(i));
+			} else results.add(roots.get(i));
 		}
 		
-		// supprime le chevauchement restant s'il existe
-		for (int i = 0; i < results.size(); i ++) {
+		// detecte le chevauchement restant s'il existe
+		/*for (int i = 0; i < results.size(); i ++) {
 			doc = idDocDoc.get(results.get(i));
 			
 			for (int j = 0; j < doc.getIdFils().size(); j ++) {
@@ -200,10 +197,9 @@ public class Models {
 					System.out.println("Overlap : " + doc.getId() + "  " + doc.getIdFils().get(j));
 				}
 			}
-		}
+		}*/
 		
-		System.out.println("Combien de resultat : " + finalResults.size() + 
-				"  combien de resultat non finaux : " + results.size() + 
+		System.out.println("Combien de resultat : " + results.size() + 
 				"  combien d'article : " + roots.size() + 
 				"  combien de score : " + idDocScore.size());
 
@@ -226,7 +222,7 @@ public class Models {
 				moyScoreFils = 0;
 				revelantIdFils = new ArrayList<>();
 				
-				if (idDocScore.containsKey(doc.getIdFils().get(i)))
+				if (idDocDoc.containsKey(doc.getIdFils().get(i)))  // ne peut plus acceder a certain fils interessant
 					revelantIdFils = removeCover(idDocDoc.get(doc.getIdFils().get(i)), idDocScore, idDocDoc);
 				
 				for (int j = 0; j < revelantIdFils.size(); j++) {
@@ -245,35 +241,23 @@ public class Models {
 
 				if (difference > 10) { // si le fils est plus de 10% plus haut que le pere
 					for (int j = 0; j < revelantIdFils.size(); j ++) {
-						if (!idDocScore.containsKey(revelantIdFils.get(j)))
-							scoreFils = 0;
-						else scoreFils = idDocScore.get(revelantIdFils.get(j));
-						
-						if ((idDocDoc.get(revelantIdFils.get(j)).getType() == Main.GRANULARITE || Main.GRANULARITE == Document.Type_Element.ELEMENT
-								 || Main.GRANULARITE == Document.Type_Element.DOCUMENT)
-								&& scoreFils != 0) {
+						if (idDocScore.containsKey(revelantIdFils.get(j)) && (idDocDoc.get(revelantIdFils.get(j)).getType() == Main.GRANULARITE || 
+							Main.GRANULARITE == Document.Type_Element.ELEMENT) && idDocScore.get(revelantIdFils.get(j)) != 0) {
 							revelantIds.add(revelantIdFils.get(j));
+							fils = false;
 						}
 					}
-					
-					fils = false;
 				}
 
 				if (fils) {
-					if (!idDocScore.containsKey(doc.getIdFils().get(i)))
-						scoreParent = 0;
-					else scoreParent = idDocScore.get(doc.getIdFils().get(i));
-	
-					if ((idDocScore.containsKey(doc.getIdFils().get(i)) && (idDocDoc.get(doc.getIdFils().get(i)).getType() == Main.GRANULARITE || 
-							Main.GRANULARITE == Document.Type_Element.ELEMENT ||
-							Main.GRANULARITE == Document.Type_Element.DOCUMENT)) &&
-							scoreParent != 0) {
+					if (idDocScore.containsKey(doc.getIdFils().get(i)) && (idDocDoc.get(doc.getIdFils().get(i)).getType() == Main.GRANULARITE || 
+						Main.GRANULARITE == Document.Type_Element.ELEMENT) && idDocScore.get(doc.getIdFils().get(i)) != 0) {
 						revelantIds.add(doc.getIdFils().get(i));
 					}
 				}
 			}
 			
-			// calcul moyenne pour comparaison entre revelant id et le parent
+			// calcul moyenne pour comparaison entre les fils et le parent
 			for (int i = 0; i < revelantIds.size(); i++) {
 				moyScoreFils = 0;
 				if (!idDocScore.containsKey(revelantIds.get(i)))
@@ -300,15 +284,12 @@ public class Models {
 		}
 
 		if (father) {
-			if (!idDocScore.containsKey(doc.getId()))
-				scoreParent = 0;
-			else scoreParent = idDocScore.get(doc.getId());
-			
-			if ((idDocDoc.get(doc.getId()).getType() == Main.GRANULARITE || Main.GRANULARITE == Document.Type_Element.ELEMENT
-					 || Main.GRANULARITE == Document.Type_Element.DOCUMENT) && scoreParent != 0)
+			if (idDocScore.containsKey(doc.getId()) && (idDocDoc.get(doc.getId()).getType() == Main.GRANULARITE ||
+				Main.GRANULARITE == Document.Type_Element.ELEMENT) && idDocScore.get(doc.getId()) != 0)
 				revelantIds.add(doc.getId());
 		}
-
+		
+		//System.out.println("Erreur " + revelantIds.size());
 		return revelantIds;
 	}
 

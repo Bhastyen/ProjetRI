@@ -39,9 +39,6 @@ public class normalization {
 
 	}
 
-
-
-
 	public static float n(
 			String smart,   // format "***"
 			String term,
