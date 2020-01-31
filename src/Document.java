@@ -2,82 +2,185 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
+
+import gnu.trove.list.TLongList;
+import gnu.trove.list.array.TLongArrayList;
 
 public class Document {
-	public enum Type {XML, BRUT} ;
-	
-	private int idDoc;
+	public static final List<String> STOP_WORD = loadStopwords();
+
+	public enum Type {
+		XML, BRUT
+	};
+
+	public enum Type_Element {
+		VIDE, BODY, TITLE, SECTION, ARTICLE, DOCUMENT, ELEMENT, LINK, PARAGRAPH, BOLD, ITALIC, NAME
+	};
+
+	private long id;
+	private long idDoc;
 	private String stringDocument;
-	
-	
-	public Document(int idDoc, String stringDocument) {
-		super();
+	private String cheminDocument;
+	private int length;
+	private TLongList idFils;
+	private Type_Element type = Type_Element.VIDE;
+
+	public Document(long idDoc, String stringDocument) {
+		String[] arrString = stringDocument.trim().replace("  ", " ").split(" ");
+
+		this.id = idDoc;
 		this.idDoc = idDoc;
 		this.stringDocument = stringDocument.toLowerCase();
+		cheminDocument = "/article[1]";
+		setIdFils(new TLongArrayList());
+
+		if (arrString.length == 1 && arrString[0].isEmpty()) {
+			length = 0;
+		} else {
+			length = arrString.length;
+		}
+
 	}
-	
-	
-	
-	public int getIdDoc() {
+
+	public Document(long idDoc, String stringDocument, String cheminDocument) {
+		this(idDoc, stringDocument);
+		this.setCheminDocument(cheminDocument);
+	}
+
+	public long getId() {
+		return id;
+	}
+
+	public void setId(long id) {
+		this.id = id;
+	}
+
+	public long getIdDoc() {
 		return idDoc;
 	}
-	
-	public void setIdDoc(int idDoc) {
+
+	public void setIdDoc(long idDoc) {
 		this.idDoc = idDoc;
 	}
-	
+
 	public String getStringDocument() {
 		return stringDocument;
 	}
-	
+
 	public void setStringDocument(String stringDocument) {
 		this.stringDocument = stringDocument;
 	}
-	
-	public int getLength() {
-		int c = 0;
-		String[] arrString = stringDocument.split(" ");
-		
-		/*for (int i = 0; i < arrString.length; i++) {
-			if (arrString[i] == "" || arrString[i] == " ") {
-				c += 1;
-			}
-		}
-		
-		System.out.println("Ligne vide doc " + idDoc + " : " + c);*/
-		
-		return arrString.length;
-		
+
+	public TLongList getIdFils() {
+		return idFils;
 	}
-	
-	private static List<String> loadStopwords() throws IOException {
-		
-		List<String> stopwords = Files.readAllLines(Paths.get("resources/stop-words-eng.txt"));
+
+	public void setIdFils(TLongList idFils) {
+		this.idFils = idFils;
+	}
+
+	public int get_length() {
+		return length;
+	}
+
+	private static List<String> loadStopwords() {
+		List<String> stopwords = null;
+
+		try {
+			stopwords = Files.readAllLines(Paths.get("resources/stop-words-eng.txt"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 		return stopwords;
 	}
 
 	public static String removeStopWord(String original) {
-		List<String> stopword = new ArrayList<String>();;
-		try {
-			stopword = loadStopwords();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+
+		/*
+		 * String[] allWords = original.toLowerCase().split(" "); //StringBuilder permet
+		 * de ne pas surcharger le CPU , utile pour les concatenation StringBuilder
+		 * builder = new StringBuilder(); for(String word : allWords) {
+		 * if(!stopword.contains(word)) { builder.append(word); builder.append(' '); } }
+		 * 
+		 * return builder.toString().trim();//trim enleve les surespacementss
+		 */
+		return "";
+
+	}
+
+	public static String createStemming(String original) {
+		return Stemming.stemTerm(original);
+	}
+
+	public static String sentenceProcessing(String original) {
+
+		original = original.replaceAll("[^A-Za-z ]", " ");
 
 		String[] allWords = original.toLowerCase().split(" ");
-		//StringBuilder permet de ne pas surcharger le CPU , utile pour les concatenation
+		// StringBuilder permet de ne pas surcharger le CPU , utile pour les
+		// concatenation
 		StringBuilder builder = new StringBuilder();
-		for(String word : allWords) {
-			if(!stopword.contains(word)) {
-				builder.append(word);
-				builder.append(' ');
+
+		List<String> stopword = STOP_WORD;
+
+		/*
+		 * if (Main.STOPWORD) {//if STOPWORD try { stopword = loadStopwords(); } catch
+		 * (IOException e) { e.printStackTrace(); } }
+		 */
+
+		for (String word : allWords) {
+			if (!word.equals("")) {
+
+				if (Main.STOPWORD) {// if STOPWORD
+					if (!stopword.contains(word)) {
+						if (Main.STEMMING) {// if STEMMING
+							word = createStemming(word);
+						}
+
+						builder.append(word);
+						builder.append(' ');
+					}
+				} else if (Main.STEMMING) {// if STEMMING
+					word = createStemming(word);
+					builder.append(word);
+					builder.append(' ');
+				} else {
+					builder.append(word);
+					builder.append(' ');
+				}
 			}
 		}
 
-		 return builder.toString().trim();//trim enleve les surespacementss
-
+		return builder.toString().trim(); // trim enleve les surespacementss
 	}
+
+	public String getCheminDocument() {
+		return cheminDocument;
+	}
+
+	public void setCheminDocument(String cheminDocument) {
+		this.cheminDocument = cheminDocument;
+	}
+
+	public Type_Element getType() {
+		return type;
+	}
+
+	public void setType(Type_Element type) {
+		this.type = type;
+	}
+
+	public static HashMap<Long, Document> getDocumentsHashMap(List<Document> docs) {
+		HashMap<Long, Document> docsMap = new HashMap<>();
+
+		for (int i = 0; i < docs.size(); i++) {
+			docsMap.put(docs.get(i).getId(), docs.get(i));
+		}
+
+		return docsMap;
+	}
+
 }

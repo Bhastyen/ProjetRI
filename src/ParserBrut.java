@@ -50,7 +50,7 @@ public class ParserBrut {
 							//Ajout d'un nouveau document
 							//docs.add(new Document(id, contenu.toString().trim()));
 							//Si stopWord
-							docs.add(new Document(id, Document.removeStopWord(contenu.toString().trim())));
+							docs.add(new Document(id, Document.sentenceProcessing(contenu.toString().trim())));
 							j ++;
 							contenu = new StringBuilder();
 

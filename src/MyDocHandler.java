@@ -5,26 +5,23 @@ import org.xml.sax.helpers.DefaultHandler;
 
 public class MyDocHandler extends DefaultHandler {
 	private boolean header = false, idDoc = false;
-	private int id = 0;
+	private long id = 0;
 	private String contenu = "";
+	private Document doc;
 	
-
+	
 	public void startDocument() {
-		//System.out.println("Debut du doc");
 		contenu = "";
 	}
 	
 	public void endDocument() {
-		//System.out.println("Fin du doc");
-		contenu = contenu.replaceAll(" +", " ");
+		// Creation d'un nouveau document
+		contenu = Document.sentenceProcessing(contenu.replaceAll(" +", " "));
+		
+		doc = new Document(id, contenu, "/article[1]");
 	}
 		
 	public void startElement(String uri, String localName, String qName, Attributes att) {
-		// hierarchisation de l'affichage grace aux identations + affiche le nom des elements
-		//System.out.println("name : " + qName);
-		//System.out.println("localName : " + localName);
-		//System.out.println("URI : " + uri);
-		
 		// recherche de la premiere occurrence de l'id
 		if (qName.equals("header"))
 			header = true;
@@ -33,28 +30,17 @@ public class MyDocHandler extends DefaultHandler {
 			idDoc = true;
 			header = false;
 		}
-		
-		// je m'occupe des attributs s'ils en extistent
-		/*if (att.getLength() > 0) {
-			System.out.print("(");
-			for (int i = 0; i<att.getLength(); i++)
-				if (i == att.getLength()-1)
-					System.out.print(att.getQName(i)+"="+att.getValue(i));
-				else System.out.print(att.getQName(i)+"="+att.getValue(i)+",");
-			System.out.println(")");
-		}*/
 	} 
-		
+	
 	public void endElement(String uri, String localName, String qName) {
-			
-			
+
 	}
 	
 	public void characters(char[] caracteres, int depart, int longueur) {
 		String mot = new String(caracteres, depart, longueur);
 		
 		if (idDoc) {
-			id = Integer.parseInt(mot);
+			id = Long.parseLong(mot);
 			idDoc = false;
 		}else {
 			contenu += mot.replaceAll("[!,;:^']", " ").replaceAll(" +", " ").replace('\n', ' ') + " ";
@@ -63,11 +49,11 @@ public class MyDocHandler extends DefaultHandler {
 	}
 	
 
-	public int getId() {
+	public long getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 
@@ -77,6 +63,10 @@ public class MyDocHandler extends DefaultHandler {
 
 	public void setContenu(String contenu) {
 		this.contenu = contenu;
+	}
+
+	public Document getDoc() {
+		return doc;
 	}
 	
 }

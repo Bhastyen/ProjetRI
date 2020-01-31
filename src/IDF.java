@@ -1,31 +1,52 @@
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import gnu.trove.map.TLongLongMap;
+import gnu.trove.map.hash.THashMap;
+
+
+
 public class IDF {
+	public static int df = 0;
+	public static String prev_term = "";
 	
 	public static float idf(
 			String smart, 
 			String term, 
-			Map<String, Map<Integer,Long>> postingListTerm, 
-			Map<Integer, Map<String,Long>> postingListDoc) {
+			int N,
+			THashMap<String, TLongLongMap> postingList,
+			Map<Long, Document> docsMap) {
 		
-		switch(smart) {
+		if (!term.equals(prev_term)) {
+			
+			if (Main.GRANULARITE == Document.Type_Element.DOCUMENT)   // si par Document on prends en compte que les articles
+				df = df(postingList.get(term), docsMap);
+			else df = postingList.get(term).size();
+			prev_term = term;
+		
+		}
+		
+		switch(smart) { // select the correct tf function depending of the SMART specification
+
 		case "n":
-			return (float) n(term, postingListTerm, postingListDoc);
+			return  n();
 		case "i":
-			return (float) i(term, postingListTerm, postingListDoc);
+			return  i(term, N, postingList, docsMap);
 		case "t":
-			return (float) i(term, postingListTerm, postingListDoc);
+			return  i(term, N, postingList, docsMap);
 		case "l":
-			return (float) l(term, postingListTerm, postingListDoc);
+			return  l(term, N, postingList, docsMap);
 		case "f":
-			return (float) f(term, postingListTerm, postingListDoc);
+			return  f(term, N, postingList, docsMap);
 		case "p":
-			return (float) p(term, postingListTerm, postingListDoc);
+			return  P(term, postingList, docsMap);
 		case "s":
-			return (float) s(term, postingListTerm, postingListDoc);
+			return  s(term, N, postingList, docsMap);
+		case "bm25":
+			return  bm25(term, N, postingList, docsMap);
 		default:
 			System.out.println("Pas de fonction idf definie");
 			return 0;
@@ -33,124 +54,133 @@ public class IDF {
 			
 	}
 	
-	public static int n(
-			String term, 
-			Map<String, Map<Integer, Long>> postingListTerm, 
-			Map<Integer, Map<String, Long>> postingListDoc) {
+	public static float n() {
 		
-		int idf;
-		
-		idf= 1;
+		float idf = (float) 1;
 		
 		return idf;
 	}
 	
-	public static double i(
+	public static float i(
 			String term, 
-			Map<String, Map<Integer, Long>> postingListTerm, 
-			Map<Integer, Map<String, Long>> postingListDoc) {
+			int N, 	// number of documents
+			THashMap<String, TLongLongMap> postingList,
+			Map<Long, Document> docsMap) {
 		
-		double idf; // Weight to return
-		int N = postingListDoc.size();   // number of documents
-		Map<Integer, Long> occDoc = postingListTerm.get(term);   // list of pair of NumOcc,DocId for the term
-		int n = occDoc.size(); // number of documents which contain term
+		float idf; // Weight to return
+		int n = df;
+		idf = (float) Math.log10((float) N / n);
 		
-		idf = Math.log(N/n);
-		
-		if (term.equals("in"))
-			System.out.println("\nidf " + idf + " N " + N + " n " + n);
-		
-		return idf;
-		
-	}
-	
-	
-	public static double l(
-			String term, 
-			Map<String, Map<Integer, Long>> postingListTerm, 
-			Map<Integer, Map<String, Long>> postingListDoc) {
-		
-		double idf;
-		int N = postingListDoc.size(); //number of documents in the data
-		Map<Integer, Long> occDoc = postingListTerm.get(term);  //Map of docId,occurrence for the term
-		int n = occDoc.size(); // count how many documents contain the term
-		
-		idf= Math.log(1 + N/n);
 		return idf;
 	}
 	
 	
-	public static double f(
+	public static float l(
 			String term, 
-			Map<String, Map<Integer, Long>> postingListTerm, 
-			Map<Integer, Map<String, Long>> postingListDoc) {
+			int N,
+			THashMap<String, TLongLongMap> postingList,
+			Map<Long, Document> docsMap) {
 		
-		double idf;
-		Map<Integer, Long> occDoc = postingListTerm.get(term);
-		int n = occDoc.size();
+		float idf;
+		float n = df;
 		
-
-		idf=1/n;
+		idf = (float) Math.log10(1 + (float) N / n);
 		return idf;
 	}
 	
 	
-	public static double p(
+	public static float f(
 			String term, 
-			Map<String, Map<Integer, Long>> postingListTerm, 
-			Map<Integer, Map<String, Long>> postingListDoc) {
+			int N,
+			THashMap<String, TLongLongMap> postingList,
+			Map<Long, Document> docsMap) {
+		
+		float idf;
+		float n = df;
+		
+		idf = (float) (1.0/n);
+		return idf;
+	}
+	
+	
+	public static float p(
+			String term, 
+			int N,
+			THashMap<String, TLongLongMap> postingList,
+			Map<Long, Document> docsMap) {
 
-		double idf;
-		int N = postingListDoc.size();
-		Map<Integer, Long> occDoc = postingListTerm.get(term);
-		int n = occDoc.size();
-
-
-		idf= Math.log((N-n)/n);
+		float idf;
+		float n = df;
+		
+		idf= (float) Math.log10((N-n)/(float) n);
 		return idf;
 	}
 
 
-	public static double P(
+	public static float P(
 			String term, 
-			Map<String, Map<Integer, Long>> postingListTerm, 
-			Map<Integer, Map<String, Long>> postingListDoc) {
+			THashMap<String, TLongLongMap> postingList,
+			Map<Long, Document> docsMap) {
 		
-		double idf;
+		float idf;
 		List<Integer> N = new ArrayList<Integer>();  //List of all the df
-		Map<Integer, Long> occDoc = postingListTerm.get(term);
-		int n = occDoc.size();
+		float n = df;
 		int maxN;
 		
-
-        for (Map.Entry<String, Map<Integer, Long>> mapentry : postingListTerm.entrySet()) {
-			Map<Integer, Long> TermMap = (Map<Integer, Long>) mapentry.getValue();
-        	N.add(TermMap.size()); // for all terms, add the number of doc in which they appear
+        for (Map.Entry<String, TLongLongMap> mapentry : postingList.entrySet()) {
+        	N.add(mapentry.getValue().size()); // for all terms, add the number of doc in which they appear
         }
 		
         maxN = Collections.max(N);
+		idf= (float) Math.log10(1+ (float) maxN/n);
 
-		idf= Math.log(1+ maxN/n);
 		return idf;
 	}
 	
 	
-	public static double s(
-			String term,
-			Map<String, Map<Integer, Long>> postingListTerm, 
-			Map<Integer, Map<String, Long>> postingListDoc) {
+	public static float s(
+			String term, 
+			int N,
+			THashMap<String, TLongLongMap> postingList,
+			Map<Long, Document> docsMap) {
 		
-		double idf;
-		int N = postingListDoc.size();
-		Map<Integer, Long> occDoc = postingListTerm.get(term);
-		int n = occDoc.size();
+		float idf;
+		float n = df;
 		
-
-		idf = Math.log((N+1)/n);
-		idf = Math.pow(idf, 2);
+		idf = (float) Math.log10((N + 1f)/n);
+		idf = (float) Math.pow(idf, 2);
+		
 		return idf;
 	}
 	
 	
+	private static float bm25( // idf for BM25 function
+			String term, 
+			int N,
+			THashMap<String, TLongLongMap> postingList,
+			Map<Long, Document> docsMap) {
+		float idf;
+		float n = df;
+
+		idf = (float) Math.log10((N - n + 0.5) / (n + 0.5));
+
+		return idf;
+	}
+	
+	// calul le bon df pour une granularite a DOCUMENT
+	private static int df(TLongLongMap docs, Map<Long, Document> docsMap) {
+		int compteur = 0;
+		long[] keys = docs.keys();
+		
+		for (int i = 0; i < keys.length; i ++) {
+			if (docsMap.get(keys[i]).getType() == Document.Type_Element.ARTICLE 
+					&& docsMap.get(keys[i]).getCheminDocument().equals("article[1]/")) {
+				compteur += 1;
+			}
+		}
+		
+		return compteur;
+	}
 	
 }
+

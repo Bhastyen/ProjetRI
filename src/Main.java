@@ -5,72 +5,110 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
+
+import gnu.trove.map.TLongLongMap;
+import gnu.trove.map.hash.THashMap;
 
 
 
 public class Main {
-	//public static final String ETAPE = "01";
 	public static final int NUMBER_OF_DOCUMENT_BY_QUERY = 1500;
-	public static final String GRANULARITE = "articles";
-	public static final String OUTPUT_DIR = "resources/resultats/";
+	public static final int BEGIN = 1;    // num de depart pour les runs
+	public static final String ETAPE = "04";
+	public static final String OUTPUT_DIR = "resources/resultats/";   // sorti des resultats
 	public static final String OUTPUT_NAME = "BastienCelineLaetitiaPierre";
-	public static final String[] PARAMETERS = new String[] {"nnn", "nnc", "ltn", "ltc", "lts"};
+	public static final String[] PARAMETERS = new String[] {"ltn", "bm25,k=0.5,b=0.5"};
+	//, "bm25,k=0.5,b=0.5,a_title=1.5,a_body=1,a_sec=1"  // forme parametre bm25f avec robertson 
+	// "bm25,k=1,b=0.5", "bm25,k=1.2,b=0.75", "bm25,k=1,b=1", "bm25,k=0.1,b=0.75",  // forme parametre bm25 classique
+
+	public static final int MAX_ELEMENT = 1;    // nombre d'element max renvoye par document, inutile pour granularite a ARTICLE et DOCUMENT
+	public static final Document.Type_Element GRANULARITE = Document.Type_Element.ARTICLE;
+	public static final Boolean STOPWORD = true;   // active l'enti dictionnaire
+	public static final Boolean STEMMING = false;    // active le stemming de Porter
+	public static final Boolean ROBERTSON = false;   // active le calcul du tf avec la methode robertson, attention a la forme du parametre 
+	public static final Boolean OPTIMISATION_POSTING_LIST = true;   // enleve les termes inutiles de la posting list
+	public static final int MIN_LENGTH_AUTHORIZED = 0;    // longueur minimum pour qu'un element soit pris en compte
 
 
 	public static void main(String[] args) {
-		List<Document> docsBrut, docsXML;
+		long begin, end, total = 0;
+		List<Document> /*docsBrut, */docsXML;
 		List<String> queries;
+		ParserXMLElement parserXML;
+		Indexator indexatorXML = new Indexator();
 
-		HashMap<String, Map<Integer, Long>> postingList = null;
-		HashMap<Integer, Map<String, Long>> postingListPerDoc = null;
+		//HashMap<String, Map<Long, Long>> postingList = null;
+		THashMap<String, TLongLongMap> postingListXML = null;
+		
 		File query = new File("resources/topics_M2WI7Q_2019_20.txt");
+//		File query = new File("resources/test-reduit/queryTest/query.txt");
+		queries = readQuery(query);
 
 		// parsing des documents
-		docsBrut = parserDoc("resources/textes_brut/", Document.Type.BRUT);
-		docsXML = parserDoc("resources/coll", Document.Type.XML);
-
-		 OutPutFileParsingBrut(docsBrut);
-
-		// indexation
-		Indexator indexator = new Indexator();
-		indexator.createIndex(docsBrut);
-		postingList = indexator.getPostingList();
-		postingListPerDoc = indexator.getPostingListPerDoc();
-		System.out.println("Indexator End");
-
-		System.out.println("Posting list size : " + postingList.size());
+		//docsBrut = parserDocBrut("resources/test-reduit/TD");
+		//docsBrut = parserDocBrut("resources/textes_brut");
 		
-		 OutPutFilePostingList(postingList);
-		//System.out.println("Doc "+ docsBrut.get(1597).getIdDoc() + "   Brut " + docsBrut.get(1597).getLength() +
-		//		" Doc " + docsXML.get(1597).getIdDoc() + "  XML " + docsXML.get(1597).getLength());
+		begin = System.currentTimeMillis();
+//		parserXML = parserDocXML("resources/test-reduit/XML", queries);
+		parserXML = parserDocXML("resources/coll", queries);
+		docsXML = parserXML.parse();
+		indexatorXML = parserXML.getPostingLists();
+		postingListXML = indexatorXML.getPostingList();
+		
+		// libere la memoire inutile
+		indexatorXML = null;
+		parserXML = null;
+		end = System.currentTimeMillis();
+		total += (end - begin);
+		
+		//OutPutFileParsingBrut(docsBrut);
+		//OutPutFileParsingXML(docsXML);
+
+		System.err.println("Memory Size : " + Runtime.getRuntime().totalMemory());
+		System.err.println("Time parsing : " + ((end - begin) / 1000f));
+		
+		// indexation
+		//Indexator indexator = new Indexator();
+		//indexator.createIndex(docsBrut);
+		//indexatorXML.createIndex(docsXML);
+		//postingListXML = indexatorXML.getPostingList();
+
+		System.out.println("Taille " + docsXML.size());
+		System.out.println("Posting list size : " + postingListXML.size());
+		
+		//OutPutFilePostingList(postingListXML);   // decommenter pour ecrire la posting list dans un fichier "posting list", utile pour debugger
 
 		// TEXTE BRUT : calcul du score des documents pour chaque requete et ecriture du run
-		queries = readQuery(query);
-		writeAllRuns(queries, OUTPUT_DIR + "brut/", OUTPUT_NAME, "03", "articles", docsBrut, postingList, postingListPerDoc);
+		//writeAllRuns(queries, OUTPUT_DIR + "brut/", OUTPUT_NAME, "06", "articles", docsBrut, postingList, postingListPerDoc);
 
 		// TEXTE XML : calcul du score des documents pour chaque requete et ecriture du run
-		writeAllRuns(queries, OUTPUT_DIR + "xml/", OUTPUT_NAME, "03", "articles", docsXML, postingList, postingListPerDoc);
-
-		System.out.println("Runs write");
+		begin = System.currentTimeMillis();
+		writeAllRuns(queries, OUTPUT_DIR + "xml/", OUTPUT_NAME, ETAPE, GRANULARITE.name(), docsXML, postingListXML);
+		end = System.currentTimeMillis();
+		total += (end - begin);
+		System.err.println("Runs Time : " + (((end - begin) / 1000f)));
+		
+		System.err.println("Total Time : " + (total / 1000f));
 	}
 
 	// function : parserDoc(String pathResources, Document.Type type) output(List<Document>)  , type = "xml" ou "brut"
-	public static List<Document> parserDoc(String path, Document.Type type){
-
-		if (type == Document.Type.BRUT) {
-			ParserBrut parser = new ParserBrut(path);
-			return parser.parse();
-		}else {
-			ParserXML parser = new ParserXML(path);
-			return parser.parse();
-		}
+	public static List<Document> parserDocBrut(String path){
+		ParserBrut parser = new ParserBrut(path);	
+		return parser.parse();
+	}
+	
+	public static ParserXMLElement parserDocXML(String path, List<String> queries){
+		ParserXMLElement parser;
+		
+		if (OPTIMISATION_POSTING_LIST)
+			parser = new ParserXMLElement(path, queries);
+		else 
+			parser = new ParserXMLElement(path);
+		
+		return parser;
 	}
 
 	private static List<String> readQuery(File fileQ) {
@@ -97,22 +135,33 @@ public class Main {
 	public static void writeAllRuns(List<String> queries, String path,
 			String nomEquipe, String etape,
 			String granularite, List<Document> docs,
-			HashMap<String, Map<Integer, Long>> postingList,
-			HashMap<Integer, Map<String, Long>> postingListPerDoc) {
+			THashMap<String, TLongLongMap> postingList) {
 
-		List<Entry<Integer, Float>> cosScore;
+		List<Entry<Document, Float>> cosScore;
 
 		for (int numRun = 0; numRun < PARAMETERS.length; numRun ++) {
 			BufferedWriter buff;
-			File out = new File(path + nomEquipe + "_" + etape + "_" + "0"+(numRun+1) + "_" + PARAMETERS[numRun].toUpperCase() + "_" + "articles" + ".txt");
+			
+			String finalPath = path + nomEquipe + "_" + etape + "_" + "" + (BEGIN + numRun) + "_" + PARAMETERS[numRun].toUpperCase() + "_E=" + MAX_ELEMENT + "_ML=" + MIN_LENGTH_AUTHORIZED;
+			
+			if (STOPWORD)
+				finalPath += "_stopwords";
 
+			if (STEMMING)
+				finalPath += "_stem";
+							
+			finalPath +=  "_" + GRANULARITE + ".txt";
+			
+			File out = new File(finalPath);
+			
 			try {
 				buff = new BufferedWriter(new FileWriter(out));
 
 				for (String q : queries) {
-					//System.out.println("OK " + q.substring(8));
-					cosScore = Models.CosineScore(q.substring(8), postingList, postingListPerDoc, docs, PARAMETERS[numRun]);
+					cosScore = Models.CosineScore(q.substring(8), postingList, docs, PARAMETERS[numRun]);
 					writeRun(buff, nomEquipe, q.substring(0, 7), cosScore);
+					
+					System.err.println("Nombre resultat : " + cosScore.size());
 				}
 
 				buff.close();
@@ -124,48 +173,50 @@ public class Main {
 
 	}
 
-	public static void writeRun(BufferedWriter buff, String nomEquipe, String numQuery, List<Entry<Integer, Float>> cosScore) throws IOException {
+	public static void writeRun(BufferedWriter buff, String nomEquipe, String numQuery, List<Entry<Document, Float>> cosScore) throws IOException {
+		Document d;
 		int number_doc = cosScore.size();
+		float score;
 
 		if (number_doc > NUMBER_OF_DOCUMENT_BY_QUERY)
 			number_doc = NUMBER_OF_DOCUMENT_BY_QUERY;
 
 		for (int i = 0; i < number_doc; i++) {
-			buff.append(numQuery + " Q0 " + cosScore.get(i).getKey() + " " + (i+1) + " " + cosScore.get(i).getValue() + " " + nomEquipe + " /article[1]");
+			d = cosScore.get(i).getKey();
+			
+			// Pour garder des scores decroissants
+			score = (number_doc - i);
+			
+			buff.append(numQuery + " Q0 " + d.getIdDoc() + " " + (i+1) + " " + score + " " + nomEquipe + " /" + d.getCheminDocument().substring(0, d.getCheminDocument().length() - 1));
 			buff.newLine();
 		}
-
-		//System.out.println("Document relevant : " + numQuery + " " + cosScore.get(0).getKey());
 	}
 
-	public static  void  OutPutFilePostingList(HashMap<String, Map<Integer, Long>> postingList) {
+	public static  void  OutPutFilePostingList(THashMap<String, TLongLongMap> postingList) {
 		BufferedWriter buff;
 		File out = new File("resources/postingList.txt");
-		System.out.println("Ecrit posting fichier");
+		
 		try {
 			buff = new BufferedWriter(new FileWriter(out));
-			System.out.println("dans try");
-			for (Entry<String, Map<Integer, Long>> p : postingList.entrySet()) {//String : key (mot) Map Integer:doc id Long nombre occurence
+			for (Entry<String, TLongLongMap> p : postingList.entrySet()) {  //String : key (mot) Map Integer:doc id Long nombre occurence
 				buff.append("key " + p.getKey() + " DocId/nbOccu" + p.getValue().toString());
 				buff.newLine();
 			}
-
 			buff.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		System.out.println("Ecrit posting fichier FIN");
 
 	}
+	
 	public static  void  OutPutFileParsingBrut(List<Document> docs) {
 		BufferedWriter buff;
 		File out = new File("resources/parsingBrut.txt");
-		System.out.println("Ecrit parser Brut fichier");
+		
 		try {
 			buff = new BufferedWriter(new FileWriter(out));
-			System.out.println("dans try");
-			for (Document doc : docs) {//String : key (mot) Map Integer:doc id Long nombre occurence
-				buff.append("idDoc " + doc.getIdDoc() + "Contenu " + doc.getStringDocument());
+			for (Document doc : docs) {  //String : key (mot) Map Integer:doc id Long nombre occurence
+				buff.append("idDoc " + doc.getId() + "Contenu " + doc.getStringDocument());
 				buff.newLine();
 				buff.newLine();
 				buff.newLine();
@@ -176,8 +227,25 @@ public class Main {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		System.out.println("Ecrit parsing Brut fichier FIN");
 
+	}
+
+	public static  void  OutPutFileParsingXML(List<Document> docs) {
+		BufferedWriter buff;
+		File out = new File("resources/parsingXML.txt");
+		
+		try {
+			buff = new BufferedWriter(new FileWriter(out));
+			for (Document doc : docs) {    //String : key (mot) Map Integer:doc id Long nombre occurence
+				buff.append("idDoc " + doc.getId() + " Contenu " + doc.getStringDocument() + " Chemin " + doc.getCheminDocument());
+				buff.newLine();
+				buff.newLine();
+			}
+
+			buff.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	

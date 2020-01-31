@@ -1,20 +1,15 @@
 import java.util.*;
 import java.util.Map.Entry;
 
+import gnu.trove.iterator.TLongLongIterator;
+import gnu.trove.list.TLongList;
+import gnu.trove.map.TLongLongMap;
+import gnu.trove.map.hash.THashMap;
+
 public class TF {
-	
-	
-	public static float tf(String smart, String term, int docId, Map<Integer, Map<String, Long>> postingList) {
-		// need postingList with docId as key
-		
-//		try{
-//			Map<String, Long> docMap = postingList.get(docId);
-//			long tf = docMap.get(term);
-//		} catch (Exception ie) {
-//			System.out.println("term not in this document");
-//		}
-		
-		switch(smart) {
+
+	public static float tf(String smart, String term, long docId, THashMap<String, TLongLongMap> postingList) { 
+		switch (smart) { 	// select the correct tf function depending of the SMART specification
 		case "b":
 			return b(term, docId, postingList);
 		case "n":
@@ -31,91 +26,100 @@ public class TF {
 			System.out.println("Pas de fonction tf definie");
 			return 0;
 		}
-			
-	}
-	
-	
-	public static float b(String term, int docId, Map<Integer, Map<String, Long>> postingList) {
 
-		long tf = 1;
-		
+	}
+
+	public static float b(String term, long docId, THashMap<String, TLongLongMap> postingList) {
+
+		float tf = 1;
 		return tf;
 	}
-	
-	
-	public static float n(String term, int docId, Map<Integer, Map<String, Long>> postingList) {
-		Map<String, Long> docMap = postingList.get(docId);
-		long tf = docMap.get(term);
 
+	public static float n(String term, long docId, THashMap<String, TLongLongMap> postingList) {
+		long tf = postingList.get(term).get(docId);
 		return tf;
 	}
-	
-	
-	public static float m(String term, int docId, Map<Integer, Map<String, Long>> postingList) {
-		Map<String, Long> docMap = postingList.get(docId);
+
+	public static float m(String term, long docId, THashMap<String, TLongLongMap> postingList) {
+		TLongLongMap docMap = postingList.get(term);
+		TLongLongIterator ite = docMap.iterator();
 		List<Long> occ = new ArrayList<Long>();
 		float tf;
-		
-		for(Entry<String, Long> entry : docMap.entrySet()) {
-			occ.add(entry.getValue());
+
+		while (ite.hasNext()) {
+			ite.advance();
+			occ.add(ite.value());
 		}
-		
-		tf= docMap.get(term);
-		tf = (float) (tf / (Collections.max(occ)+0.00001));
-		
-		return tf;
-	}
-	
-	public static float a(String term, int docId, Map<Integer, Map<String, Long>> postingList) {
-		Map<String, Long> docMap = postingList.get(docId);
-		List<Long> occ = new ArrayList<Long>();
-		float tf;
-		
-		for(Entry<String, Long> entry : docMap.entrySet()) {
-			occ.add(entry.getValue());
-		}
-		
-		tf = docMap.get(term);
-		tf = (float) (0.5 + 0.5*tf/(Collections.max(occ)+0.00001));
+
+		tf = docMap.get(docId);
+		tf = (float) (tf / (Collections.max(occ) + 0.00001));
 
 		return tf;
 	}
-	
-	
-	public static float s(String term, int docId, Map<Integer, Map<String, Long>> postingList) {
-		Map<String, Long> docMap = postingList.get(docId);
-		float tf = docMap.get(term);
-		
+
+	public static float a(String term, long docId, THashMap<String, TLongLongMap> postingList) {
+		TLongLongMap docMap = postingList.get(term);
+		TLongLongIterator ite = docMap.iterator();
+		List<Long> occ = new ArrayList<Long>();
+		float tf;
+
+		while (ite.hasNext()) {
+			ite.advance();
+			occ.add(ite.value());
+		}
+
+		/*
+		 * for(Entry<Long, Long> entry : docMap.entrySet()) { occ.add(entry.getValue());
+		 * }
+		 */
+
+		tf = docMap.get(docId);
+		tf = (float) (0.5 + 0.5 * tf / (Collections.max(occ) + 0.00001));
+
+		return tf;
+	}
+
+	public static float s(String term, long docId, THashMap<String, TLongLongMap> postingList) {
+		float tf;
+		tf = postingList.get(term).get(docId);
+
 		tf = (float) Math.pow(tf, 2);
 
 		return tf;
 	}
-	
-	
-	public static float l(String term, int docId, Map<Integer, Map<String, Long>> postingList) {
-		Map<String, Long> docMap = postingList.get(docId);
-		long tf = docMap.get(term);
 
-		tf = (long) (1 + Math.log(tf));
-			
+	public static float l(String term, long docId, THashMap<String, TLongLongMap> postingList) {
+		float tf = 0;
+
+		tf = postingList.get(term).get(docId);
+
+		tf = (float) (1 + Math.log10(tf));
 		return tf;
 	}
-	
-	
-	public static float L(String term, int docId, Map<Integer, Map<String, Long>> postingList) {
-		Map<String, Long> docMap = postingList.get(docId);
-		long occ = 0;
-		long positiveocc = 0;
-		float tf;
-		
-		for(Entry<String, Long> entry : docMap.entrySet()) {
-			occ += entry.getValue();
-			positiveocc += 1;
-		}
-		
-		tf= docMap.get(term);
-		tf = (float) ((1+ Math.log(tf)) / (1 + Math.log(occ/positiveocc)));
 
+	
+	public static float f(String term, long docId, THashMap<String, TLongLongMap> postingList,	// function tf for BM25f : take alphas into account
+			HashMap<Long, Document> docsMap, HashMap<Document.Type_Element, Float> alphaType) { 
+		
+		Document doc = docsMap.get(docId);
+		float tf = 0F;
+		float tfTemp = 0F;
+		
+		if(doc.getIdFils().size() == 0){
+			tfTemp = postingList.get(term).get(docId);
+			
+			if (alphaType.containsKey(doc.getType()))
+				tf += tfTemp * alphaType.get(doc.getType());
+			else tf += tfTemp * alphaType.get(Document.Type_Element.VIDE);  // si coef element non determine on multiplit par le coeff d'un element non connu
+		}else {
+			for(int i =0; i<doc.getIdFils().size(); i++){
+				Document child = docsMap.get(doc.getIdFils().get(i));   // crée une erreur si MIN_LENGTH_AUTHORIZED est different de 0
+				
+				if (alphaType.containsKey(doc.getType()))
+					tf += (f(term, child.getId(), postingList, docsMap, alphaType)) * alphaType.get(doc.getType());
+				else tf += (f(term, child.getId(), postingList, docsMap, alphaType)) * alphaType.get(Document.Type_Element.VIDE);  // si coef element non determine on multiplit par le coeff d'un element non connu
+			}
+		}
 		return tf;
 	}
 }

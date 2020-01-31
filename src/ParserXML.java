@@ -25,11 +25,10 @@ public class ParserXML{
     	try {
 			parser = factory.newSAXParser();
 		} catch (ParserConfigurationException | SAXException e) {
-			e.printStackTrace();
+			System.err.println("Probleme lors de la creation du parser SAX : " + e.getMessage()); 
 		}
     }
     
-	
 	public List<Document> parse() {
 		List<Document> docs = new ArrayList<Document>();
 		MyDocHandler handler;
@@ -44,10 +43,15 @@ public class ParserXML{
 				for (int i = 0; i < fichiers.length; i++) {
 					handler = new MyDocHandler();
 					parser.parse(fichiers[i].getPath(), handler);
+					
+					//System.err.println("Docs  " + handler.getId() + " " + i + "  " + fichiers.length);
+					docs.add(handler.getDoc());
 
 					//System.out.println("ID : " + handler.getId());
 					
-					docs.add(new Document(handler.getId(), Document.removeStopWord(handler.getContenu())));
+					//docs.add(new Document(handler.getId(), Document.sentenceProcessing(handler.getContenu())));
+					//docs + docsHandler
+					//HashMap(id,docs); docs = new list
 				}
 			}
 		} catch (SAXException | IOException e) {
